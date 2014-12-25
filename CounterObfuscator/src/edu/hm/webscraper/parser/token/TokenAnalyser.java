@@ -1,4 +1,4 @@
-package edu.hm.webscraper.parser;
+package edu.hm.webscraper.parser.token;
 
 import java.util.HashSet;
 import java.util.List;
@@ -8,6 +8,14 @@ import edu.hm.webscraper.helper.Function;
 import edu.hm.webscraper.helper.Validate;
 import edu.hm.webscraper.helper.Variable;
 
+/**
+ * @author Benjamin Moellerke <bemoelle@gmail.com>
+ * @date 25.12.2014
+ * 
+ *       after tokenising it is necessary analyse each token, to find JavaScript
+ *       keywords like VAR, FUNCTION, etc.
+ * 
+ */
 public class TokenAnalyser {
 
 	private List<Token> allTokensOfJSCode;
@@ -29,6 +37,9 @@ public class TokenAnalyser {
 
 	}
 
+	/**
+	 * 
+	 */
 	public void process() {
 
 		processLocalVariables();
@@ -47,14 +58,23 @@ public class TokenAnalyser {
 
 	}
 
+	/**
+	 * @return
+	 */
 	public Set<Function> getFunctions() {
 		return functions;
 	}
 
+	/**
+	 * @param vars
+	 */
 	public void setVars(Set<Variable> vars) {
 		this.vars = vars;
 	}
 
+	/**
+	 * 
+	 */
 	private void processLocalVariables() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
@@ -98,6 +118,9 @@ public class TokenAnalyser {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private void processGlobalVariables() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
@@ -122,6 +145,9 @@ public class TokenAnalyser {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private void processFunctions() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
@@ -197,6 +223,9 @@ public class TokenAnalyser {
 
 	}
 
+	/**
+	 * 
+	 */
 	private void processLoops() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);

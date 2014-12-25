@@ -12,8 +12,11 @@ import java.util.regex.Pattern;
 import org.jsoup.helper.Validate;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+
 import edu.hm.webscraper.IClient;
 import edu.hm.webscraper.helper.Function;
+import edu.hm.webscraper.parser.token.TokenAnalyser;
+import edu.hm.webscraper.parser.token.TokenAnalyserFactory;
 
 public class JSParser {
 
@@ -60,12 +63,8 @@ public class JSParser {
 		 "'" + hexToASCII(hexStringMatcher.group()) + "'");
 		 }
 
-		Tokenizer tokenizer = new Tokenizer(unparsedJSCode);
-		tokenizer.process();
-						
-		TokenAnalyser tokenanalyser = new TokenAnalyser(tokenizer);
-		tokenanalyser.process();	
-
+		 TokenAnalyser tokenanalyser = TokenAnalyserFactory.create(unparsedJSCode);
+		
 		return unparsedJSCode;
 	}
 

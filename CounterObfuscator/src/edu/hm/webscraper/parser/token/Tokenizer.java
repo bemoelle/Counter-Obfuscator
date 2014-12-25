@@ -1,4 +1,4 @@
-package edu.hm.webscraper.parser;
+package edu.hm.webscraper.parser.token;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,15 @@ import edu.hm.webscraper.helper.Validate;
 import edu.hm.webscraper.parser.matcher.IMatch;
 import edu.hm.webscraper.parser.matcher.TokenMatcher;
 
-public class Tokenizer {
+/**
+ * @author Benjamin Moellerke <bemoelle@gmail.com>
+ * @date 25.12.2014
+ * 
+ *       Class to transform a String input stream into a representation of
+ *       tokens
+ * 
+ */
+final public class Tokenizer {
 
 	private String input;
 	private char[] inputArray;
@@ -200,7 +208,21 @@ public class Tokenizer {
 		return allTokensBetweenTwoBrackets;
 	}
 
-	private boolean getTokenIsInBrackets(Token tokenToTest) {
+	public List<Integer> getAllPosOfTokensByValue(String value) {
+
+		List<Integer> posOfTokens = new ArrayList<Integer>();
+
+		for (Token actualToken : tokens) {
+
+			if (actualToken.getValue().equals(value)) {
+				posOfTokens.add(actualToken.getPos());
+			}
+		}
+
+		return posOfTokens;
+	}
+
+	public boolean getTokenIsInBrackets(Token tokenToTest) {
 
 		Validate.isTrue(tokens.size() > 0);
 		Validate.notNull(tokenToTest);
