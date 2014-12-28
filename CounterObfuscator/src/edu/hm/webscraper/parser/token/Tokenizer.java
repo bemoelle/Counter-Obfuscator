@@ -17,9 +17,9 @@ import edu.hm.webscraper.parser.matcher.TokenMatcher;
  */
 final public class Tokenizer {
 
-	private String input;
-	private char[] inputArray;
-	private List<Token> tokens;
+	private String			input;
+	private char[]			inputArray;
+	private List<Token>	tokens;
 
 	public Tokenizer(String input) {
 
@@ -53,14 +53,13 @@ final public class Tokenizer {
 
 				if (charBuffer.length() > 0) {
 					getTokens().add(
-							new Token(element++, mapPosInInputArrayToTokentype(
-									beginPos, pos - 1), charBuffer));
+							new Token(element++, mapPosInInputArrayToTokentype(beginPos, pos - 1),
+									charBuffer));
 				}
-				if (actualChar != ' ') { // ignore whitespaces
-					getTokens().add(
-							new Token(element++, mapPosInInputArrayToTokentype(
-									pos, pos), actualChar + ""));
-				}
+
+				getTokens().add(
+						new Token(element++, mapPosInInputArrayToTokentype(pos, pos), actualChar + ""));
+
 				beginPos = pos + 1;
 				charBuffer = ""; // reset buffer
 
@@ -108,7 +107,7 @@ final public class Tokenizer {
 
 			if (actualToken.getType() == type) {
 				break;
-			} else {
+			} else if (actualToken.getType() != TOKENTYPE.WHITESPACE) {
 				allTokensUntilType.add(actualToken);
 			}
 		}
@@ -125,7 +124,8 @@ final public class Tokenizer {
 
 		for (int i = startPos; i < endPos; i++) {
 
-			allTokensUntilEndPos.add(tokens.get(i));
+			if (tokens.get(i).getType() != TOKENTYPE.WHITESPACE)
+				allTokensUntilEndPos.add(tokens.get(i));
 
 		}
 
@@ -140,9 +140,7 @@ final public class Tokenizer {
 
 		for (int i = startPos; i < tokens.size(); i++) {
 
-			if (tokens.get(i).getType() == type) {
-				return tokens.get(i).getPos();
-			}
+			if (tokens.get(i).getType() == type) { return tokens.get(i).getPos(); }
 		}
 
 		return -1;
@@ -162,8 +160,7 @@ final public class Tokenizer {
 		return valueOfTokens;
 	}
 
-	public boolean isTokenWithinStartAndEndPos(int startPos, int endPos,
-			TOKENTYPE type) {
+	public boolean isTokenWithinStartAndEndPos(int startPos, int endPos, TOKENTYPE type) {
 
 		Validate.isTrue(tokens.size() > 0);
 		Validate.isTrue(startPos <= endPos);
@@ -171,16 +168,14 @@ final public class Tokenizer {
 
 		for (int i = startPos; i < endPos; i++) {
 
-			if (tokens.get(i).getType() == type) {
-				return true;
-			}
+			if (tokens.get(i).getType() == type) { return true; }
 		}
 
 		return false;
 	}
 
-	public List<Token> getAllTokensBetweenBrackets(int startPos,
-			TOKENTYPE startToken, TOKENTYPE endToken) {
+	public List<Token> getAllTokensBetweenBrackets(int startPos, TOKENTYPE startToken,
+			TOKENTYPE endToken) {
 
 		Validate.isTrue(tokens.get(startPos).getType() == startToken);
 
@@ -192,7 +187,8 @@ final public class Tokenizer {
 
 			Token actualToken = tokens.get(i);
 
-			allTokensBetweenTwoBrackets.add(actualToken);
+			if (actualToken.getType() != TOKENTYPE.WHITESPACE)
+				allTokensBetweenTwoBrackets.add(actualToken);
 
 			if (actualToken.getType() == startToken) {
 				openBracketsCounter++;
@@ -209,6 +205,8 @@ final public class Tokenizer {
 	}
 
 	public List<Integer> getAllPosOfTokensByValue(String value) {
+
+		// TODO VALIDATE
 
 		List<Integer> posOfTokens = new ArrayList<Integer>();
 

@@ -18,11 +18,11 @@ import edu.hm.webscraper.helper.Variable;
  */
 public class TokenAnalyser {
 
-	private List<Token> allTokensOfJSCode;
-	private Set<Variable> vars;
-	private Set<Function> functions;
-	private Set<Function> loops;
-	private Tokenizer tokenizer;
+	private List<Token>		allTokensOfJSCode;
+	private Set<Variable>	vars;
+	private Set<Function>	functions;
+	private Set<Function>	loops;
+	private Tokenizer			tokenizer;
 
 	public TokenAnalyser(Tokenizer tokenizer) {
 
@@ -47,13 +47,14 @@ public class TokenAnalyser {
 		processFunctions();
 		processLoops();
 
-		// for (Variable v : vars) {
-		// System.out.println(v.getName() + " : " + v.getValue());
-		// }
+		for (Variable v : vars) {
+			System.out.println(v.getName() + " : " + v.getValue());
+		}
+
+		System.out.println("----------------------------------");
 
 		for (Function v : functions) {
-			System.out.println(v.getName() + " : " + v.getHead() + " : "
-					+ v.getBody());
+			System.out.println(v.getName() + " : " + v.getHead() + " : " + v.getBody());
 		}
 
 	}
@@ -93,9 +94,8 @@ public class TokenAnalyser {
 
 		for (Token actualToken : tokens) {
 
-			String varLineUntilSemikolon = tokenizer
-					.getStringOfTokens(tokenizer.getAllTokensUntilType(
-							actualToken.getPos() + 1, TOKENTYPE.SEMIKOLON));
+			String varLineUntilSemikolon = tokenizer.getStringOfTokens(tokenizer
+					.getAllTokensUntilType(actualToken.getPos() + 1, TOKENTYPE.SEMIKOLON));
 			String[] varLineSplitted = varLineUntilSemikolon
 					.split(",(?![^(\\[|\\(|\\{)(]*(\\)|\\]|\\}))");
 
@@ -131,13 +131,12 @@ public class TokenAnalyser {
 		for (Token token : tokens) {
 
 			int pos = token.getPos();
-			if (pos > 1
-					&& allTokensOfJSCode.get(pos - 1).getType() == TOKENTYPE.STRING
-					&& allTokensOfJSCode.get(pos - 2).getType() != TOKENTYPE.VAR) {
+			if (pos > 1 && allTokensOfJSCode.get(pos - 1).getType() == TOKENTYPE.STRING
+					&& allTokensOfJSCode.get(pos - 3).getType() != TOKENTYPE.VAR) {
 				String name = allTokensOfJSCode.get(pos - 1).getValue();
 
-				String value = tokenizer.getStringOfTokens(tokenizer
-						.getAllTokensUntilType(pos + 1, TOKENTYPE.SEMIKOLON));
+				String value = tokenizer.getStringOfTokens(tokenizer.getAllTokensUntilType(pos + 1,
+						TOKENTYPE.SEMIKOLON));
 
 				// TODO check if global is local var :)
 				vars.add(new Variable(pos - 1, name, value));
@@ -153,8 +152,7 @@ public class TokenAnalyser {
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
 		Validate.notNull(functions);
 
-		List<Token> tokens = tokenizer
-				.getAllTokensOfSameType(TOKENTYPE.FUNCTION);
+		List<Token> tokens = tokenizer.getAllTokensOfSameType(TOKENTYPE.FUNCTION);
 
 		for (Token actualToken : tokens) {
 
@@ -186,23 +184,19 @@ public class TokenAnalyser {
 			// get token of begin of head
 			// function (p,a,c,k,e,d)
 			nextToken = allTokensOfJSCode.get(posOfHead);
-			head = tokenizer.getStringOfTokens(tokenizer.getAllTokensUntilType(
-					posOfHead, TOKENTYPE.CLOSE_BRACKET));
+			head = tokenizer.getStringOfTokens(tokenizer.getAllTokensUntilType(posOfHead,
+					TOKENTYPE.CLOSE_BRACKET));
 
-			int xxx = tokenizer.getPositionOfNextToken(posOfHead,
-					TOKENTYPE.OPEN_CURLY_BRACKET);
-			List<Token> yyy = tokenizer
-					.getAllTokensBetweenBrackets(xxx,
-							TOKENTYPE.OPEN_CURLY_BRACKET,
-							TOKENTYPE.CLOSE_CURLY_BRACKET);
+			int xxx = tokenizer.getPositionOfNextToken(posOfHead, TOKENTYPE.OPEN_CURLY_BRACKET);
+			List<Token> yyy = tokenizer.getAllTokensBetweenBrackets(xxx, TOKENTYPE.OPEN_CURLY_BRACKET,
+					TOKENTYPE.CLOSE_CURLY_BRACKET);
 			body = tokenizer.getStringOfTokens(yyy);
 
 			Function function = new Function(pos, name, head, body);
 
 			// set if function is Packed
 			// (function(p,a,c,k,e,d) {...})(p,a,c,k,e,d))
-			if (pos > 0
-					&& allTokensOfJSCode.get(pos - 1).getType() == TOKENTYPE.OPEN_BRACKET) {
+			if (pos > 0 && allTokensOfJSCode.get(pos - 1).getType() == TOKENTYPE.OPEN_BRACKET) {
 
 				// TODO setPacked wars
 				function.setPacked(true);
@@ -212,8 +206,8 @@ public class TokenAnalyser {
 			// set if function has a return statement
 			// function(p,a,c,k,e,d) {... return ...};
 			if (tokenizer.isTokenWithinStartAndEndPos(pos,
-					tokenizer.getPositionOfNextToken(pos,
-							TOKENTYPE.CLOSE_CURLY_BRACKET), TOKENTYPE.RETURN)) {
+					tokenizer.getPositionOfNextToken(pos, TOKENTYPE.CLOSE_CURLY_BRACKET),
+					TOKENTYPE.RETURN)) {
 
 				function.setHasReturn(true);
 			}

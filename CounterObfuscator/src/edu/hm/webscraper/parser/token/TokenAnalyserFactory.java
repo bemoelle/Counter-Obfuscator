@@ -11,7 +11,7 @@ public class TokenAnalyserFactory {
 
 	/**
 	 * @param String
-	 *            input
+	 *           input
 	 * @return TokenAnalyser
 	 */
 	public static TokenAnalyser create(String input) {

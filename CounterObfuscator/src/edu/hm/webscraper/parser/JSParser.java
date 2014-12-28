@@ -53,7 +53,7 @@ public class JSParser {
 //		 entfernen aller Hochkomma wichtig für die regexp
 		 String parsed = unparsedJSCode.replaceAll("\"", "\'");
 		 // replace function
-		 parsed = parsed.replaceAll("\\\\", "hex");
+		// parsed = parsed.replaceAll("\\\\", "hex");
 		 log.info("read JavaScript Code:" + parsed);
 		
 		 Matcher hexStringMatcher = hexStringPattern.matcher(parsed);
@@ -77,7 +77,7 @@ public class JSParser {
 			hex = hex.replaceAll("[\\\\|hex|']", "");
 
 			if (hex.length() % 2 != 0) {
-				System.err.println("requires EVEN number of chars");
+				System.err.println("requires EVEN number of chars: " +  hex);
 				return null;
 			}
 			StringBuilder sb = new StringBuilder();
