@@ -56,19 +56,20 @@ final public class Tokenizer {
 							new Token(element++, mapPosInInputArrayToTokentype(beginPos, pos - 1),
 									charBuffer));
 				}
-
-				getTokens().add(
-						new Token(element++, mapPosInInputArrayToTokentype(pos, pos), actualChar + ""));
-
+				if (actualChar != ' ') { // ignore whitespaces
+					getTokens()
+							.add(new Token(element++, mapPosInInputArrayToTokentype(pos, pos), actualChar
+									+ ""));
+				}
 				beginPos = pos + 1;
 				charBuffer = ""; // reset buffer
 
-			} else {
+			}
+			else {
 				charBuffer += actualChar;
 			}
 
 		}
-
 	}
 
 	public List<Token> getTokens() {
@@ -105,10 +106,10 @@ final public class Tokenizer {
 
 			Token actualToken = tokens.get(i);
 
+			allTokensUntilType.add(actualToken);
+
 			if (actualToken.getType() == type) {
 				break;
-			} else if (actualToken.getType() != TOKENTYPE.WHITESPACE) {
-				allTokensUntilType.add(actualToken);
 			}
 		}
 
@@ -119,13 +120,13 @@ final public class Tokenizer {
 
 		Validate.isTrue(tokens.size() > 0);
 		Validate.isTrue(startPos <= endPos);
+		Validate.isTrue(endPos < tokens.size());
 
 		List<Token> allTokensUntilEndPos = new ArrayList<Token>();
 
-		for (int i = startPos; i < endPos; i++) {
+		for (int i = startPos; i <= endPos; i++) {
 
-			if (tokens.get(i).getType() != TOKENTYPE.WHITESPACE)
-				allTokensUntilEndPos.add(tokens.get(i));
+			allTokensUntilEndPos.add(tokens.get(i));
 
 		}
 
@@ -140,7 +141,12 @@ final public class Tokenizer {
 
 		for (int i = startPos; i < tokens.size(); i++) {
 
-			if (tokens.get(i).getType() == type) { return tokens.get(i).getPos(); }
+			// check that token has correct Type and is not within brackets like:
+			// no: var AAAA='krkeIplIaMcMIe'.replace(/[BBBB]/g,'');
+			// yes: var AAAA,BBBB;
+			if (tokens.get(i).getType() == type && !getTokenIsInBrackets(tokens.get(i))) {
+				return tokens.get(i).getPos();
+			}
 		}
 
 		return -1;
@@ -168,7 +174,9 @@ final public class Tokenizer {
 
 		for (int i = startPos; i < endPos; i++) {
 
-			if (tokens.get(i).getType() == type) { return true; }
+			if (tokens.get(i).getType() == type) {
+				return true;
+			}
 		}
 
 		return false;
@@ -187,12 +195,12 @@ final public class Tokenizer {
 
 			Token actualToken = tokens.get(i);
 
-			if (actualToken.getType() != TOKENTYPE.WHITESPACE)
-				allTokensBetweenTwoBrackets.add(actualToken);
+			allTokensBetweenTwoBrackets.add(actualToken);
 
 			if (actualToken.getType() == startToken) {
 				openBracketsCounter++;
-			} else if (actualToken.getType() == endToken) {
+			}
+			else if (actualToken.getType() == endToken) {
 				openBracketsCounter--;
 			}
 
@@ -235,22 +243,28 @@ final public class Tokenizer {
 
 			if (tokenType == TOKENTYPE.OPEN_BRACKET) {
 				openBrackets++;
-			} else if (tokenType == TOKENTYPE.CLOSE_BRACKET) {
+			}
+			else if (tokenType == TOKENTYPE.CLOSE_BRACKET) {
 				openBrackets--;
-			} else if (tokenType == TOKENTYPE.OPEN_CURLY_BRACKET) {
+			}
+			else if (tokenType == TOKENTYPE.OPEN_CURLY_BRACKET) {
 				openCurlyBrackets++;
-			} else if (tokenType == TOKENTYPE.CLOSE_CURLY_BRACKET) {
+			}
+			else if (tokenType == TOKENTYPE.CLOSE_CURLY_BRACKET) {
 				openCurlyBrackets--;
-			} else if (tokenType == TOKENTYPE.OPEN_SQUARE_BRACKET) {
+			}
+			else if (tokenType == TOKENTYPE.OPEN_SQUARE_BRACKET) {
 				openSquareBrackets++;
-			} else if (tokenType == TOKENTYPE.CLOSE_SQUARE_BRACKET) {
+			}
+			else if (tokenType == TOKENTYPE.CLOSE_SQUARE_BRACKET) {
 				openSquareBrackets--;
 			}
 		}
 
 		if (openBrackets > 0 || openCurlyBrackets > 0 || openSquareBrackets > 0) {
 			return true;
-		} else {
+		}
+		else {
 			return false;
 		}
 	}
@@ -286,6 +300,10 @@ final public class Tokenizer {
 			return TOKENTYPE.FOR;
 		case "while":
 			return TOKENTYPE.WHILE;
+		case "try":
+			return TOKENTYPE.TRY;
+		case "catch":
+			return TOKENTYPE.CATCH;
 		case "replace":
 			return TOKENTYPE.REPLACE;
 		case "slice":
@@ -307,7 +325,7 @@ final public class Tokenizer {
 		case "/":
 			return TOKENTYPE.SLASH;
 		case ";":
-			return TOKENTYPE.SEMIKOLON;
+			return TOKENTYPE.SEMICOLON;
 		case ",":
 			return TOKENTYPE.COMMA;
 		case ".":

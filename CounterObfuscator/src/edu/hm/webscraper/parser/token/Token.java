@@ -50,5 +50,12 @@ public class Token {
 	public String getValue() {
 		return value;
 	}
+	
+	/**
+	 * @param Value of Token
+	 */
+	public void setValue(String value) {
+		this.value = value;
+	}
 
 }

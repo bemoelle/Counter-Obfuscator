@@ -4,29 +4,33 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.jsoup.helper.Validate;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
 import edu.hm.webscraper.IClient;
-import edu.hm.webscraper.helper.Function;
+import edu.hm.webscraper.parser.token.Token;
 import edu.hm.webscraper.parser.token.TokenAnalyser;
 import edu.hm.webscraper.parser.token.TokenAnalyserFactory;
+import edu.hm.webscraper.types.Function;
 
-public class JSParser {
+/**
+ * @author Benjamin Moellerke <bemoelle@gmail.com>
+ * @date 30.12.2014
+ * 
+ *       JSParser to tokenise and analyse an input file (JSCode)
+ * 
+ */
+public class JSParser implements IJSParser {
 
-	private BufferedReader br;
-	private String unparsedJSCode;
-	private static Logger log;
-	private Pattern hexStringPattern;
-	
-	public JSParser(IClient client, String file, Map<String, String> settings)
-			throws IOException {
+	private BufferedReader	br;
+	private String				unparsedJSCode;
+	private static Logger	log;
+	private TokenAnalyser	tokenanalyser;
+
+	public JSParser(IClient client, String file, Map<String, String> settings) throws IOException {
 
 		JSParser.log = Logger.getLogger(Function.class.getName());
 
@@ -41,59 +45,34 @@ public class JSParser {
 
 		br.close();
 		log.info("read JavaScript Code:" + unparsedJSCode);
-
-		hexStringPattern = Pattern.compile("'[\\\\x{1}[\\d|\\w]*]*'");
 	}
 
-	public String process() throws FailingHttpStatusCodeException, MalformedURLException,
-			IOException {
+	public void process() throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 
 		log.info("start parsing jscode...");
 
-//		 entfernen aller Hochkomma wichtig für die regexp
-		 String parsed = unparsedJSCode.replaceAll("\"", "\'");
-		 // replace function
-		// parsed = parsed.replaceAll("\\\\", "hex");
-		 log.info("read JavaScript Code:" + parsed);
-		
-		 Matcher hexStringMatcher = hexStringPattern.matcher(parsed);
-		
-		 while (hexStringMatcher.find()) {
-		 parsed = parsed.replaceAll(hexStringMatcher.group(),
-		 "'" + hexToASCII(hexStringMatcher.group()) + "'");
-		 }
+		String parsed = unparsedJSCode.replaceAll("\"", "\'");
 
-		 TokenAnalyser tokenanalyser = TokenAnalyserFactory.create(unparsedJSCode);
-		
-		return unparsedJSCode;
+		tokenanalyser = TokenAnalyserFactory.create(parsed);
+
+		log.info("parsing jscode finished");
+
 	}
 
-	private static String hexToASCII(String hex) {
+	public List<Token> getTokens() {
+		return tokenanalyser.getTokenizer().getTokens();
+	}
 
-		Validate.notNull(hex);
-		
-		if (hex.indexOf("hex") > -1) {
+	public TokenAnalyser getTokenAnalyser() {
+		return tokenanalyser;
+	}
 
-			hex = hex.replaceAll("[\\\\|hex|']", "");
+	public void printAllTokens() {
 
-			if (hex.length() % 2 != 0) {
-				System.err.println("requires EVEN number of chars: " +  hex);
-				return null;
-			}
-			StringBuilder sb = new StringBuilder();
-			// Convert Hex 0232343536AB into two characters stream.
-			for (int i = 0; i < hex.length() - 1; i += 2) {
-				String output = hex.substring(i, (i + 2));
-				int decimal = Integer.parseInt(output, 16);
-				sb.append((char) decimal);
-			}
-			return sb.toString();
-		} else {
-			return "";
+		for (Token token : getTokens()) {
+
+			System.out.println(token.getPos() + " : " + token.getValue());
 		}
 	}
 
-	public static String fromCharCode(int... codePoints) {
-		return new String(codePoints, 0, codePoints.length);
-	}
 }

@@ -4,19 +4,21 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
-import edu.hm.webscraper.parser.JSParser;
+
+import edu.hm.webscraper.interpreter.JSRenamer;
+import edu.hm.webscraper.parser.IJSParser;
+import edu.hm.webscraper.parser.JSParserFactory;
 
 public class CounterObfuscatorMain {
 
 	public static void main(String[] args) throws FailingHttpStatusCodeException,
 			MalformedURLException, IOException {
 
-		// IClient client = new HTMLUnitClient("http://www.apple.com/",
-		// BrowserVersion.CHROME);
-
-		JSParser jsparser = new JSParser(null, "varTest", null);
-
-		jsparser.process();
+		IJSParser jsParser = JSParserFactory.create("functionTest");
+		jsParser.printAllTokens();
+		
+		JSRenamer jsRenamer = new JSRenamer(jsParser); 
+		jsRenamer.process();
 	}
 
 }
