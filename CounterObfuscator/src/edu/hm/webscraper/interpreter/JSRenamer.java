@@ -12,6 +12,7 @@ import edu.hm.webscraper.HTMLUnitClient;
 import edu.hm.webscraper.parser.IJSParser;
 import edu.hm.webscraper.parser.token.ITokenAnalyser;
 import edu.hm.webscraper.parser.token.TOKENTYPE;
+import edu.hm.webscraper.parser.token.Token;
 import edu.hm.webscraper.types.Function;
 import edu.hm.webscraper.types.IType;
 
@@ -25,7 +26,6 @@ public class JSRenamer {
 
 	private HTMLUnitClient	client;
 	private IJSParser			jsParser;
-	private ITokenAnalyser	tokenAnalyser;
 	private static Logger	log;
 
 	public JSRenamer(IJSParser jsParser) throws FailingHttpStatusCodeException,
@@ -34,8 +34,7 @@ public class JSRenamer {
 		JSRenamer.log = Logger.getLogger(Function.class.getName());
 
 		this.jsParser = jsParser;
-		this.tokenAnalyser = jsParser.getTokenAnalyser();
-		
+
 		client = new HTMLUnitClient("http://www.google.com/", BrowserVersion.FIREFOX_24);
 	}
 
@@ -43,19 +42,31 @@ public class JSRenamer {
 
 		log.info("start renaming process...");
 
-		List<IType> vars = tokenAnalyser.getTypesOfTokenTypes(TOKENTYPE.VAR);
-		tokenAnalyser.getTokens();
+		List<IType> vars = jsParser.getTypesOfToken(TOKENTYPE.VAR);
 
-		String tmpBuffer = "";
+		List<Token> tokens = jsParser.getTokens();
+
+		String scriptBuffer = "";
 
 		for (IType v : vars) {
 
 			v.print();
-			System.out.println(jsParser.getTokenAnalyser().getNameOfType(v));
-			System.out.println(jsParser.getTokenAnalyser().getValueOfType(v));
-			
-			
 
+			String name = v.getName();
+			String value = v.getValue();
+
+			Object result = client.getJSResult(scriptBuffer + value);
+
+			List<Integer> listOfTokens = jsParser.getAllPosOfTokensByValue(name);
+
+			for (int pos : listOfTokens) {
+
+				Token actualToken = tokens.get(pos);
+				if (actualToken.getPos() != v.getStartPos()) {
+					actualToken.setValue(result + "");
+				}
+			}
+			scriptBuffer += name + "=" + value + ";";
 		}
 
 		log.info("finished renaming process");

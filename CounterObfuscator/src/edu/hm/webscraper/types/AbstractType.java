@@ -34,4 +34,40 @@ public class AbstractType implements IType{
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.webscraper.types.IType#getName()
+	 */
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.hm.webscraper.types.IType#setName(java.lang.String)
+	 */
+	@Override
+	public void setName(String name) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.hm.webscraper.types.IType#getValue()
+	 */
+	@Override
+	public String getValue() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.hm.webscraper.types.IType#setValue(java.lang.String)
+	 */
+	@Override
+	public void setValue(String value) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

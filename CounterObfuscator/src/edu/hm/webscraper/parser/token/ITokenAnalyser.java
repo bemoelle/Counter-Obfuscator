@@ -18,20 +18,14 @@ public interface ITokenAnalyser {
 	public List<Token> getTokens();
 
 	/**
-	 * @param v
-	 * @return
-	 */
-	public String getNameOfType(IType v);
-
-	/**
-	 * @param v
-	 * @return
-	 */
-	public String getValueOfType(IType v);
-
-	/**
 	 * @return
 	 */
 	public List<IType> getTypesOfTokenTypes(TOKENTYPE type);
+
+	/**
+	 * @param value
+	 * @return
+	 */
+	public List<Integer> getAllPosOfTokensByValue(String value);
 
 }

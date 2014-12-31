@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -11,9 +12,11 @@ import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
 import edu.hm.webscraper.IClient;
 import edu.hm.webscraper.parser.token.ITokenAnalyser;
+import edu.hm.webscraper.parser.token.TOKENTYPE;
 import edu.hm.webscraper.parser.token.Token;
 import edu.hm.webscraper.parser.token.TokenAnalyserFactory;
 import edu.hm.webscraper.types.Function;
+import edu.hm.webscraper.types.IType;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -58,10 +61,11 @@ public class JSParser implements IJSParser {
 
 	}
 
-	public ITokenAnalyser getTokenAnalyser() {
-		return tokenanalyser;
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see edu.hm.webscraper.parser.IJSParser#printAllTokens()
+	 */
 	public void printAllTokens() {
 
 		for (Token token : tokenanalyser.getTokens()) {
@@ -70,4 +74,27 @@ public class JSParser implements IJSParser {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.webscraper.parser.IJSParser#getTypesOfTokenTypes(edu.hm.webscraper
+	 * .parser.token.TOKENTYPE)
+	 */
+	public List<IType> getTypesOfToken(TOKENTYPE var) {
+		return tokenanalyser.getTypesOfTokenTypes(var);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see edu.hm.webscraper.parser.IJSParser#getTokens()
+	 */
+	public List<Token> getTokens() {
+		return tokenanalyser.getTokens();
+	}
+	
+	public List<Integer> getAllPosOfTokensByValue(String value) {
+		return tokenanalyser.getAllPosOfTokensByValue(value);
+	}
 }
