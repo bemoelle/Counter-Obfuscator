@@ -14,7 +14,7 @@ public class CounterObfuscatorMain {
 	public static void main(String[] args) throws FailingHttpStatusCodeException,
 			MalformedURLException, IOException {
 
-		IJSParser jsParser = JSParserFactory.create("functionTest");
+		IJSParser jsParser = JSParserFactory.create("varTest");
 		jsParser.printAllTokens();
 		
 		JSRenamer jsRenamer = new JSRenamer(jsParser); 

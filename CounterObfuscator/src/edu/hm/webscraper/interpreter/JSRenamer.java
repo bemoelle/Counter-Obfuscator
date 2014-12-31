@@ -10,6 +10,8 @@ import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
 import edu.hm.webscraper.HTMLUnitClient;
 import edu.hm.webscraper.parser.IJSParser;
+import edu.hm.webscraper.parser.token.ITokenAnalyser;
+import edu.hm.webscraper.parser.token.TOKENTYPE;
 import edu.hm.webscraper.types.Function;
 import edu.hm.webscraper.types.IType;
 
@@ -23,6 +25,7 @@ public class JSRenamer {
 
 	private HTMLUnitClient	client;
 	private IJSParser			jsParser;
+	private ITokenAnalyser	tokenAnalyser;
 	private static Logger	log;
 
 	public JSRenamer(IJSParser jsParser) throws FailingHttpStatusCodeException,
@@ -31,6 +34,8 @@ public class JSRenamer {
 		JSRenamer.log = Logger.getLogger(Function.class.getName());
 
 		this.jsParser = jsParser;
+		this.tokenAnalyser = jsParser.getTokenAnalyser();
+		
 		client = new HTMLUnitClient("http://www.google.com/", BrowserVersion.FIREFOX_24);
 	}
 
@@ -38,7 +43,8 @@ public class JSRenamer {
 
 		log.info("start renaming process...");
 
-		List<IType> vars = jsParser.getTokenAnalyser().getVars();
+		List<IType> vars = tokenAnalyser.getTypesOfTokenTypes(TOKENTYPE.VAR);
+		tokenAnalyser.getTokens();
 
 		String tmpBuffer = "";
 
@@ -47,6 +53,8 @@ public class JSRenamer {
 			v.print();
 			System.out.println(jsParser.getTokenAnalyser().getNameOfType(v));
 			System.out.println(jsParser.getTokenAnalyser().getValueOfType(v));
+			
+			
 
 		}
 

@@ -4,15 +4,14 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
 import edu.hm.webscraper.IClient;
+import edu.hm.webscraper.parser.token.ITokenAnalyser;
 import edu.hm.webscraper.parser.token.Token;
-import edu.hm.webscraper.parser.token.TokenAnalyser;
 import edu.hm.webscraper.parser.token.TokenAnalyserFactory;
 import edu.hm.webscraper.types.Function;
 
@@ -28,7 +27,7 @@ public class JSParser implements IJSParser {
 	private BufferedReader	br;
 	private String				unparsedJSCode;
 	private static Logger	log;
-	private TokenAnalyser	tokenanalyser;
+	private ITokenAnalyser	tokenanalyser;
 
 	public JSParser(IClient client, String file, Map<String, String> settings) throws IOException {
 
@@ -59,17 +58,13 @@ public class JSParser implements IJSParser {
 
 	}
 
-	public List<Token> getTokens() {
-		return tokenanalyser.getTokenizer().getTokens();
-	}
-
-	public TokenAnalyser getTokenAnalyser() {
+	public ITokenAnalyser getTokenAnalyser() {
 		return tokenanalyser;
 	}
 
 	public void printAllTokens() {
 
-		for (Token token : getTokens()) {
+		for (Token token : tokenanalyser.getTokens()) {
 
 			System.out.println(token.getPos() + " : " + token.getValue());
 		}

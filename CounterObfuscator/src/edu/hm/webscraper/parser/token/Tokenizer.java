@@ -15,7 +15,7 @@ import edu.hm.webscraper.parser.matcher.TokenMatcher;
  *       tokens
  * 
  */
-final public class Tokenizer {
+class Tokenizer {
 
 	private String			input;
 	private char[]			inputArray;
@@ -28,7 +28,7 @@ final public class Tokenizer {
 
 	}
 
-	public void process() {
+	void process() {
 
 		// TODO reduce cyclo complex actual is 5
 
@@ -72,203 +72,11 @@ final public class Tokenizer {
 		}
 	}
 
-	public List<Token> getTokens() {
+	List<Token> getTokens() {
 
 		return tokens;
 	}
-
-	public List<Token> getAllTokensOfSameType(TOKENTYPE type) {
-
-		Validate.isTrue(tokens.size() > 0);
-		Validate.notNull(type);
-
-		List<Token> allTokensOfType = new ArrayList<Token>();
-
-		for (Token token : tokens) {
-
-			if (token.getType() == type) {
-				allTokensOfType.add(token);
-			}
-		}
-
-		return allTokensOfType;
-	}
-
-	public List<Token> getAllTokensUntilType(int startPos, TOKENTYPE type) {
-
-		Validate.isTrue(tokens.size() > 0);
-		Validate.isTrue(startPos > 0 && startPos < tokens.size());
-		Validate.notNull(type);
-
-		List<Token> allTokensUntilType = new ArrayList<Token>();
-
-		for (int i = startPos; i < tokens.size(); i++) {
-
-			Token actualToken = tokens.get(i);
-
-			allTokensUntilType.add(actualToken);
-
-			if (actualToken.getType() == type) {
-				break;
-			}
-		}
-
-		return allTokensUntilType;
-	}
-
-	public List<Token> getAllTokensUntilEndPos(int startPos, int endPos) {
-
-		Validate.isTrue(tokens.size() > 0);
-		Validate.isTrue(startPos <= endPos);
-		Validate.isTrue(endPos < tokens.size());
-
-		List<Token> allTokensUntilEndPos = new ArrayList<Token>();
-
-		for (int i = startPos; i <= endPos; i++) {
-
-			allTokensUntilEndPos.add(tokens.get(i));
-
-		}
-
-		return allTokensUntilEndPos;
-	}
-
-	public int getPositionOfNextToken(int startPos, TOKENTYPE type) {
-
-		Validate.isTrue(tokens.size() > 0);
-		Validate.isTrue(startPos > -1);
-		Validate.notNull(type);
-
-		for (int i = startPos; i < tokens.size(); i++) {
-
-			// check that token has correct Type and is not within brackets like:
-			// no: var AAAA='krkeIplIaMcMIe'.replace(/[BBBB]/g,'');
-			// yes: var AAAA,BBBB;
-			if (tokens.get(i).getType() == type && !getTokenIsInBrackets(tokens.get(i))) {
-				return tokens.get(i).getPos();
-			}
-		}
-
-		return -1;
-	}
-
-	public String getStringOfTokens(List<Token> tokensToString) {
-
-		Validate.isTrue(tokens.size() > 0);
-		Validate.notNull(tokensToString);
-
-		String valueOfTokens = "";
-
-		for (Token actualToken : tokensToString) {
-			valueOfTokens += actualToken.getValue();
-		}
-
-		return valueOfTokens;
-	}
-
-	public boolean isTokenWithinStartAndEndPos(int startPos, int endPos, TOKENTYPE type) {
-
-		Validate.isTrue(tokens.size() > 0);
-		Validate.isTrue(startPos <= endPos);
-		Validate.notNull(type);
-
-		for (int i = startPos; i < endPos; i++) {
-
-			if (tokens.get(i).getType() == type) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	public List<Token> getAllTokensBetweenBrackets(int startPos, TOKENTYPE startToken,
-			TOKENTYPE endToken) {
-
-		Validate.isTrue(tokens.get(startPos).getType() == startToken);
-
-		List<Token> allTokensBetweenTwoBrackets = new ArrayList<Token>();
-
-		int openBracketsCounter = 0;
-
-		for (int i = startPos; i < tokens.size(); i++) {
-
-			Token actualToken = tokens.get(i);
-
-			allTokensBetweenTwoBrackets.add(actualToken);
-
-			if (actualToken.getType() == startToken) {
-				openBracketsCounter++;
-			}
-			else if (actualToken.getType() == endToken) {
-				openBracketsCounter--;
-			}
-
-			if (openBracketsCounter == 0) {
-				break;
-			}
-		}
-
-		return allTokensBetweenTwoBrackets;
-	}
-
-	public List<Integer> getAllPosOfTokensByValue(String value) {
-
-		// TODO VALIDATE
-
-		List<Integer> posOfTokens = new ArrayList<Integer>();
-
-		for (Token actualToken : tokens) {
-
-			if (actualToken.getValue().equals(value)) {
-				posOfTokens.add(actualToken.getPos());
-			}
-		}
-
-		return posOfTokens;
-	}
-
-	public boolean getTokenIsInBrackets(Token tokenToTest) {
-
-		Validate.isTrue(tokens.size() > 0);
-		Validate.notNull(tokenToTest);
-
-		int openCurlyBrackets = 0;
-		int openBrackets = 0;
-		int openSquareBrackets = 0;
-
-		for (int i = 0; i < tokenToTest.getPos(); i++) {
-
-			TOKENTYPE tokenType = tokens.get(i).getType();
-
-			if (tokenType == TOKENTYPE.OPEN_BRACKET) {
-				openBrackets++;
-			}
-			else if (tokenType == TOKENTYPE.CLOSE_BRACKET) {
-				openBrackets--;
-			}
-			else if (tokenType == TOKENTYPE.OPEN_CURLY_BRACKET) {
-				openCurlyBrackets++;
-			}
-			else if (tokenType == TOKENTYPE.CLOSE_CURLY_BRACKET) {
-				openCurlyBrackets--;
-			}
-			else if (tokenType == TOKENTYPE.OPEN_SQUARE_BRACKET) {
-				openSquareBrackets++;
-			}
-			else if (tokenType == TOKENTYPE.CLOSE_SQUARE_BRACKET) {
-				openSquareBrackets--;
-			}
-		}
-
-		if (openBrackets > 0 || openCurlyBrackets > 0 || openSquareBrackets > 0) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
+	
 	private TOKENTYPE mapPosInInputArrayToTokentype(int posStart, int posEnd) {
 
 		String extractedString = "";
