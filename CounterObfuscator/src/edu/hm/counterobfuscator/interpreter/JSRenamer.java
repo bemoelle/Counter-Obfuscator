@@ -1,4 +1,4 @@
-package edu.hm.webscraper.interpreter;
+package edu.hm.counterobfuscator.interpreter;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -8,13 +8,12 @@ import java.util.logging.Logger;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
-import edu.hm.webscraper.HTMLUnitClient;
-import edu.hm.webscraper.parser.IJSParser;
-import edu.hm.webscraper.parser.token.ITokenAnalyser;
-import edu.hm.webscraper.parser.token.TOKENTYPE;
-import edu.hm.webscraper.parser.token.Token;
-import edu.hm.webscraper.types.Function;
-import edu.hm.webscraper.types.IType;
+import edu.hm.counterobfuscator.HTMLUnitClient;
+import edu.hm.counterobfuscator.parser.IJSParser;
+import edu.hm.counterobfuscator.parser.token.TOKENTYPE;
+import edu.hm.counterobfuscator.parser.token.Token;
+import edu.hm.counterobfuscator.types.Function;
+import edu.hm.counterobfuscator.types.IType;
 
 /**
  * @author

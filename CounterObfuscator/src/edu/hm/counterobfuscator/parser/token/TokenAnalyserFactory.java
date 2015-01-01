@@ -1,4 +1,4 @@
-package edu.hm.webscraper.parser.token;
+package edu.hm.counterobfuscator.parser.token;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>

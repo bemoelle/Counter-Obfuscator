@@ -1,11 +1,11 @@
-package edu.hm.webscraper.parser.token;
+package edu.hm.counterobfuscator.parser.token;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.hm.webscraper.helper.Validate;
-import edu.hm.webscraper.parser.matcher.IMatch;
-import edu.hm.webscraper.parser.matcher.TokenMatcher;
+import edu.hm.counterobfuscator.helper.Validate;
+import edu.hm.counterobfuscator.parser.matcher.IMatch;
+import edu.hm.counterobfuscator.parser.matcher.TokenMatcher;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>

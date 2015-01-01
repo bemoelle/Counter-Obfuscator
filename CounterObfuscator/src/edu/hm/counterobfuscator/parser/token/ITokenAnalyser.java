@@ -1,8 +1,8 @@
-package edu.hm.webscraper.parser.token;
+package edu.hm.counterobfuscator.parser.token;
 
 import java.util.List;
 
-import edu.hm.webscraper.types.IType;
+import edu.hm.counterobfuscator.types.IType;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>

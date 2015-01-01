@@ -1,4 +1,4 @@
-package edu.hm.webscraper;
+package edu.hm.counterobfuscator;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

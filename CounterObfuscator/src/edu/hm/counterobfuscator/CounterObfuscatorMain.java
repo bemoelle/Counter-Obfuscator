@@ -1,13 +1,13 @@
-package edu.hm.webscraper;
+package edu.hm.counterobfuscator;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
-import edu.hm.webscraper.interpreter.JSRenamer;
-import edu.hm.webscraper.parser.IJSParser;
-import edu.hm.webscraper.parser.JSParserFactory;
+import edu.hm.counterobfuscator.interpreter.JSRenamer;
+import edu.hm.counterobfuscator.parser.IJSParser;
+import edu.hm.counterobfuscator.parser.JSParserFactory;
 
 public class CounterObfuscatorMain {
 

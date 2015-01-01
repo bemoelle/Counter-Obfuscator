@@ -1,4 +1,4 @@
-package edu.hm.webscraper.parser;
+package edu.hm.counterobfuscator.parser;
 
 public class CallOrder {
 	

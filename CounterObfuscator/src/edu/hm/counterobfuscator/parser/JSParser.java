@@ -1,4 +1,4 @@
-package edu.hm.webscraper.parser;
+package edu.hm.counterobfuscator.parser;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -10,13 +10,13 @@ import java.util.logging.Logger;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
-import edu.hm.webscraper.IClient;
-import edu.hm.webscraper.parser.token.ITokenAnalyser;
-import edu.hm.webscraper.parser.token.TOKENTYPE;
-import edu.hm.webscraper.parser.token.Token;
-import edu.hm.webscraper.parser.token.TokenAnalyserFactory;
-import edu.hm.webscraper.types.Function;
-import edu.hm.webscraper.types.IType;
+import edu.hm.counterobfuscator.IClient;
+import edu.hm.counterobfuscator.parser.token.TOKENTYPE;
+import edu.hm.counterobfuscator.parser.token.TokenAnalyserFactory;
+import edu.hm.counterobfuscator.types.Function;
+import edu.hm.counterobfuscator.types.IType;
+import edu.hm.counterobfuscator.parser.token.ITokenAnalyser;
+import edu.hm.counterobfuscator.parser.token.Token;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>

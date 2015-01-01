@@ -1,4 +1,4 @@
-package edu.hm.webscraper.types;
+package edu.hm.counterobfuscator.types;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>

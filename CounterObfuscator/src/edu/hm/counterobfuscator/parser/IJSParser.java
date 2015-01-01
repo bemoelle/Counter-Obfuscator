@@ -1,10 +1,10 @@
-package edu.hm.webscraper.parser;
+package edu.hm.counterobfuscator.parser;
 
 import java.util.List;
 
-import edu.hm.webscraper.parser.token.TOKENTYPE;
-import edu.hm.webscraper.parser.token.Token;
-import edu.hm.webscraper.types.IType;
+import edu.hm.counterobfuscator.parser.token.TOKENTYPE;
+import edu.hm.counterobfuscator.types.IType;
+import edu.hm.counterobfuscator.parser.token.Token;
 
 public interface IJSParser {
 	

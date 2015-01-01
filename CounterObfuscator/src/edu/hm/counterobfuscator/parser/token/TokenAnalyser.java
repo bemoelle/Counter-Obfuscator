@@ -1,14 +1,14 @@
-package edu.hm.webscraper.parser.token;
+package edu.hm.counterobfuscator.parser.token;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import edu.hm.webscraper.helper.Validate;
-import edu.hm.webscraper.types.Function;
-import edu.hm.webscraper.types.IType;
-import edu.hm.webscraper.types.Variable;
+import edu.hm.counterobfuscator.helper.Validate;
+import edu.hm.counterobfuscator.types.Function;
+import edu.hm.counterobfuscator.types.IType;
+import edu.hm.counterobfuscator.types.Variable;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
