@@ -2,7 +2,7 @@ package edu.hm.counterobfuscator.parser.token;
 
 import java.util.List;
 
-import edu.hm.counterobfuscator.types.IType;
+import edu.hm.counterobfuscator.types.AbstractType;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -20,7 +20,7 @@ public interface ITokenAnalyser {
 	/**
 	 * @return
 	 */
-	public List<IType> getTypesOfTokenTypes(TOKENTYPE type);
+	public List<AbstractType> getTypesOfTokenTypes(TOKENTYPE type);
 
 	/**
 	 * @param value

@@ -2,10 +2,12 @@ package edu.hm.counterobfuscator.parser.token;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.parser.matcher.IMatch;
 import edu.hm.counterobfuscator.parser.matcher.TokenMatcher;
+import edu.hm.counterobfuscator.types.Function;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -17,21 +19,25 @@ import edu.hm.counterobfuscator.parser.matcher.TokenMatcher;
  */
 class Tokenizer {
 
-	private String			input;
-	private char[]			inputArray;
-	private List<Token>	tokens;
+	private static Logger	log;
+	private String				input;
+	private char[]				inputArray;
+	private List<Token>		tokens;
 
 	public Tokenizer(String input) {
 
 		this.input = input;
 		tokens = new ArrayList<Token>();
 
+		Tokenizer.log = Logger.getLogger(Function.class.getName());
 	}
 
 	void process() {
 
 		// TODO reduce cyclo complex actual is 5
 
+		log.info("start tokinizing process...");
+		
 		Validate.notNull(tokens);
 
 		String matches = "(|)|[|]|;|.|'|=|{|}|,|+|-|/|<|>";
@@ -70,13 +76,15 @@ class Tokenizer {
 			}
 
 		}
+		
+		log.info("tokinizing process finished");
 	}
 
 	List<Token> getTokens() {
 
 		return tokens;
 	}
-	
+
 	private TOKENTYPE mapPosInInputArrayToTokentype(int posStart, int posEnd) {
 
 		String extractedString = "";

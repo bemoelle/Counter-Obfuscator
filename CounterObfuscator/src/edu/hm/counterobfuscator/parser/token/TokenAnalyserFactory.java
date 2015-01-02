@@ -18,6 +18,7 @@ public class TokenAnalyserFactory {
 
 		Tokenizer tokenizer = new Tokenizer(input);
 		tokenizer.process();
+		
 
 		TokenAnalyser analyser = new TokenAnalyser(tokenizer);
 		analyser.process();

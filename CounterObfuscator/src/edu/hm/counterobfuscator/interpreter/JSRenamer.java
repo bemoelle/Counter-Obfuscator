@@ -9,11 +9,14 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
 import edu.hm.counterobfuscator.HTMLUnitClient;
+import edu.hm.counterobfuscator.IClient;
 import edu.hm.counterobfuscator.parser.IJSParser;
 import edu.hm.counterobfuscator.parser.token.TOKENTYPE;
 import edu.hm.counterobfuscator.parser.token.Token;
+import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.types.IType;
+import edu.hm.counterobfuscator.types.Variable;
 
 /**
  * @author
@@ -21,51 +24,51 @@ import edu.hm.counterobfuscator.types.IType;
  * 
  *       class to rename obfuscated names, replace them with the assigned value
  */
-public class JSRenamer {
+public class JSRenamer implements IInterpreter {
 
-	private HTMLUnitClient	client;
+	private IClient			client;
 	private IJSParser			jsParser;
 	private static Logger	log;
 
-	public JSRenamer(IJSParser jsParser) throws FailingHttpStatusCodeException,
-			MalformedURLException, IOException {
+	public JSRenamer(IJSParser jsParser, IClient client) {
 
 		JSRenamer.log = Logger.getLogger(Function.class.getName());
 
 		this.jsParser = jsParser;
+		this.client = client;
 
-		client = new HTMLUnitClient("http://www.google.com/", BrowserVersion.FIREFOX_24);
 	}
 
-	public void process() throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+	public void process() {
 
 		log.info("start renaming process...");
 
-		List<IType> vars = jsParser.getTypesOfToken(TOKENTYPE.VAR);
+		List<Function> vars = jsParser.getTypesOfToken(TOKENTYPE.FUNCTION);
 
 		List<Token> tokens = jsParser.getTokens();
 
 		String scriptBuffer = "";
 
-		for (IType v : vars) {
+		for (Function v : vars) {
 
 			v.print();
 
 			String name = v.getName();
-			String value = v.getValue();
+			String head = v.getHead();
+			String body = v.getBoby();
 
-			Object result = client.getJSResult(scriptBuffer + value);
+			//Object result = client.getJSResult(scriptBuffer + value);
 
 			List<Integer> listOfTokens = jsParser.getAllPosOfTokensByValue(name);
 
-			for (int pos : listOfTokens) {
-
-				Token actualToken = tokens.get(pos);
-				if (actualToken.getPos() != v.getStartPos()) {
-					actualToken.setValue(result + "");
-				}
-			}
-			scriptBuffer += name + "=" + value + ";";
+//			for (int pos : listOfTokens) {
+//
+//				Token actualToken = tokens.get(pos);
+//				if (actualToken.getPos() != v.getStartPos()) {
+//					actualToken.setValue("");
+//				}
+//			}
+			System.out.println(name + "--" + head + "--" + body);
 		}
 
 		log.info("finished renaming process");

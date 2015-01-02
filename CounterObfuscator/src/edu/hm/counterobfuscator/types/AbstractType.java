@@ -1,73 +1,50 @@
 package edu.hm.counterobfuscator.types;
 
-public class AbstractType implements IType{
+/**
+ * @author Benjamin Moellerke <bemoelle@gmail.com>
+ * @date 02.01.2015
+ * 
+ * 
+ */
+public abstract class AbstractType {
 
-	//TODO
-	
-	@Override
+	private int		endPos;
+	private int		startPos;
+	private String	name;
+
+	public AbstractType(int startPos, int endPos, String name) {
+		this.startPos = startPos;
+		this.endPos = endPos;
+		this.name = name;
+	}
+
 	public int getStartPos() {
-		// TODO Auto-generated method stub
-		return 0;
+		return startPos;
 	}
 
-	@Override
 	public void setStartPos(int startPos) {
-		// TODO Auto-generated method stub
-		
+		this.startPos = startPos;
 	}
 
-	@Override
 	public int getEndPos() {
-		// TODO Auto-generated method stub
-		return 0;
+		return endPos;
 	}
 
-	@Override
 	public void setEndPos(int endPos) {
-		// TODO Auto-generated method stub
-		
+		this.endPos = endPos;
 	}
 
-	@Override
-	public void print() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.hm.webscraper.types.IType#getName()
-	 */
-	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return name;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.hm.webscraper.types.IType#setName(java.lang.String)
-	 */
-	@Override
 	public void setName(String name) {
-		// TODO Auto-generated method stub
-		
+		this.name = name;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.hm.webscraper.types.IType#getValue()
-	 */
-	@Override
-	public String getValue() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public void print() {
+		System.out.println("startPos: " + startPos + " -- " + "endPos: " + endPos);
 
-	/* (non-Javadoc)
-	 * @see edu.hm.webscraper.types.IType#setValue(java.lang.String)
-	 */
-	@Override
-	public void setValue(String value) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

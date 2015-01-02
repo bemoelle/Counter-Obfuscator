@@ -1,18 +1,20 @@
+/**
+ * 
+ */
 package edu.hm.counterobfuscator.types;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 02.01.2015
  * 
- *       represent JavaScript FUNCTION assign to TOKENTYPE.FUNCTION
  * 
  */
-public class Function extends AbstractType {
+public class Loop extends AbstractType {
 
 	private String	head;
 	private String	boby;
 
-	public Function(int startPos, int endPos, String name, String head, String boby) {
+	public Loop(int startPos, int endPos, String name, String head, String boby) {
 		super(startPos, endPos, name);
 		this.head = head;
 		this.boby = boby;
