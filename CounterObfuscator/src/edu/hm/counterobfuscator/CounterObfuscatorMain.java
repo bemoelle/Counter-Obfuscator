@@ -24,7 +24,7 @@ public class CounterObfuscatorMain {
 		IInterpreter jsRenamer = new JSRenamer(jsParser, client); 
 		jsRenamer.process();
 		
-		//jsParser.printAllTokens();
+		jsParser.printAllTokens();
 	}
 
 }

@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.junit.Test;
 
 import edu.hm.counterobfuscator.parser.IJSParser;
@@ -193,6 +194,53 @@ public class TestJSParser {
 		assertEquals(f0.getName(), "");
 		assertEquals(f0.getHead(), "()");
 		assertEquals(f0.getBoby(), "{returnthis;}");
+
+	}
+
+	@Test
+	public void PackedFunctionTest() throws IOException {
+		IJSParser jsParser = JSParserFactory.create("packedTest");
+
+		assertEquals(jsParser.getTokens().size(), 332);
+
+		List<Function> function = jsParser.getTypesOfToken(TOKENTYPE.FUNCTION);
+
+		assertEquals(function.size(), 4);
+
+		Function f0 = function.get(0);
+		Function f1 = function.get(1);
+		Function f2 = function.get(2);
+		Function f3 = function.get(3);
+
+		// -------- f0 --------
+		assertEquals(f0.getStartPos(), 4);
+		assertEquals(f0.getEndPos(), 155);
+		assertEquals(f0.getName(), "");
+		assertEquals(f0.getHead(), "(p,a,c,k,e,r)");
+		assertEquals(
+				StringEscapeUtils.unescapeJava(f0.getBoby()),
+				"{e=function(c){returnc.toString(a)};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){returnr[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(newRegExp('\\b'+e(c)+'\\b','g'),k[c]);returnp}");
+
+		// -------- f1 --------
+		assertEquals(f1.getStartPos(), 21);
+		assertEquals(f1.getEndPos(), 32);
+		assertEquals(f1.getName(), "");
+		assertEquals(f1.getHead(), "(c)");
+		assertEquals(f1.getBoby(), "{returnc.toString(a)}");
+
+		// -------- f2 --------
+		assertEquals(f2.getStartPos(), 77);
+		assertEquals(f2.getEndPos(), 86);
+		assertEquals(f2.getName(), "");
+		assertEquals(f2.getHead(), "(e)");
+		assertEquals(f2.getBoby(), "{returnr[e]}");
+
+		// -------- f3 --------
+		assertEquals(f3.getStartPos(), 92);
+		assertEquals(f3.getEndPos(), 100);
+		assertEquals(f3.getName(), "");
+		assertEquals(f3.getHead(), "()");
+		assertEquals(StringEscapeUtils.unescapeJava(f3.getBoby()), "{return'\\w+'}");
 
 	}
 }

@@ -76,7 +76,8 @@ public class JSParser implements IJSParser {
 
 		for (Token token : tokenanalyser.getTokens()) {
 
-			System.out.println(token.getPos() + " : " + token.getValue());
+			//System.out.println(token.getPos() + " : " + token.getValue());
+			System.out.println(token.getValue());
 		}
 	}
 

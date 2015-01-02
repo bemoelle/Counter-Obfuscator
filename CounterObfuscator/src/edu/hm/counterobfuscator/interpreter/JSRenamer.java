@@ -36,42 +36,46 @@ public class JSRenamer implements IInterpreter {
 
 		this.jsParser = jsParser;
 		this.client = client;
-
 	}
 
 	public void process() {
 
 		log.info("start renaming process...");
 
-		List<Function> vars = jsParser.getTypesOfToken(TOKENTYPE.FUNCTION);
+		List<Variable> vars = jsParser.getTypesOfToken(TOKENTYPE.VAR);
 
 		List<Token> tokens = jsParser.getTokens();
 
 		String scriptBuffer = "";
 
-		for (Function v : vars) {
+		for (Variable v : vars) {
 
 			v.print();
 
 			String name = v.getName();
-			String head = v.getHead();
-			String body = v.getBoby();
+			String value = v.getValue();
 
-			//Object result = client.getJSResult(scriptBuffer + value);
+			Object result = client.getJSResult(scriptBuffer + value);
 
 			List<Integer> listOfTokens = jsParser.getAllPosOfTokensByValue(name);
 
-//			for (int pos : listOfTokens) {
-//
-//				Token actualToken = tokens.get(pos);
-//				if (actualToken.getPos() != v.getStartPos()) {
-//					actualToken.setValue("");
-//				}
-//			}
-			System.out.println(name + "--" + head + "--" + body);
+			// for (int pos : listOfTokens) {
+			//
+			// Token actualToken = tokens.get(pos);
+			// if (actualToken.getPos() != v.getStartPos()) {
+			// actualToken.setValue("");
+			// }
+			// }
+			System.out.println(name + "--" + name + "--" + value);
 		}
 
 		log.info("finished renaming process");
+
+	}
+
+	private void renameVars() {
+
+		log.info("start renaming vars...");
 
 	}
 

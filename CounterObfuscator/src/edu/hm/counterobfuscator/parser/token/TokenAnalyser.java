@@ -55,7 +55,7 @@ class TokenAnalyser implements ITokenAnalyser {
 		processLocalVariables();
 		processGlobalVariables();
 		processFunctions();
-		processLoops();
+		//processLoops();
 		processTryCatchStatements();
 	}
 
