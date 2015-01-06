@@ -3,6 +3,8 @@
  */
 package edu.hm.counterobfuscator.interpreter;
 
+import javax.script.ScriptException;
+
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 02.01.2015
@@ -11,6 +13,6 @@ package edu.hm.counterobfuscator.interpreter;
  */
 public interface IInterpreter {
 	
-	public void process();
+	public void process() throws ScriptException;
 
 }

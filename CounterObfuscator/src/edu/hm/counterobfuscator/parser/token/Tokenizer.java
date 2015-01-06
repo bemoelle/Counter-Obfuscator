@@ -40,7 +40,7 @@ class Tokenizer {
 		
 		Validate.notNull(tokens);
 
-		String matches = "(|)|[|]|;|.|'|=|{|}|,|+|-|/|<|>";
+		String matches = "(|)|[|]|;|=|{|}|,";
 
 		IMatch matcher = new TokenMatcher(matches);
 
@@ -140,6 +140,8 @@ class Tokenizer {
 			return TOKENTYPE.CLOSE_CURLY_BRACKET;
 		case "/":
 			return TOKENTYPE.SLASH;
+		case "\\":
+			return TOKENTYPE.BACKSLASH;
 		case ";":
 			return TOKENTYPE.SEMICOLON;
 		case ",":

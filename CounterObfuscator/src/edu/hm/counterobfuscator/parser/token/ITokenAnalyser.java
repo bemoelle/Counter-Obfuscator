@@ -28,4 +28,9 @@ public interface ITokenAnalyser {
 	 */
 	public List<Integer> getAllPosOfTokensByValue(String value);
 
+	/**
+	 * @return
+	 */
+	public List<AbstractType> getAllTypes();
+
 }

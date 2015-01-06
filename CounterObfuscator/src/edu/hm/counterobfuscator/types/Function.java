@@ -1,5 +1,10 @@
 package edu.hm.counterobfuscator.types;
 
+import java.util.List;
+
+import edu.hm.counterobfuscator.helper.Position;
+import edu.hm.counterobfuscator.parser.token.Token;
+
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 02.01.2015
@@ -9,12 +14,14 @@ package edu.hm.counterobfuscator.types;
  */
 public class Function extends AbstractType {
 
-	private String	head;
-	private String	boby;
+	private String			head;
+	private List<Token>	boby;
+	private boolean		isPacked;
 
-	public Function(int startPos, int endPos, String name, String head, String boby) {
-		super(startPos, endPos, name);
+	public Function(Position pos, String name, String head, boolean isPacked, List<Token> boby) {
+		super(TYPE.FUNCTION, pos, name);
 		this.head = head;
+		this.isPacked = isPacked;
 		this.boby = boby;
 	}
 
@@ -26,11 +33,15 @@ public class Function extends AbstractType {
 		this.head = head;
 	}
 
-	public String getBoby() {
+	public List<Token> getBoby() {
 		return boby;
 	}
 
-	public void setBoby(String boby) {
+	public boolean isPacked() {
+		return isPacked;
+	}
+
+	public void setBoby(List<Token> boby) {
 		this.boby = boby;
 	}
 

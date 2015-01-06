@@ -1,5 +1,7 @@
 package edu.hm.counterobfuscator.types;
 
+import edu.hm.counterobfuscator.helper.Position;
+
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 02.01.2015
@@ -8,30 +10,23 @@ package edu.hm.counterobfuscator.types;
  */
 public abstract class AbstractType {
 
-	private int		endPos;
-	private int		startPos;
-	private String	name;
+	private String		name;
+	private Position	pos;
+	private TYPE		type;
 
-	public AbstractType(int startPos, int endPos, String name) {
-		this.startPos = startPos;
-		this.endPos = endPos;
+	public AbstractType(TYPE type, Position pos, String name) {
+
+		this.type = type;
+		this.pos = pos;
 		this.name = name;
 	}
-
-	public int getStartPos() {
-		return startPos;
+	
+	public TYPE getType() {
+		return type;
 	}
 
-	public void setStartPos(int startPos) {
-		this.startPos = startPos;
-	}
-
-	public int getEndPos() {
-		return endPos;
-	}
-
-	public void setEndPos(int endPos) {
-		this.endPos = endPos;
+	public Position getPos() {
+		return pos;
 	}
 
 	public String getName() {
@@ -43,8 +38,7 @@ public abstract class AbstractType {
 	}
 
 	public void print() {
-		System.out.println("startPos: " + startPos + " -- " + "endPos: " + endPos);
+		System.out.println("startPos: " + pos.getStartPos() + " -- " + "endPos: " + pos.getEndPos());
 
 	}
-
 }

@@ -53,17 +53,20 @@ public class JSParser implements IJSParser {
 	}
 
 	/**
+	 * @throws IOException
 	 * 
 	 */
-	public void process() {
+	public void process() throws IOException {
 
 		log.info("start parsing jscode...");
 
-		String parsed = unparsedJSCode.replaceAll("\"", "\'");
+		String parsed = unparsedJSCode.replaceAll("\"", "\\\"");
 
 		tokenanalyser = TokenAnalyserFactory.create(parsed);
 
 		log.info("parsing jscode finished");
+
+		printAllTokens();
 
 	}
 
@@ -76,8 +79,8 @@ public class JSParser implements IJSParser {
 
 		for (Token token : tokenanalyser.getTokens()) {
 
-			//System.out.println(token.getPos() + " : " + token.getValue());
-			System.out.println(token.getValue());
+			System.out.println(token.getPos() + " : " + token.getValue());
+			// System.out.println(token.getValue());
 		}
 	}
 
@@ -98,8 +101,8 @@ public class JSParser implements IJSParser {
 	 * 
 	 * @see edu.hm.webscraper.parser.IJSParser#getTokens()
 	 */
-	public List<Token> getTokens() {
-		return tokenanalyser.getTokens();
+	public List<AbstractType> getAlltypes() {
+		return tokenanalyser.getAllTypes();
 	}
 
 	/*

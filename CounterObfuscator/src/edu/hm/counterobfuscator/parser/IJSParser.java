@@ -4,6 +4,7 @@ import java.util.List;
 
 import edu.hm.counterobfuscator.parser.token.TOKENTYPE;
 import edu.hm.counterobfuscator.parser.token.Token;
+import edu.hm.counterobfuscator.types.AbstractType;
 
 public interface IJSParser {
 	
@@ -19,7 +20,7 @@ public interface IJSParser {
 	/**
 	 * @return
 	 */
-	public List<Token> getTokens();
+	public List<AbstractType> getAlltypes();
 
 	/**
 	 * @param value

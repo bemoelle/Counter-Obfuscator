@@ -1,5 +1,7 @@
 package edu.hm.counterobfuscator.parser.token;
 
+import java.io.IOException;
+
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 25.12.2014
@@ -13,8 +15,9 @@ public class TokenAnalyserFactory {
 	 * @param String
 	 *           input
 	 * @return TokenAnalyser
+	 * @throws IOException 
 	 */
-	public static TokenAnalyser create(String input) {
+	public static TokenAnalyser create(String input) throws IOException {
 
 		Tokenizer tokenizer = new Tokenizer(input);
 		tokenizer.process();

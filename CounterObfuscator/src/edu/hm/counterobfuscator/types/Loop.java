@@ -9,13 +9,13 @@ package edu.hm.counterobfuscator.types;
  * 
  * 
  */
-public class Loop extends AbstractType {
+public class Loop  {
 
 	private String	head;
 	private String	boby;
 
 	public Loop(int startPos, int endPos, String name, String head, String boby) {
-		super(startPos, endPos, name);
+		
 		this.head = head;
 		this.boby = boby;
 	}

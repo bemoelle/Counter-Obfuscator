@@ -39,5 +39,7 @@ public enum TOKENTYPE {
 	MINUS,
 	NEW,
 	TRY,
-	CATCH
+	CATCH,
+	CALL,
+	BACKSLASH
 }

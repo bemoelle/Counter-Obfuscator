@@ -1,7 +1,11 @@
 package edu.hm.counterobfuscator;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
+
+import org.mozilla.javascript.NativeArray;
+
 import net.sourceforge.htmlunit.corejs.javascript.IdFunctionObject;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
@@ -63,6 +67,26 @@ public class HTMLUnitClient implements IClient {
 		}
 		else if (result.getClass() == Double.class) {
 			return result;
+		}
+		else if (result.getClass() == net.sourceforge.htmlunit.corejs.javascript.NativeArray.class) {
+			
+			net.sourceforge.htmlunit.corejs.javascript.NativeArray array = (net.sourceforge.htmlunit.corejs.javascript.NativeArray)result;
+			
+			Object[] test = array.toArray();		
+			
+			Object test2 = "[";
+			
+			for(int i=0; i<test.length; i++) {
+				String o = (String) test[i];
+				test2 += "'"+o+"'";
+				if(i < test.length-1)
+					test2 += ",";
+			}
+			
+			
+			test2 += "]";
+					
+			return test2;
 		}
 		else {
 			return result;

@@ -1,12 +1,31 @@
 package edu.hm.counterobfuscator.parser.token;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.mozilla.javascript.CompilerEnvirons;
+import org.mozilla.javascript.Parser;
+import org.mozilla.javascript.ScriptOrFnNode;
+
+import net.sourceforge.htmlunit.corejs.javascript.RhinoException;
+import net.sourceforge.htmlunit.corejs.javascript.ast.AstNode;
+import net.sourceforge.htmlunit.corejs.javascript.ast.AstRoot;
+import net.sourceforge.htmlunit.corejs.javascript.ast.NodeVisitor;
+import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.helper.Validate;
+import edu.hm.counterobfuscator.parser.token.trees.TokenTree;
+import edu.hm.counterobfuscator.parser.token.trees.TokenTreeType;
+import edu.hm.counterobfuscator.parser.token.trees.TreeElement;
+import edu.hm.counterobfuscator.parser.token.trees.VariableDecTree;
+import edu.hm.counterobfuscator.parser.token.trees.VariableStatementTree;
 import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.types.IType;
@@ -25,12 +44,15 @@ import edu.hm.counterobfuscator.types.Variable;
  */
 class TokenAnalyser implements ITokenAnalyser {
 
-	private static Logger		log;
-	private List<Token>			allTokensOfJSCode;
-	private List<AbstractType>	vars;
-	private List<AbstractType>	functions;
-	private List<AbstractType>	loops;
-	private List<AbstractType>	tryCatch;
+	private static Logger			log;
+	private List<Token>				allTokensOfJSCode;
+	private Token						actualToken;
+	private List<AbstractType>		alltypes;
+	private List<TreeElement>		functions;
+	private List<TreeElement>		loops;
+	private List<TreeElement>		tryCatch;
+	private LinkedList<TokenTree>	programmCode;
+	private LinkedList<TreeElement>	tree;
 
 	public TokenAnalyser(Tokenizer tokenizer) {
 
@@ -40,23 +62,198 @@ class TokenAnalyser implements ITokenAnalyser {
 
 		this.allTokensOfJSCode = tokenizer.getTokens();
 
-		vars = new ArrayList<AbstractType>();
-		functions = new ArrayList<AbstractType>();
-		loops = new ArrayList<AbstractType>();
-		tryCatch = new ArrayList<AbstractType>();
+		alltypes = new ArrayList<AbstractType>();
+
+		actualToken = allTokensOfJSCode.get(0);
+
+	}
+
+	public List<AbstractType> getAllTypes() {
+		return alltypes;
+	}
+
+	private Token getActualToken() {
+
+		return actualToken;
+	}
+
+	private void getNextToken() {
+
+		if (actualToken.getPos() == allTokensOfJSCode.size() - 1) {
+			return;
+		}
+
+		actualToken = allTokensOfJSCode.get(actualToken.getPos() + 1);
+	}
+
+	private boolean hasNextToken() {
+
+		if (actualToken.getPos() == allTokensOfJSCode.size() - 1) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private void call(TOKENTYPE type) throws IllegalArgumentException {
+
+		switch (type) {
+		case VAR:
+			processVar();
+			break;
+		case FUNCTION:
+			processFunction();
+			break;
+		default:
+
+		}
 
 	}
 
 	/**
+	 * @throws Exception
 	 * 
 	 */
-	protected void process() {
+	protected void process() throws IllegalArgumentException {
 
-		processLocalVariables();
-		processGlobalVariables();
-		processFunctions();
-		//processLoops();
-		processTryCatchStatements();
+		while (hasNextToken()) {
+
+			call(actualToken.getType());
+
+			getNextToken();
+		}
+
+		createTree();
+		
+		for(TreeElement e: tree) {
+			
+			System.out.println(e.getType().getType() + " : " +  e.getType().getPos().getStartPos()+"-"+e.getType().getPos().getEndPos());
+			for(TreeElement t: e.getChildren()) {
+				
+				System.out.println("|_____" + t.getType().getType() + " : " +  t.getType().getPos().getStartPos()+"-"+t.getType().getPos().getEndPos());
+			}
+		}
+		
+
+	}
+
+	private void createTree() {
+		int number = 1;
+		int highestEndPos = -1;
+		TreeElement parent = null;
+		tree = new LinkedList<TreeElement>();
+		for (AbstractType actualType : alltypes) {
+
+			int startPos = actualType.getPos().getStartPos();
+			int endPos = actualType.getPos().getEndPos();
+			
+			TreeElement actualElement = new TreeElement(number++, actualType);
+			
+			if(startPos > highestEndPos) {
+				
+				if(parent != null)
+					tree.add(parent);
+				
+				parent = actualElement;
+				highestEndPos = endPos;
+				
+			} else {
+				parent.addChild(actualElement);
+			}
+			
+			
+
+		}
+		
+		tree.add(parent);
+
+	}
+
+	/**
+	 * @return
+	 */
+	private void processVar() {
+
+		int startPos = getActualToken().getPos();
+
+		int assign = getPositionOfNextToken(startPos, TOKENTYPE.ASSIGN);
+		int endPos = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
+
+		String name = getNameOfType(startPos + 1, assign - 1);
+		String value = getNameOfType(assign + 1, endPos - 1);
+
+		alltypes.add(new Variable(new Position(startPos, endPos), name, value));
+
+		// while (hasNextToken() && actualToken.getType() != TOKENTYPE.SEMICOLON)
+		// {
+		//
+		// getNextToken();
+		// if (actualToken.getType() == TOKENTYPE.STRING) {
+		// name = actualToken.getValue();
+		// }
+		// else if (actualToken.getType() == TOKENTYPE.COMMA) {
+		// declaration.add(new VariableDecTree(actualPos, name, value));
+		// name = "";
+		// value = "";
+		// }
+		// else if (actualToken.getType() == TOKENTYPE.ASSIGN) {
+		// int comma = getPositionOfNextToken(actualToken.getPos(),
+		// TOKENTYPE.COMMA);
+		// int semicolon = getPositionOfNextToken(actualToken.getPos(),
+		// TOKENTYPE.SEMICOLON);
+		//
+		// if (comma > 0 && comma < semicolon) {
+		// value = getStringOfTokens(getAllTokensUntilEndPos(actualToken.getPos()
+		// + 1, comma));
+		// actualToken = allTokensOfJSCode.get(comma - 1);
+		// }
+		// else {
+		// value = getStringOfTokens(getAllTokensUntilEndPos(actualToken.getPos()
+		// + 1,
+		// semicolon));
+		// actualToken = allTokensOfJSCode.get(semicolon - 1);
+		// }
+		//
+		// }
+		// else if (actualToken.getType() == TOKENTYPE.SEMICOLON) {
+		// declaration.add(new VariableDecTree(actualPos, name, value));
+		// name = "";
+		// value = "";
+		// }
+		//
+		// }
+
+	}
+
+	private void processFunction() {
+
+		Validate.isTrue(allTokensOfJSCode.size() > 0);
+		Validate.notNull(alltypes);
+
+		log.info("start processFunction analyse process...");
+
+		int startPos = getActualToken().getPos();
+
+		int nextOpenBracket = getPositionOfNextToken(startPos, TOKENTYPE.OPEN_BRACKET);
+		int nextClosedBracket = getPositionOfNextToken(nextOpenBracket, TOKENTYPE.CLOSE_BRACKET);
+		int nextCurlyOpenBracket = getPositionOfNextToken(nextClosedBracket,
+				TOKENTYPE.OPEN_CURLY_BRACKET);
+		int endPos = getPositionOfNextToken(nextCurlyOpenBracket, TOKENTYPE.CLOSE_CURLY_BRACKET);
+
+		String name = getNameOfType(startPos + 1, nextOpenBracket - 1);
+		String head = getNameOfType(nextOpenBracket, nextClosedBracket);
+		List<Token> body = getAllTokensUntilEndPos(nextCurlyOpenBracket, endPos);
+
+		boolean isPacked = false;
+		// TODO same as function.call()
+		if (startPos > 0 && allTokensOfJSCode.get(startPos - 1).getType() == TOKENTYPE.OPEN_BRACKET) {
+			startPos--;
+			endPos = getPositionOfNextToken(endPos + 2, TOKENTYPE.CLOSE_BRACKET);
+			isPacked = true;
+		}
+
+		alltypes.add(new Function(new Position(startPos, endPos), name, head, isPacked, body));
+
 	}
 
 	/**
@@ -65,7 +262,7 @@ class TokenAnalyser implements ITokenAnalyser {
 	private void processLocalVariables() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
-		Validate.notNull(vars);
+		// Validate.notNull(vars);
 
 		log.info("start processLocalVariables analyse process...");
 
@@ -82,68 +279,73 @@ class TokenAnalyser implements ITokenAnalyser {
 
 		for (Token actualToken : tokens) {
 
-			// ignore VAR statement at the beginning
-			int startPos = actualToken.getPos() + 1;
+			// // ignore VAR statement at the beginning
+			// int startPos = actualToken.getPos() + 1;
+			//
+			// int nextSemicolon = getPositionOfNextToken(startPos,
+			// TOKENTYPE.SEMICOLON);
+			// int nextComma = getPositionOfNextToken(startPos, TOKENTYPE.COMMA);
+			//
+			// if (nextComma < 0 || nextComma > nextSemicolon) { // var test=100;
+			//
+			// int nextAssign = getPositionOfNextToken(startPos, TOKENTYPE.ASSIGN);
+			//
+			// if (nextAssign > 0 && nextAssign < nextSemicolon) {
+			// String name = getNameOfType(startPos, nextAssign - 1);
+			// String body = getNameOfType(nextAssign + 1, nextSemicolon - 1);
+			// vars.add(new Variable(startPos, nextSemicolon - 1, name, body));
+			//
+			// }
+			// else {
+			// vars.add(new Variable(startPos, nextSemicolon - 1,
+			// getNameOfType(startPos,
+			// nextSemicolon - 1), getNameOfType(nextAssign, nextSemicolon - 1)));
+			// }
+			// continue;
+			// }
+			// else { // var test=100,test2=102;
+			//
+			// int actualPos = startPos;
+			//
+			// // next comma exist and position is before next semicolon
+			// while (nextComma > 0 && nextComma < nextSemicolon) {
+			//
+			// int nextAssign = getPositionOfNextToken(actualPos,
+			// TOKENTYPE.ASSIGN);
+			//
+			// if (nextAssign > 0 && nextAssign < nextSemicolon) {
+			// String name = getNameOfType(actualPos, nextAssign - 1);
+			// String body = getNameOfType(nextAssign + 1, nextComma - 1);
+			// vars.add(new Variable(actualPos, nextComma - 1, name, body));
+			// }
+			// else {
+			// String name = getNameOfType(actualPos, nextComma - 1);
+			// String body = "undefined";
+			// vars.add(new Variable(actualPos, nextComma - 1, name, body));
+			// }
 
-			int nextSemicolon = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
-			int nextComma = getPositionOfNextToken(startPos, TOKENTYPE.COMMA);
-
-			if (nextComma < 0 || nextComma > nextSemicolon) { // var test=100;
-
-				int nextAssign = getPositionOfNextToken(startPos, TOKENTYPE.ASSIGN);
-
-				if (nextAssign > 0 && nextAssign < nextSemicolon) {
-					String name = getNameOfType(startPos, nextAssign - 1);
-					String body = getNameOfType(nextAssign + 1, nextSemicolon - 1);
-					vars.add(new Variable(startPos, nextSemicolon - 1, name, body));
-
-				}
-				else {
-					vars.add(new Variable(startPos, nextSemicolon - 1, getNameOfType(startPos,
-							nextSemicolon - 1), getNameOfType(nextAssign, nextSemicolon - 1)));
-				}
-				continue;
-			}
-			else { // var test=100,test2=102;
-
-				int actualPos = startPos;
-
-				// next comma exist and position is before next semicolon
-				while (nextComma > 0 && nextComma < nextSemicolon) {
-
-					int nextAssign = getPositionOfNextToken(actualPos, TOKENTYPE.ASSIGN);
-
-					if (nextAssign > 0 && nextAssign < nextSemicolon) {
-						String name = getNameOfType(actualPos, nextAssign - 1);
-						String body = getNameOfType(nextAssign + 1, nextComma - 1);
-						vars.add(new Variable(actualPos, nextComma - 1, name, body));
-					}
-					else {
-						String name = getNameOfType(actualPos, nextComma - 1);
-						String body = "undefined";
-						vars.add(new Variable(actualPos, nextComma - 1, name, body));
-					}
-
-					actualPos = nextComma + 1;
-
-					nextComma = getPositionOfNextToken(actualPos, TOKENTYPE.COMMA);
-					nextSemicolon = getPositionOfNextToken(actualPos, TOKENTYPE.SEMICOLON);
-				}
-
-				int nextAssign = getPositionOfNextToken(actualPos, TOKENTYPE.ASSIGN);
-
-				if (nextAssign > 0 && nextAssign < nextSemicolon) {
-					String name = getNameOfType(actualPos, nextAssign - 1);
-					String body = getNameOfType(nextAssign + 1, nextSemicolon - 1);
-					vars.add(new Variable(actualPos, nextSemicolon - 1, name, body));
-				}
-				else {
-					String name = getNameOfType(actualPos, nextSemicolon - 1);
-					String body = "undefined";
-					vars.add(new Variable(actualPos, nextSemicolon - 1, name, body));
-				}
-				continue;
-			}
+			// actualPos = nextComma + 1;
+			//
+			// nextComma = getPositionOfNextToken(actualPos, TOKENTYPE.COMMA);
+			// nextSemicolon = getPositionOfNextToken(actualPos,
+			// TOKENTYPE.SEMICOLON);
+			// }
+			//
+			// int nextAssign = getPositionOfNextToken(actualPos,
+			// TOKENTYPE.ASSIGN);
+			//
+			// if (nextAssign > 0 && nextAssign < nextSemicolon) {
+			// String name = getNameOfType(actualPos, nextAssign - 1);
+			// String body = getNameOfType(nextAssign + 1, nextSemicolon - 1);
+			// vars.add(new Variable(actualPos, nextSemicolon - 1, name, body));
+			// }
+			// else {
+			// String name = getNameOfType(actualPos, nextSemicolon - 1);
+			// String body = "undefined";
+			// vars.add(new Variable(actualPos, nextSemicolon - 1, name, body));
+			// }
+			// continue;
+			// }
 		}
 	}
 
@@ -179,40 +381,6 @@ class TokenAnalyser implements ITokenAnalyser {
 	/**
 	 * 
 	 */
-	private void processFunctions() {
-
-		Validate.isTrue(allTokensOfJSCode.size() > 0);
-		Validate.notNull(functions);
-
-		log.info("start processFunctions analyse process...");
-
-		List<Token> tokens = getAllTokensOfSameType(TOKENTYPE.FUNCTION);
-
-		for (Token actualToken : tokens) {
-
-			// ignore FUNCTION statement at the beginning
-			int startPos = actualToken.getPos() + 1;
-
-			int nextOpenBracket = getPositionOfNextToken(startPos, TOKENTYPE.OPEN_BRACKET);
-			int nextClosedBracket = getPositionOfNextToken(nextOpenBracket, TOKENTYPE.CLOSE_BRACKET);
-			int nextCurlyOpenBracket = getPositionOfNextToken(nextClosedBracket,
-					TOKENTYPE.OPEN_CURLY_BRACKET);
-			int nextCurlyClosedBracket = getPositionOfNextToken(nextCurlyOpenBracket,
-					TOKENTYPE.CLOSE_CURLY_BRACKET);
-
-			String name = getNameOfType(startPos, nextOpenBracket - 1);
-			String head = getNameOfType(nextOpenBracket, nextClosedBracket);
-			String body = getNameOfType(nextCurlyOpenBracket, nextCurlyClosedBracket);
-
-			functions.add(new Function(startPos, nextCurlyClosedBracket, name, head, body));
-
-		}
-
-	}
-
-	/**
-	 * 
-	 */
 	private void processLoops() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
@@ -240,7 +408,8 @@ class TokenAnalyser implements ITokenAnalyser {
 			String head = getNameOfType(nextOpenBracket, nextClosedBracket);
 			String body = getNameOfType(nextCurlyOpenBracket, nextCurlyClosedBracket);
 
-			loops.add(new Loop(startPos, nextCurlyClosedBracket, name, head, body));
+			// loops.add(new Loop(startPos, nextCurlyClosedBracket, name, head,
+			// body));
 
 		}
 	}
@@ -266,26 +435,26 @@ class TokenAnalyser implements ITokenAnalyser {
 		return allTokensOfJSCode;
 	}
 
-	/**
-	 * @return vars
-	 */
-	public List<AbstractType> getTypesOfTokenTypes(TOKENTYPE type) {
-
-		// TODO enhance for other types
-		Validate.notNull(type);
-
-		if (type == TOKENTYPE.VAR) {
-			Validate.notNull(vars);
-			return vars;
-		}
-		else if (type == TOKENTYPE.FUNCTION) {
-			Validate.notNull(functions);
-			return functions;
-		}
-		else {
-			return null;
-		}
-	}
+	// /**
+	// * @return vars
+	// */
+	// public List<AbstractType> getTypesOfTokenTypes(TOKENTYPE type) {
+	//
+	// // TODO enhance for other types
+	// Validate.notNull(type);
+	//
+	// if (type == TOKENTYPE.VAR) {
+	// Validate.notNull(vars);
+	// return vars;
+	// }
+	// else if (type == TOKENTYPE.FUNCTION) {
+	// Validate.notNull(functions);
+	// return functions;
+	// }
+	// else {
+	// return null;
+	// }
+	// }
 
 	/**
 	 * @param value
@@ -438,7 +607,12 @@ class TokenAnalyser implements ITokenAnalyser {
 		String valueOfTokens = "";
 
 		for (Token actualToken : tokensToString) {
+
 			valueOfTokens += actualToken.getValue();
+
+			if (actualToken.hasWhitespace()) {
+				valueOfTokens += " ";
+			}
 		}
 
 		return valueOfTokens;
@@ -550,5 +724,18 @@ class TokenAnalyser implements ITokenAnalyser {
 		else {
 			return false;
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.parser.token.ITokenAnalyser#getTypesOfTokenTypes
+	 * (edu.hm.counterobfuscator.parser.token.TOKENTYPE)
+	 */
+	@Override
+	public List<AbstractType> getTypesOfTokenTypes(TOKENTYPE type) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

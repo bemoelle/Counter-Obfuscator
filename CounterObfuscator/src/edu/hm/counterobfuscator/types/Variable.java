@@ -1,5 +1,9 @@
 package edu.hm.counterobfuscator.types;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
+import edu.hm.counterobfuscator.helper.Position;
+
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 02.01.2015
@@ -11,11 +15,13 @@ public class Variable extends AbstractType {
 
 	private String	value;
 
-	public Variable(int startPos, int endPos, String name, String value) {
-		super(startPos, endPos, name);
-		if(value.equals("")) {
+	public Variable(Position pos, String name, String value) {
+		super(TYPE.VARIABLE, pos, name);
+
+		if (value.equals("")) {
 			this.value = "undefined";
-		} else {
+		}
+		else {
 			this.value = value;
 		}
 	}
