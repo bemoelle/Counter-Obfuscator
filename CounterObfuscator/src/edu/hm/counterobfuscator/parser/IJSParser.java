@@ -3,7 +3,6 @@ package edu.hm.counterobfuscator.parser;
 import java.util.List;
 
 import edu.hm.counterobfuscator.parser.token.TOKENTYPE;
-import edu.hm.counterobfuscator.parser.token.Token;
 import edu.hm.counterobfuscator.types.AbstractType;
 
 public interface IJSParser {

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.hm.counterobfuscator.types;
+package edu.hm.counterobfuscator.parser.token.trees;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -9,8 +9,6 @@ package edu.hm.counterobfuscator.types;
  * 
  * 
  */
-public enum TYPE {
-
-	VARIABLE, FUNCTION, FOR, WHILE, IF, TRY
+public class TypeTree {
 
 }

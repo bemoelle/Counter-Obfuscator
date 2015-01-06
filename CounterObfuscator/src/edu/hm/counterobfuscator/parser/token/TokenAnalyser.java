@@ -1,35 +1,15 @@
 package edu.hm.counterobfuscator.parser.token;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
-import org.mozilla.javascript.CompilerEnvirons;
-import org.mozilla.javascript.Parser;
-import org.mozilla.javascript.ScriptOrFnNode;
-
-import net.sourceforge.htmlunit.corejs.javascript.RhinoException;
-import net.sourceforge.htmlunit.corejs.javascript.ast.AstNode;
-import net.sourceforge.htmlunit.corejs.javascript.ast.AstRoot;
-import net.sourceforge.htmlunit.corejs.javascript.ast.NodeVisitor;
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.helper.Validate;
-import edu.hm.counterobfuscator.parser.token.trees.TokenTree;
-import edu.hm.counterobfuscator.parser.token.trees.TokenTreeType;
-import edu.hm.counterobfuscator.parser.token.trees.TreeElement;
-import edu.hm.counterobfuscator.parser.token.trees.VariableDecTree;
-import edu.hm.counterobfuscator.parser.token.trees.VariableStatementTree;
+import edu.hm.counterobfuscator.parser.token.trees.TypeTreeElement;
 import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Function;
-import edu.hm.counterobfuscator.types.IType;
-import edu.hm.counterobfuscator.types.Loop;
 import edu.hm.counterobfuscator.types.Variable;
 
 /**
@@ -42,17 +22,14 @@ import edu.hm.counterobfuscator.types.Variable;
  *       class is package private
  * 
  */
+// TODO clean!
 class TokenAnalyser implements ITokenAnalyser {
 
-	private static Logger			log;
-	private List<Token>				allTokensOfJSCode;
-	private Token						actualToken;
-	private List<AbstractType>		alltypes;
-	private List<TreeElement>		functions;
-	private List<TreeElement>		loops;
-	private List<TreeElement>		tryCatch;
-	private LinkedList<TokenTree>	programmCode;
-	private LinkedList<TreeElement>	tree;
+	private static Logger					log;
+	private List<Token>						allTokensOfJSCode;
+	private Token								actualToken;
+	private List<AbstractType>				allTypes;
+	private LinkedList<TypeTreeElement>	programmTree;
 
 	public TokenAnalyser(Tokenizer tokenizer) {
 
@@ -62,14 +39,14 @@ class TokenAnalyser implements ITokenAnalyser {
 
 		this.allTokensOfJSCode = tokenizer.getTokens();
 
-		alltypes = new ArrayList<AbstractType>();
+		allTypes = new ArrayList<AbstractType>();
 
 		actualToken = allTokensOfJSCode.get(0);
 
 	}
 
 	public List<AbstractType> getAllTypes() {
-		return alltypes;
+		return allTypes;
 	}
 
 	private Token getActualToken() {
@@ -104,10 +81,14 @@ class TokenAnalyser implements ITokenAnalyser {
 		case FUNCTION:
 			processFunction();
 			break;
+		case WHILE:
+			processWhile();
+			break;
+		case FOR:
+			processFor();
+			break;
 		default:
-
 		}
-
 	}
 
 	/**
@@ -123,49 +104,53 @@ class TokenAnalyser implements ITokenAnalyser {
 			getNextToken();
 		}
 
-		createTree();
-		
-		for(TreeElement e: tree) {
-			
-			System.out.println(e.getType().getType() + " : " +  e.getType().getPos().getStartPos()+"-"+e.getType().getPos().getEndPos());
-			for(TreeElement t: e.getChildren()) {
-				
-				System.out.println("|_____" + t.getType().getType() + " : " +  t.getType().getPos().getStartPos()+"-"+t.getType().getPos().getEndPos());
+		createTypeTree();
+
+		for (TypeTreeElement e : programmTree) {
+
+			System.out.println(e.getType().getType() + " : " + e.getType().getPos().getStartPos()
+					+ "-" + e.getType().getPos().getEndPos());
+			for (TypeTreeElement t : e.getChildren()) {
+
+				System.out.println("|_____" + t.getType().getType() + " : "
+						+ t.getType().getPos().getStartPos() + "-" + t.getType().getPos().getEndPos());
 			}
 		}
-		
 
 	}
 
-	private void createTree() {
+	/**
+	 * 
+	 */
+	private void createTypeTree() {
+		
 		int number = 1;
 		int highestEndPos = -1;
-		TreeElement parent = null;
-		tree = new LinkedList<TreeElement>();
-		for (AbstractType actualType : alltypes) {
+		TypeTreeElement parent = null;
+		programmTree = new LinkedList<TypeTreeElement>();
+		for (AbstractType actualType : allTypes) {
 
 			int startPos = actualType.getPos().getStartPos();
 			int endPos = actualType.getPos().getEndPos();
-			
-			TreeElement actualElement = new TreeElement(number++, actualType);
-			
-			if(startPos > highestEndPos) {
-				
-				if(parent != null)
-					tree.add(parent);
-				
+
+			TypeTreeElement actualElement = new TypeTreeElement(number++, actualType);
+
+			if (startPos > highestEndPos) {
+
+				if (parent != null)
+					programmTree.add(parent);
+
 				parent = actualElement;
 				highestEndPos = endPos;
-				
-			} else {
+
+			}
+			else {
 				parent.addChild(actualElement);
 			}
-			
-			
 
 		}
-		
-		tree.add(parent);
+
+		programmTree.add(parent);
 
 	}
 
@@ -182,7 +167,7 @@ class TokenAnalyser implements ITokenAnalyser {
 		String name = getNameOfType(startPos + 1, assign - 1);
 		String value = getNameOfType(assign + 1, endPos - 1);
 
-		alltypes.add(new Variable(new Position(startPos, endPos), name, value));
+		allTypes.add(new Variable(new Position(startPos, endPos), name, value));
 
 		// while (hasNextToken() && actualToken.getType() != TOKENTYPE.SEMICOLON)
 		// {
@@ -228,7 +213,7 @@ class TokenAnalyser implements ITokenAnalyser {
 	private void processFunction() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
-		Validate.notNull(alltypes);
+		Validate.notNull(allTypes);
 
 		log.info("start processFunction analyse process...");
 
@@ -252,7 +237,7 @@ class TokenAnalyser implements ITokenAnalyser {
 			isPacked = true;
 		}
 
-		alltypes.add(new Function(new Position(startPos, endPos), name, head, isPacked, body));
+		allTypes.add(new Function(new Position(startPos, endPos), name, head, isPacked, body));
 
 	}
 
@@ -381,51 +366,27 @@ class TokenAnalyser implements ITokenAnalyser {
 	/**
 	 * 
 	 */
-	private void processLoops() {
+	private void processWhile() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
-		Validate.notNull(loops);
+		//Validate.notNull(loops);
 
 		log.info("start processLoops analyse process...");
 
-		// add all tokens for FOR and while loops
-		List<Token> tokens = getAllTokensOfSameType(TOKENTYPE.FOR);
-		tokens.addAll(getAllTokensOfSameType(TOKENTYPE.WHILE));
-
-		for (Token actualToken : tokens) {
-
-			// ignore FUNCTION statement at the beginning
-			int startPos = actualToken.getPos() + 1;
-
-			int nextOpenBracket = getPositionOfNextToken(startPos, TOKENTYPE.OPEN_BRACKET);
-			int nextClosedBracket = getPositionOfNextToken(nextOpenBracket, TOKENTYPE.CLOSE_BRACKET);
-			int nextCurlyOpenBracket = getPositionOfNextToken(nextClosedBracket,
-					TOKENTYPE.OPEN_CURLY_BRACKET);
-			int nextCurlyClosedBracket = getPositionOfNextToken(nextCurlyOpenBracket,
-					TOKENTYPE.CLOSE_CURLY_BRACKET);
-
-			String name = getNameOfType(startPos, nextOpenBracket - 1);
-			String head = getNameOfType(nextOpenBracket, nextClosedBracket);
-			String body = getNameOfType(nextCurlyOpenBracket, nextCurlyClosedBracket);
-
-			// loops.add(new Loop(startPos, nextCurlyClosedBracket, name, head,
-			// body));
-
-		}
+	
 	}
-
+	
 	/**
 	 * 
 	 */
-	private void processTryCatchStatements() {
+	private void processFor() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
-		Validate.notNull(tryCatch);
+		//Validate.notNull(loops);
 
-		log.info("start processTryCatchStatements analyse process...");
+		log.info("start processLoops analyse process...");
 
-		// TODO ...
-
+	
 	}
 
 	/**
@@ -434,27 +395,6 @@ class TokenAnalyser implements ITokenAnalyser {
 	public List<Token> getTokens() {
 		return allTokensOfJSCode;
 	}
-
-	// /**
-	// * @return vars
-	// */
-	// public List<AbstractType> getTypesOfTokenTypes(TOKENTYPE type) {
-	//
-	// // TODO enhance for other types
-	// Validate.notNull(type);
-	//
-	// if (type == TOKENTYPE.VAR) {
-	// Validate.notNull(vars);
-	// return vars;
-	// }
-	// else if (type == TOKENTYPE.FUNCTION) {
-	// Validate.notNull(functions);
-	// return functions;
-	// }
-	// else {
-	// return null;
-	// }
-	// }
 
 	/**
 	 * @param value

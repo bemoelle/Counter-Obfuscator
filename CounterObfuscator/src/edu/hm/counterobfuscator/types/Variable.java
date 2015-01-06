@@ -1,7 +1,5 @@
 package edu.hm.counterobfuscator.types;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import edu.hm.counterobfuscator.helper.Position;
 
 /**
