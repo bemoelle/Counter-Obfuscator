@@ -1,7 +1,6 @@
 package edu.hm.counterobfuscator.parser.token;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -9,6 +8,7 @@ import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.parser.token.trees.TypeTreeElement;
 import edu.hm.counterobfuscator.types.AbstractType;
+import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.types.Variable;
 
@@ -29,7 +29,7 @@ class TokenAnalyser implements ITokenAnalyser {
 	private List<Token>						allTokensOfJSCode;
 	private Token								actualToken;
 	private List<AbstractType>				allTypes;
-	private LinkedList<TypeTreeElement>	programmTree;
+	private ArrayList<TypeTreeElement>	programmTree;
 
 	public TokenAnalyser(Tokenizer tokenizer) {
 
@@ -52,6 +52,11 @@ class TokenAnalyser implements ITokenAnalyser {
 	private Token getActualToken() {
 
 		return actualToken;
+	}
+
+	private void setNextTokenTo(int pos) {
+
+		actualToken = allTokensOfJSCode.get(pos);
 	}
 
 	private void getNextToken() {
@@ -78,6 +83,9 @@ class TokenAnalyser implements ITokenAnalyser {
 		case VAR:
 			processVar();
 			break;
+		case ASSIGN:
+			processGlobalVar();
+			break;
 		case FUNCTION:
 			processFunction();
 			break;
@@ -87,6 +95,8 @@ class TokenAnalyser implements ITokenAnalyser {
 		case FOR:
 			processFor();
 			break;
+		case RETURN:
+			processDefault();
 		default:
 		}
 	}
@@ -114,43 +124,88 @@ class TokenAnalyser implements ITokenAnalyser {
 
 				System.out.println("|_____" + t.getType().getType() + " : "
 						+ t.getType().getPos().getStartPos() + "-" + t.getType().getPos().getEndPos());
+				for (TypeTreeElement r : t.getChildren()) {
+
+					System.out.println("|_____|______" + r.getType().getType() + " : "
+							+ r.getType().getPos().getStartPos() + "-" + r.getType().getPos().getEndPos());
+				}
 			}
 		}
 
 	}
 
 	/**
+	 * TypeTreeElement actualElement = new TypeTreeElement(number++, actualType);
 	 * 
+	 * if (startPos > highestEndPos) {
+	 * 
+	 * if (parent != null) programmTree.add(parent);
+	 * 
+	 * parent = actualElement; highestEndPos = endPos;
+	 * 
+	 * } else { parent.addChild(actualElement); }
 	 */
 	private void createTypeTree() {
-		
-		int number = 1;
+
 		int highestEndPos = -1;
 		TypeTreeElement parent = null;
-		programmTree = new LinkedList<TypeTreeElement>();
+		programmTree = new ArrayList<TypeTreeElement>();
 		for (AbstractType actualType : allTypes) {
 
 			int startPos = actualType.getPos().getStartPos();
 			int endPos = actualType.getPos().getEndPos();
+			if (programmTree.isEmpty() || startPos > highestEndPos) {
 
-			TypeTreeElement actualElement = new TypeTreeElement(number++, actualType);
-
-			if (startPos > highestEndPos) {
-
-				if (parent != null)
-					programmTree.add(parent);
-
-				parent = actualElement;
+				TypeTreeElement tte = new TypeTreeElement(0, actualType);
+				programmTree.add(tte);
 				highestEndPos = endPos;
-
+				parent = tte;
 			}
 			else {
-				parent.addChild(actualElement);
+				findPositionForChild(1, parent, actualType);
 			}
+		}
+	}
 
+	private void findPositionForChild(int depth, TypeTreeElement parent, AbstractType child) {
+
+		if (!parent.hasChildren()) {
+			parent.addChild(new TypeTreeElement(depth, child));
+		}
+		else {
+			int startPos = child.getPos().getStartPos();
+
+			TypeTreeElement latestChild = parent.getLatestChild();
+
+			if (startPos > latestChild.getType().getPos().getEndPos()) {
+				parent.addChild(new TypeTreeElement(depth, child));
+			}
+			else {
+				findPositionForChild(depth++, latestChild, child);
+			}
+		}
+	}
+
+	private void processDefault() {
+
+	}
+
+	private void processGlobalVar() {
+
+		int assign = getActualToken().getPos();
+		int startPos = getPositionOfPreviousToken(assign - 1, TOKENTYPE.STRING);
+		int endPos = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
+
+		String name = getNameOfType(startPos, assign - 1);
+		String value = getNameOfType(assign + 1, endPos - 1);
+
+		Variable v = new Variable(new Position(startPos, endPos), name, value, false);
+
+		if (!allTypes.contains(v)) {
+			v.setGlobal(true);
 		}
 
-		programmTree.add(parent);
+		allTypes.add(v);
 
 	}
 
@@ -167,7 +222,9 @@ class TokenAnalyser implements ITokenAnalyser {
 		String name = getNameOfType(startPos + 1, assign - 1);
 		String value = getNameOfType(assign + 1, endPos - 1);
 
-		allTypes.add(new Variable(new Position(startPos, endPos), name, value));
+		allTypes.add(new Variable(new Position(startPos, endPos), name, value, false));
+
+		setNextTokenTo(endPos);
 
 		// while (hasNextToken() && actualToken.getType() != TOKENTYPE.SEMICOLON)
 		// {
@@ -239,128 +296,8 @@ class TokenAnalyser implements ITokenAnalyser {
 
 		allTypes.add(new Function(new Position(startPos, endPos), name, head, isPacked, body));
 
-	}
+		setNextTokenTo(nextCurlyOpenBracket);
 
-	/**
-	 * 
-	 */
-	private void processLocalVariables() {
-
-		Validate.isTrue(allTokensOfJSCode.size() > 0);
-		// Validate.notNull(vars);
-
-		log.info("start processLocalVariables analyse process...");
-
-		// find all local vars with the KEYWORD VAR,
-		// var test=100;
-		// var test,test1,test2;
-		// var test=100,test2=102;
-		// test=100;
-		// test=100, test2=102;
-		// this.test3; --> not implemented yet!
-		// xxx,xxx2; --> wrong JavaScript Code
-
-		List<Token> tokens = getAllTokensOfSameType(TOKENTYPE.VAR);
-
-		for (Token actualToken : tokens) {
-
-			// // ignore VAR statement at the beginning
-			// int startPos = actualToken.getPos() + 1;
-			//
-			// int nextSemicolon = getPositionOfNextToken(startPos,
-			// TOKENTYPE.SEMICOLON);
-			// int nextComma = getPositionOfNextToken(startPos, TOKENTYPE.COMMA);
-			//
-			// if (nextComma < 0 || nextComma > nextSemicolon) { // var test=100;
-			//
-			// int nextAssign = getPositionOfNextToken(startPos, TOKENTYPE.ASSIGN);
-			//
-			// if (nextAssign > 0 && nextAssign < nextSemicolon) {
-			// String name = getNameOfType(startPos, nextAssign - 1);
-			// String body = getNameOfType(nextAssign + 1, nextSemicolon - 1);
-			// vars.add(new Variable(startPos, nextSemicolon - 1, name, body));
-			//
-			// }
-			// else {
-			// vars.add(new Variable(startPos, nextSemicolon - 1,
-			// getNameOfType(startPos,
-			// nextSemicolon - 1), getNameOfType(nextAssign, nextSemicolon - 1)));
-			// }
-			// continue;
-			// }
-			// else { // var test=100,test2=102;
-			//
-			// int actualPos = startPos;
-			//
-			// // next comma exist and position is before next semicolon
-			// while (nextComma > 0 && nextComma < nextSemicolon) {
-			//
-			// int nextAssign = getPositionOfNextToken(actualPos,
-			// TOKENTYPE.ASSIGN);
-			//
-			// if (nextAssign > 0 && nextAssign < nextSemicolon) {
-			// String name = getNameOfType(actualPos, nextAssign - 1);
-			// String body = getNameOfType(nextAssign + 1, nextComma - 1);
-			// vars.add(new Variable(actualPos, nextComma - 1, name, body));
-			// }
-			// else {
-			// String name = getNameOfType(actualPos, nextComma - 1);
-			// String body = "undefined";
-			// vars.add(new Variable(actualPos, nextComma - 1, name, body));
-			// }
-
-			// actualPos = nextComma + 1;
-			//
-			// nextComma = getPositionOfNextToken(actualPos, TOKENTYPE.COMMA);
-			// nextSemicolon = getPositionOfNextToken(actualPos,
-			// TOKENTYPE.SEMICOLON);
-			// }
-			//
-			// int nextAssign = getPositionOfNextToken(actualPos,
-			// TOKENTYPE.ASSIGN);
-			//
-			// if (nextAssign > 0 && nextAssign < nextSemicolon) {
-			// String name = getNameOfType(actualPos, nextAssign - 1);
-			// String body = getNameOfType(nextAssign + 1, nextSemicolon - 1);
-			// vars.add(new Variable(actualPos, nextSemicolon - 1, name, body));
-			// }
-			// else {
-			// String name = getNameOfType(actualPos, nextSemicolon - 1);
-			// String body = "undefined";
-			// vars.add(new Variable(actualPos, nextSemicolon - 1, name, body));
-			// }
-			// continue;
-			// }
-		}
-	}
-
-	/**
-	 * 
-	 */
-	private void processGlobalVariables() {
-		//
-		// Validate.isTrue(allTokensOfJSCode.size() > 0);
-		// Validate.notNull(vars);
-
-		log.info("start processGlobalVariables analyse process...");
-		//
-		// List<Token> tokens = getAllTokensOfSameType(TOKENTYPE.ASSIGN);
-		//
-		// for (Token token : tokens) {
-		//
-		// int pos = token.getPos();
-		// if (pos > 1 && allTokensOfJSCode.get(pos - 1).getType() ==
-		// TOKENTYPE.STRING
-		// && allTokensOfJSCode.get(pos - 2).getType() != TOKENTYPE.VAR) {
-		// String name = allTokensOfJSCode.get(pos - 1).getValue();
-		//
-		// String value = getStringOfTokens(getAllTokensUntilType(pos + 1,
-		// TOKENTYPE.SEMICOLON));
-		//
-		// // TODO check if global is local var :)
-		// // vars.add(new Variable(pos - 1, name, value));
-		// }
-		// }
 	}
 
 	/**
@@ -369,24 +306,36 @@ class TokenAnalyser implements ITokenAnalyser {
 	private void processWhile() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
-		//Validate.notNull(loops);
+		// Validate.notNull(loops);
 
 		log.info("start processLoops analyse process...");
 
-	
 	}
-	
+
 	/**
 	 * 
 	 */
 	private void processFor() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
-		//Validate.notNull(loops);
+		Validate.notNull(allTypes);
 
-		log.info("start processLoops analyse process...");
+		log.info("start processFor analyse process...");
 
-	
+		int startPos = getActualToken().getPos();
+
+		int nextOpenBracket = getPositionOfNextToken(startPos, TOKENTYPE.OPEN_BRACKET);
+		int nextClosedBracket = getPositionOfNextToken(nextOpenBracket, TOKENTYPE.CLOSE_BRACKET);
+		int nextCurlyOpenBracket = getPositionOfNextToken(nextClosedBracket,
+				TOKENTYPE.OPEN_CURLY_BRACKET);
+		int endPos = getPositionOfNextToken(nextCurlyOpenBracket, TOKENTYPE.CLOSE_CURLY_BRACKET);
+
+		String head = getNameOfType(nextOpenBracket, nextClosedBracket);
+		List<Token> body = getAllTokensUntilEndPos(nextCurlyOpenBracket, endPos);
+
+		allTypes.add(new ForWhile(new Position(startPos, endPos), "for", head, body));
+
+		setNextTokenTo(nextCurlyOpenBracket);
 	}
 
 	/**
@@ -515,7 +464,7 @@ class TokenAnalyser implements ITokenAnalyser {
 	 * @return position of next tokentype at a given startPos, return -1 if
 	 *         tokentype doesn't exist
 	 */
-	public int getPositionOfNextToken(int startPos, TOKENTYPE type) {
+	public int getPositionOfNextToken(int startPos, TOKENTYPE... type) {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
 		Validate.isTrue(startPos > -1);
@@ -526,8 +475,36 @@ class TokenAnalyser implements ITokenAnalyser {
 			// check that token has correct Type and is not within brackets like:
 			// no: var AAAA='krkeIplIaMcMIe'.replace(/[BBBB]/g,'');
 			// yes: var AAAA,BBBB;
-			if (allTokensOfJSCode.get(i).getType() == type
+			if (isIn(allTokensOfJSCode.get(i).getType(), type)
 					&& (!isTokenWithinBrackets(startPos + 1, allTokensOfJSCode.get(i)))) {
+				return allTokensOfJSCode.get(i).getPos();
+			}
+		}
+
+		return 0;
+	}
+
+	public boolean isIn(TOKENTYPE type, TOKENTYPE... tokentypes) {
+
+		for (TOKENTYPE xxx : tokentypes) {
+
+			if (xxx == type)
+				return true;
+		}
+
+		return false;
+
+	}
+
+	public int getPositionOfPreviousToken(int startPos, TOKENTYPE type) {
+
+		Validate.isTrue(allTokensOfJSCode.size() > 0);
+		Validate.isTrue(startPos > -1);
+		Validate.notNull(type);
+
+		for (int i = startPos; i > -1; i--) {
+
+			if (allTokensOfJSCode.get(i).getType() == type) {
 				return allTokensOfJSCode.get(i).getPos();
 			}
 		}
@@ -677,5 +654,16 @@ class TokenAnalyser implements ITokenAnalyser {
 	public List<AbstractType> getTypesOfTokenTypes(TOKENTYPE type) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see edu.hm.counterobfuscator.parser.token.ITokenAnalyser#programmTree()
+	 */
+	@Override
+	public ArrayList<TypeTreeElement> getProgrammTree() {
+		// TODO Auto-generated method stub
+		return programmTree;
 	}
 }

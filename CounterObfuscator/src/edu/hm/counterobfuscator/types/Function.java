@@ -1,5 +1,6 @@
 package edu.hm.counterobfuscator.types;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.hm.counterobfuscator.helper.Position;
@@ -14,23 +15,27 @@ import edu.hm.counterobfuscator.parser.token.Token;
  */
 public class Function extends AbstractType {
 
-	private String			head;
-	private List<Token>	boby;
-	private boolean		isPacked;
+	private List<Variable>	head;
+	private List<Token>		boby;
+	private boolean			isPacked;
+	private String	headString;
 
-	public Function(Position pos, String name, String head, boolean isPacked, List<Token> boby) {
+	public Function(Position pos, String name, String headString, boolean isPacked, List<Token> boby) {
 		super(TYPE.FUNCTION, pos, name);
-		this.head = head;
+		this.headString = headString;
 		this.isPacked = isPacked;
 		this.boby = boby;
+		this.head = new ArrayList<Variable>();
+		
+		String[] heads = headString.split(",");
+		for(String varName: heads) {
+			head.add(new Variable(pos, varName, "", false));
+		}
+		
 	}
 
-	public String getHead() {
+	public List<Variable> getHead() {
 		return head;
-	}
-
-	public void setHead(String head) {
-		this.head = head;
 	}
 
 	public List<Token> getBoby() {
@@ -43,6 +48,14 @@ public class Function extends AbstractType {
 
 	public void setBoby(List<Token> boby) {
 		this.boby = boby;
+	}
+
+	public String getHeadString() {
+		return headString;
+	}
+
+	public void setHeadString(String headString) {
+		this.headString = headString;
 	}
 
 }

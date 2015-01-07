@@ -15,9 +15,9 @@ import edu.hm.counterobfuscator.types.AbstractType;
  */
 public class TypeTreeElement {
 
-	private int								number;
+	private int									number;
 	private LinkedList<TypeTreeElement>	children;
-	private AbstractType					type;
+	private AbstractType						type;
 
 	public TypeTreeElement(int number, AbstractType type) {
 		this.number = number;
@@ -37,12 +37,16 @@ public class TypeTreeElement {
 		return children;
 	}
 
-	public void setChildren(LinkedList<TypeTreeElement> children) {
-		this.children = children;
-	}
-
 	public void addChild(TypeTreeElement child) {
 		children.add(child);
+	}
+	
+	public TypeTreeElement getLatestChild() {
+		return children.getLast();
+	}
+
+	public boolean hasChildren() {
+		return !children.isEmpty();
 	}
 
 	public AbstractType getType() {
@@ -51,6 +55,14 @@ public class TypeTreeElement {
 
 	public void setType(AbstractType type) {
 		this.type = type;
+	}
+
+	/**
+	 * 
+	 */
+	public void removeAllChildren() {
+		children.clear();
+		
 	}
 
 }

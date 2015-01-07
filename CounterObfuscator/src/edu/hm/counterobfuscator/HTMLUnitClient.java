@@ -1,10 +1,7 @@
 package edu.hm.counterobfuscator;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.MalformedURLException;
-
-import org.mozilla.javascript.NativeArray;
 
 import net.sourceforge.htmlunit.corejs.javascript.IdFunctionObject;
 

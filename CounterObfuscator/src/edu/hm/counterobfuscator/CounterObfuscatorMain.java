@@ -18,7 +18,7 @@ public class CounterObfuscatorMain {
 	public static void main(String[] args) throws FailingHttpStatusCodeException,
 			MalformedURLException, IOException, ScriptException {
 		
-		IJSParser jsParser = JSParserFactory.create("functionTest");
+		IJSParser jsParser = JSParserFactory.create("functionTest2");
 
 		IClient client = new HTMLUnitClient("http://www.google.com/", BrowserVersion.FIREFOX_24);
 	

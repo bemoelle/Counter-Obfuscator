@@ -12,8 +12,9 @@ import edu.hm.counterobfuscator.helper.Position;
 public class Variable extends AbstractType {
 
 	private String	value;
+	private boolean isGlobal;
 
-	public Variable(Position pos, String name, String value) {
+	public Variable(Position pos, String name, String value, boolean isGlobal) {
 		super(TYPE.VARIABLE, pos, name);
 
 		if (value.equals("")) {
@@ -22,6 +23,8 @@ public class Variable extends AbstractType {
 		else {
 			this.value = value;
 		}
+		
+		this.isGlobal = isGlobal;
 	}
 
 	public String getValue() {
@@ -30,6 +33,14 @@ public class Variable extends AbstractType {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public boolean isGlobal() {
+		return isGlobal;
+	}
+
+	public void setGlobal(boolean isGlobal) {
+		this.isGlobal = isGlobal;
 	}
 
 }

@@ -1,25 +1,16 @@
 package edu.hm.counterobfuscator.interpreter;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
-
-import edu.hm.counterobfuscator.HTMLUnitClient;
 import edu.hm.counterobfuscator.IClient;
 import edu.hm.counterobfuscator.parser.IJSParser;
-import edu.hm.counterobfuscator.parser.token.TOKENTYPE;
-import edu.hm.counterobfuscator.parser.token.Token;
+import edu.hm.counterobfuscator.parser.token.trees.TypeTreeElement;
 import edu.hm.counterobfuscator.types.AbstractType;
+import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
-import edu.hm.counterobfuscator.types.IType;
 import edu.hm.counterobfuscator.types.TYPE;
 import edu.hm.counterobfuscator.types.Variable;
 
@@ -35,6 +26,8 @@ public class JSInterpreter implements IInterpreter {
 	private IJSParser			jsParser;
 	private static Logger	log;
 	private String				output;
+	private String				jsScriptBuffer	= "";
+	private List<TypeTreeElement>	treeElements;
 
 	public JSInterpreter(IJSParser jsParser, IClient client) {
 
@@ -42,91 +35,111 @@ public class JSInterpreter implements IInterpreter {
 
 		this.jsParser = jsParser;
 		this.client = client;
-		
+
 		this.output = "";
+	}
+
+	private void processTreeElement(TypeTreeElement element) {
+
+		callExecuteElement(element);
+
+		if (element.hasChildren()) {
+
+			for (TypeTreeElement child : element.getChildren()) {
+				processTreeElement(child);
+			}
+			output += "END\n";
+		}
+
+	};
+
+	public void callExecuteElement(TypeTreeElement element) {
+
+		switch (element.getType().getType()) {
+		case FUNCTION:
+			executeFunction(element);
+			break;
+		case VARIABLE:
+			executeVariable(element);
+			break;
+		case FOR:
+			executeFor(element);
+			break;
+		default:
+
+		}
+
+	}
+
+	public void executeFunction(TypeTreeElement element) {
+
+		Function func = ((Function) element.getType());
+		if (func.isPacked()) {
+			// execute
+			element.removeAllChildren();
+		}
+		else {
+			output += "function " + func.getName() + func.getHeadString() + " {\n";
+		}
+
+	}
+
+	public void executeVariable(TypeTreeElement element) {
+
+		Variable var = ((Variable) element.getType());
+
+		Object result = executeJS(var.getValue());
+
+		var.setValue(result.toString());
+
+		if (!var.isGlobal()) {
+			jsScriptBuffer += "var ";
+			output += "var ";
+		}
+
+		jsScriptBuffer += var.getName() + "=" + result + ";";
+		output += var.getName() + "=" + result + ";\n";
+
+	}
+
+	public void executeFor(TypeTreeElement element) {
+
+		ForWhile forWhile = ((ForWhile) element.getType());
+
+		output += forWhile.getName() + forWhile.getHeadString() + " {\n";
+
+	}
+
+	private Object executeJS(String script) {
+
+		Object result = null;
+		try {
+			result = client.getJSResult(jsScriptBuffer + script);
+		}
+		catch (Exception e) {
+			result = script;
+		}
+
+		return result;
 	}
 
 	public void process() throws ScriptException {
 
 		log.info("start renaming process...");
 
-		List<AbstractType> types = jsParser.getAlltypes();
-		
-		String jsScriptBuffer = "";
-		String script = "";
-		
-		for(AbstractType actualType: types) {
-			
-			if(actualType.getType() == TYPE.FUNCTION) {
-				
-				Function func = ((Function)actualType);
-				if(func.isPacked()) {
-					//TODO is function packed?!
-				} else {
-			//		output += "function " + func.getName() + func.getHead() + " {\n";
-				}
+		treeElements = jsParser.getProgrammTree();
 
-			} else if(actualType.getType() == TYPE.VARIABLE) {
-				Variable var = ((Variable)actualType);
-				
-				//variable has an value
-				if(!var.getValue().equals("undefined")) {
-					
-					String name = var.getName();
-					String value = var.getValue();
-										
-					Object result = client.getJSResult(jsScriptBuffer + value);
-					
-					jsScriptBuffer += "var " + name + "=" + result + ";";
-					output += "var " + name + " = " + result + ";\n";
-				}
-				
-			}
-			
-			
+		for (TypeTreeElement actualElement : treeElements) {
+
+			processTreeElement(actualElement);
+
 		}
-		
-		
+
 		System.out.println(output);
-		
-
-//		for (Variable v : vars) {
-//
-//			v.print();
-//
-//			String name = v.getName();
-//			String value = v.getValue();
-		
-//		ScriptEngineManager manager = new ScriptEngineManager ();
-//      ScriptEngine engine = manager.getEngineByName ("js");
-//	
-		
-		//		Object result = client.executeJS(jsScriptBuffer+script);
-
-		
-
-//			List<Integer> listOfTokens = jsParser.getAllPosOfTokensByValue(name);
-//
-//			// for (int pos : listOfTokens) {
-//			//
-//			// Token actualToken = tokens.get(pos);
-//			// if (actualToken.getPos() != v.getStartPos()) {
-//			// actualToken.setValue("");
-//			// }
-//			// }
-//			System.out.println(name + "--" + name + "--" + value);
-//		}
 
 		log.info("finished renaming process");
-		
-		//System.out.println(result);
 
 	}
 
-	private void renameVars() {
-
-		log.info("start renaming vars...");
-
-	}
 
 }
