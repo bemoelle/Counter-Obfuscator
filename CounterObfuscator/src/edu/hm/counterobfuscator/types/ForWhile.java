@@ -16,37 +16,29 @@ import edu.hm.counterobfuscator.parser.token.Token;
  */
 public class ForWhile extends AbstractType {
 
-	private Variable			head;
-	private List<Token>	boby;
-	private String	headString;
+	private Variable	head;
+	private String		body;
+	private String		headString;
 
-	public ForWhile(Position pos, String name, String headString, List<Token> boby) {
+	public ForWhile(Position pos, String name, String headString) {
 
 		super(name.equals("for") ? TYPE.FOR : TYPE.WHILE, pos, name);
 		this.headString = headString;
 
 		boolean isGlobal = false;
-		
+
 		String varName = headString.substring(1, headString.indexOf("="));
-		if(varName.matches("var.*")) {
+		if (varName.matches("var.*")) {
 			varName = varName.replace("var", "");
 			isGlobal = true;
 		}
-		
+
 		this.head = new Variable(pos, varName, "", isGlobal);
-		this.boby = boby;
+		this.body = "";
 	}
 
 	public Variable getHead() {
 		return head;
-	}
-
-	public List<Token> getBoby() {
-		return boby;
-	}
-
-	public void setBoby(List<Token> boby) {
-		this.boby = boby;
 	}
 
 	public String getHeadString() {
@@ -55,6 +47,14 @@ public class ForWhile extends AbstractType {
 
 	public void setHeadString(String headString) {
 		this.headString = headString;
+	}
+
+	public String getBody() {
+		return body;
+	}
+
+	public void setBody(String body) {
+		this.body = body;
 	}
 
 }

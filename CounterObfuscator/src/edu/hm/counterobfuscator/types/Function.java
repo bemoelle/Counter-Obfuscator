@@ -16,38 +16,38 @@ import edu.hm.counterobfuscator.parser.token.Token;
 public class Function extends AbstractType {
 
 	private List<Variable>	head;
-	private List<Token>		boby;
+	private String				body;
 	private boolean			isPacked;
-	private String	headString;
+	private String				headString;
 
-	public Function(Position pos, String name, String headString, boolean isPacked, List<Token> boby) {
+	public Function(Position pos, String name, String headString, boolean isPacked) {
 		super(TYPE.FUNCTION, pos, name);
 		this.headString = headString;
 		this.isPacked = isPacked;
-		this.boby = boby;
+		this.body = "";
 		this.head = new ArrayList<Variable>();
-		
+
 		String[] heads = headString.split(",");
-		for(String varName: heads) {
+		for (String varName : heads) {
 			head.add(new Variable(pos, varName, "", false));
 		}
-		
+
 	}
 
 	public List<Variable> getHead() {
 		return head;
 	}
 
-	public List<Token> getBoby() {
-		return boby;
+	public String getBody() {
+		return body;
 	}
 
 	public boolean isPacked() {
 		return isPacked;
 	}
 
-	public void setBoby(List<Token> boby) {
-		this.boby = boby;
+	public void setBody(String boby) {
+		this.body = boby;
 	}
 
 	public String getHeadString() {

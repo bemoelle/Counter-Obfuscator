@@ -8,6 +8,7 @@ import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.parser.token.trees.TypeTreeElement;
 import edu.hm.counterobfuscator.types.AbstractType;
+import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.types.Variable;
@@ -188,6 +189,13 @@ class TokenAnalyser implements ITokenAnalyser {
 
 	private void processDefault() {
 
+		int startPos = getActualToken().getPos();
+		int endPos = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
+		
+		String name = getNameOfType(startPos, endPos - 1);
+		
+		allTypes.add(new Default(new Position(startPos, endPos), name));
+		
 	}
 
 	private void processGlobalVar() {
@@ -284,7 +292,6 @@ class TokenAnalyser implements ITokenAnalyser {
 
 		String name = getNameOfType(startPos + 1, nextOpenBracket - 1);
 		String head = getNameOfType(nextOpenBracket, nextClosedBracket);
-		List<Token> body = getAllTokensUntilEndPos(nextCurlyOpenBracket, endPos);
 
 		boolean isPacked = false;
 		// TODO same as function.call()
@@ -294,7 +301,7 @@ class TokenAnalyser implements ITokenAnalyser {
 			isPacked = true;
 		}
 
-		allTypes.add(new Function(new Position(startPos, endPos), name, head, isPacked, body));
+		allTypes.add(new Function(new Position(startPos, endPos), name, head, isPacked));
 
 		setNextTokenTo(nextCurlyOpenBracket);
 
@@ -331,9 +338,8 @@ class TokenAnalyser implements ITokenAnalyser {
 		int endPos = getPositionOfNextToken(nextCurlyOpenBracket, TOKENTYPE.CLOSE_CURLY_BRACKET);
 
 		String head = getNameOfType(nextOpenBracket, nextClosedBracket);
-		List<Token> body = getAllTokensUntilEndPos(nextCurlyOpenBracket, endPos);
 
-		allTypes.add(new ForWhile(new Position(startPos, endPos), "for", head, body));
+		allTypes.add(new ForWhile(new Position(startPos, endPos), "for", head));
 
 		setNextTokenTo(nextCurlyOpenBracket);
 	}
