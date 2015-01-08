@@ -3,6 +3,7 @@ package edu.hm.counterobfuscator.parser.token;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.hm.counterobfuscator.parser.token.trees.ITypeTree;
 import edu.hm.counterobfuscator.parser.token.trees.TypeTreeElement;
 import edu.hm.counterobfuscator.types.AbstractType;
 
@@ -38,6 +39,6 @@ public interface ITokenAnalyser {
 	/**
 	 * @return
 	 */
-	public ArrayList<TypeTreeElement> getProgrammTree();
+	public ITypeTree getProgrammTree();
 
 }

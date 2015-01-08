@@ -15,6 +15,7 @@ import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.parser.token.ITokenAnalyser;
 import edu.hm.counterobfuscator.parser.token.Token;
+import edu.hm.counterobfuscator.parser.token.trees.ITypeTree;
 import edu.hm.counterobfuscator.parser.token.trees.TypeTreeElement;
 
 /**
@@ -110,7 +111,7 @@ public class JSParser implements IJSParser {
 	 * @see edu.hm.counterobfuscator.parser.IJSParser#getProgrammTree()
 	 */
 	@Override
-	public ArrayList<TypeTreeElement> getProgrammTree() {
+	public ITypeTree getProgrammTree() {
 		// TODO Auto-generated method stub
 		return tokenanalyser.getProgrammTree();
 	}

@@ -6,6 +6,8 @@ import java.util.logging.Logger;
 
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.helper.Validate;
+import edu.hm.counterobfuscator.parser.token.trees.ITypeTree;
+import edu.hm.counterobfuscator.parser.token.trees.TypeTree;
 import edu.hm.counterobfuscator.parser.token.trees.TypeTreeElement;
 import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Default;
@@ -30,7 +32,7 @@ class TokenAnalyser implements ITokenAnalyser {
 	private List<Token>						allTokensOfJSCode;
 	private Token								actualToken;
 	private List<AbstractType>				allTypes;
-	private ArrayList<TypeTreeElement>	programmTree;
+	private ITypeTree	programmTree;
 
 	public TokenAnalyser(Tokenizer tokenizer) {
 
@@ -117,61 +119,37 @@ class TokenAnalyser implements ITokenAnalyser {
 
 		createTypeTree();
 
-		for (TypeTreeElement e : programmTree) {
-
-			System.out.println(e.getType().getType() + " : " + e.getType().getPos().getStartPos()
-					+ "-" + e.getType().getPos().getEndPos());
-			for (TypeTreeElement t : e.getChildren()) {
-
-				System.out.println("|_____" + t.getType().getType() + " : "
-						+ t.getType().getPos().getStartPos() + "-" + t.getType().getPos().getEndPos());
-				for (TypeTreeElement r : t.getChildren()) {
-
-					System.out.println("|_____|______" + r.getType().getType() + " : "
-							+ r.getType().getPos().getStartPos() + "-" + r.getType().getPos().getEndPos());
-				}
-			}
-		}
+		programmTree.print();
 
 	}
 
-	/**
-	 * TypeTreeElement actualElement = new TypeTreeElement(number++, actualType);
-	 * 
-	 * if (startPos > highestEndPos) {
-	 * 
-	 * if (parent != null) programmTree.add(parent);
-	 * 
-	 * parent = actualElement; highestEndPos = endPos;
-	 * 
-	 * } else { parent.addChild(actualElement); }
-	 */
+	//TODO extract in own class in package trees
 	private void createTypeTree() {
 
 		int highestEndPos = -1;
 		TypeTreeElement parent = null;
-		programmTree = new ArrayList<TypeTreeElement>();
+		programmTree = new TypeTree();
 		for (AbstractType actualType : allTypes) {
 
 			int startPos = actualType.getPos().getStartPos();
 			int endPos = actualType.getPos().getEndPos();
 			if (programmTree.isEmpty() || startPos > highestEndPos) {
 
-				TypeTreeElement tte = new TypeTreeElement(0, actualType);
+				TypeTreeElement tte = new TypeTreeElement(actualType);
 				programmTree.add(tte);
 				highestEndPos = endPos;
 				parent = tte;
 			}
 			else {
-				findPositionForChild(1, parent, actualType);
+				findPositionForChild(parent, actualType);
 			}
 		}
 	}
 
-	private void findPositionForChild(int depth, TypeTreeElement parent, AbstractType child) {
+	private void findPositionForChild(TypeTreeElement parent, AbstractType child) {
 
 		if (!parent.hasChildren()) {
-			parent.addChild(new TypeTreeElement(depth, child));
+			parent.addChild(new TypeTreeElement(child));
 		}
 		else {
 			int startPos = child.getPos().getStartPos();
@@ -179,10 +157,10 @@ class TokenAnalyser implements ITokenAnalyser {
 			TypeTreeElement latestChild = parent.getLatestChild();
 
 			if (startPos > latestChild.getType().getPos().getEndPos()) {
-				parent.addChild(new TypeTreeElement(depth, child));
+				parent.addChild(new TypeTreeElement(child));
 			}
 			else {
-				findPositionForChild(depth++, latestChild, child);
+				findPositionForChild(latestChild, child);
 			}
 		}
 	}
@@ -207,13 +185,13 @@ class TokenAnalyser implements ITokenAnalyser {
 		String name = getNameOfType(startPos, assign - 1);
 		String value = getNameOfType(assign + 1, endPos - 1);
 
-		Variable v = new Variable(new Position(startPos, endPos), name, value, false);
+		Variable var = new Variable(new Position(startPos, endPos), name, value, false);
 
-		if (!allTypes.contains(v)) {
-			v.setGlobal(true);
+		if (!allTypes.contains(var)) {
+			var.setGlobal(true);
 		}
 
-		allTypes.add(v);
+		allTypes.add(var);
 
 	}
 
@@ -377,20 +355,11 @@ class TokenAnalyser implements ITokenAnalyser {
 	 */
 	public String getNameOfType(int startPos, int endPos) {
 
-		// if ((endPos - startPos) == 0) {
-
 		if (startPos > endPos) {
 			return "";
 		}
 
 		return getStringOfTokens(getAllTokensUntilEndPos(startPos, endPos));
-		// }
-		// else {
-		// int posOfAssign = getPositionOfNextToken(startPos, TOKENTYPE.ASSIGN) -
-		// 1;
-		// return getStringOfTokens(getAllTokensUntilEndPos(startPos,
-		// posOfAssign));
-		// }
 	}
 
 	/**
@@ -668,8 +637,7 @@ class TokenAnalyser implements ITokenAnalyser {
 	 * @see edu.hm.counterobfuscator.parser.token.ITokenAnalyser#programmTree()
 	 */
 	@Override
-	public ArrayList<TypeTreeElement> getProgrammTree() {
-		// TODO Auto-generated method stub
+	public ITypeTree getProgrammTree() {
 		return programmTree;
 	}
 }

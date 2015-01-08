@@ -15,22 +15,13 @@ import edu.hm.counterobfuscator.types.AbstractType;
  */
 public class TypeTreeElement {
 
-	private int									number;
+	//TODO Change children with ITypeTree
 	private LinkedList<TypeTreeElement>	children;
 	private AbstractType						type;
 
-	public TypeTreeElement(int number, AbstractType type) {
-		this.number = number;
+	public TypeTreeElement(AbstractType type) {
 		this.type = type;
 		this.children = new LinkedList<TypeTreeElement>();
-	}
-
-	public int getNumber() {
-		return number;
-	}
-
-	public void setNumber(int number) {
-		this.number = number;
 	}
 
 	public LinkedList<TypeTreeElement> getChildren() {

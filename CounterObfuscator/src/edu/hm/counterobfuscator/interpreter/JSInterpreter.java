@@ -7,6 +7,7 @@ import javax.script.ScriptException;
 
 import edu.hm.counterobfuscator.IClient;
 import edu.hm.counterobfuscator.parser.IJSParser;
+import edu.hm.counterobfuscator.parser.token.trees.ITypeTree;
 import edu.hm.counterobfuscator.parser.token.trees.TypeTreeElement;
 import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
@@ -26,7 +27,7 @@ public class JSInterpreter implements IInterpreter {
 	private static Logger			log;
 	private String						output;
 	private String						jsScriptBuffer	= "";
-	private List<TypeTreeElement>	treeElements;
+	private ITypeTree	programmTree;
 
 	public JSInterpreter(IJSParser jsParser, IClient client) {
 
@@ -37,22 +38,25 @@ public class JSInterpreter implements IInterpreter {
 		//TODO replace with print methode in tree structure 
 		this.output = "";
 
-		this.treeElements = jsParser.getProgrammTree();
+		this.programmTree = jsParser.getProgrammTree();
 	}
 
-	public void process() throws ScriptException {
+	public ITypeTree process() throws ScriptException {
 
 		log.info("start renaming process...");
 
-		for (TypeTreeElement actualElement : treeElements) {
+		for(int i=0; i<programmTree.size(); i++) {
+		
 
-			processTreeElement(actualElement);
+			processTreeElement(programmTree.get(i));
 
 		}
 
 		System.out.println(output);
 
 		log.info("finished renaming process");
+		
+		return programmTree;
 
 	}
 
