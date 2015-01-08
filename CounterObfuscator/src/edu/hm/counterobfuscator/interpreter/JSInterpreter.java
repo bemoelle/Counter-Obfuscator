@@ -8,7 +8,6 @@ import javax.script.ScriptException;
 import edu.hm.counterobfuscator.IClient;
 import edu.hm.counterobfuscator.parser.IJSParser;
 import edu.hm.counterobfuscator.parser.token.trees.TypeTreeElement;
-import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
@@ -23,28 +22,27 @@ import edu.hm.counterobfuscator.types.Variable;
  */
 public class JSInterpreter implements IInterpreter {
 
-	private IClient			client;
-	private IJSParser			jsParser;
-	private static Logger	log;
-	private String				output;
-	private String				jsScriptBuffer	= "";
+	private IClient					client;
+	private static Logger			log;
+	private String						output;
+	private String						jsScriptBuffer	= "";
 	private List<TypeTreeElement>	treeElements;
 
 	public JSInterpreter(IJSParser jsParser, IClient client) {
 
 		JSInterpreter.log = Logger.getLogger(Function.class.getName());
 
-		this.jsParser = jsParser;
 		this.client = client;
 
+		//TODO replace with print methode in tree structure 
 		this.output = "";
+
+		this.treeElements = jsParser.getProgrammTree();
 	}
-	
+
 	public void process() throws ScriptException {
 
 		log.info("start renaming process...");
-
-		treeElements = jsParser.getProgrammTree();
 
 		for (TypeTreeElement actualElement : treeElements) {
 
@@ -68,20 +66,21 @@ public class JSInterpreter implements IInterpreter {
 				body += processTreeElement(child);
 			}
 			output += " }\n";
-			
-			//TODO refactor
-			if(element.getType().getType() == TYPE.FUNCTION) {
-				((Function)element.getType()).setBody(body);
-			} else if(element.getType().getType() == TYPE.FOR) {
-				((ForWhile)element.getType()).setBody(body);
-			} 
-			
+
+			// TODO refactor
+			if (element.getType().getType() == TYPE.FUNCTION) {
+				((Function) element.getType()).setBody(body);
+			}
+			else if (element.getType().getType() == TYPE.FOR) {
+				((ForWhile) element.getType()).setBody(body);
+			}
+
 			return result + body + "";
 		}
 		return result;
 	};
 
-	public String callExecuteElement(TypeTreeElement element) {
+	private String callExecuteElement(TypeTreeElement element) {
 
 		switch (element.getType().getType()) {
 		case FUNCTION:
@@ -99,7 +98,7 @@ public class JSInterpreter implements IInterpreter {
 
 	}
 
-	public String executeFunction(TypeTreeElement element) {
+	private String executeFunction(TypeTreeElement element) {
 
 		Function func = ((Function) element.getType());
 		if (func.isPacked()) {
@@ -113,7 +112,7 @@ public class JSInterpreter implements IInterpreter {
 		return "function " + func.getName() + func.getHeadString() + " {";
 	}
 
-	public String executeVariable(TypeTreeElement element) {
+	private String executeVariable(TypeTreeElement element) {
 
 		Variable var = ((Variable) element.getType());
 
@@ -128,27 +127,27 @@ public class JSInterpreter implements IInterpreter {
 
 		jsScriptBuffer += var.getName() + "=" + result + ";";
 		output += var.getName() + "=" + result + ";\n";
-		
+
 		return var.getName() + "=" + result + ";";
 
 	}
 
-	public String executeFor(TypeTreeElement element) {
+	private String executeFor(TypeTreeElement element) {
 
 		ForWhile forWhile = ((ForWhile) element.getType());
 
 		output += forWhile.getName() + forWhile.getHeadString() + " {\n";
-		
+
 		return forWhile.getName() + forWhile.getHeadString() + " {";
 
 	}
-	
+
 	private String executeDefault(TypeTreeElement element) {
-		
+
 		Default defaultType = ((Default) element.getType());
-		
+
 		output += defaultType.getName() + ";\n";
-		
+
 		return defaultType.getName() + ";";
 	}
 
@@ -164,8 +163,5 @@ public class JSInterpreter implements IInterpreter {
 
 		return result;
 	}
-
-
-
 
 }
