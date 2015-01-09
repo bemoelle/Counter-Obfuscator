@@ -5,9 +5,6 @@ package edu.hm.counterobfuscator.parser.token.trees;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Spliterator;
-import java.util.function.Consumer;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -19,31 +16,50 @@ public class TypeTree implements ITypeTree {
 
 	private LinkedList<TypeTreeElement> typeTree;
 
+	/**
+	 * 
+	 */
 	public TypeTree() {
 		typeTree = new LinkedList<TypeTreeElement>();
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#isEmpty()
+	 */
 	public boolean isEmpty() {
 		return typeTree.isEmpty();
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#add(edu.hm.counterobfuscator.parser.token.trees.TypeTreeElement)
+	 */
 	public void add(TypeTreeElement element) {
 
 		typeTree.add(element);
 	}
 	
 	//TODO
+	/**
+	 * @return
+	 */
 	public TypeTreeElement walk() {
 		
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#print()
+	 */
 	public void print() {
 
 		printChildElement("", this);
 
 	}
 
+	/**
+	 * @param tab
+	 * @param tree
+	 */
 	private void printChildElement(String tab, ITypeTree tree) {
 
 		for(int i=0; i<tree.size(); i++) {
@@ -58,23 +74,29 @@ public class TypeTree implements ITypeTree {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#size()
+	 */
 	public int size() {
 
 		return typeTree.size();
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#get(int)
+	 */
 	public TypeTreeElement get(int index) {
 
 		return typeTree.get(index);
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#clear()
+	 */
 	public void clear() {
 		typeTree.clear();
 		
 	}
-	
-	
-	
 	
 	//-----------------------------------------------------
 	// Iterator

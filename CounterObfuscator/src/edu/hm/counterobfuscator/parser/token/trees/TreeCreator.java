@@ -5,14 +5,26 @@ import java.util.List;
 import edu.hm.counterobfuscator.mapper.IMapper;
 import edu.hm.counterobfuscator.types.AbstractType;
 
+/**
+ * @author Benjamin Moellerke <bemoelle@gmail.com>
+ * @date 09.01.2015
+ *
+ */
 public final class TreeCreator {
 
 	private static ITypeTree programmTree;
 
+	/**
+	 * 
+	 */
 	public TreeCreator() {
 		//noting to do here
 	}
 
+	/**
+	 * @param allTypes
+	 * @return
+	 */
 	public static ITypeTree createTypeTree(List<AbstractType> allTypes) {
 
 		int highestEndPos = -1;
@@ -36,6 +48,10 @@ public final class TreeCreator {
 		return programmTree;
 	}
 
+	/**
+	 * @param parent
+	 * @param child
+	 */
 	private static void findPositionForChild(TypeTreeElement parent, AbstractType child) {
 
 		if (!parent.hasChildren()) {
