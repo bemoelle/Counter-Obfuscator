@@ -20,9 +20,9 @@ public class CounterObfuscatorMain {
 		
 		IJSParser jsParser = JSParserFactory.create("functionTest2");
 
-		IClient client = new HTMLUnitClient("http://www.google.com/", BrowserVersion.FIREFOX_24);
+		//IClient client = new HTMLUnitClient("http://www.google.com/", BrowserVersion.FIREFOX_24);
 	
-		InterpreterFactory.create(jsParser, client); 	
+		//InterpreterFactory.create(jsParser, client); 	
 		
 	}
 

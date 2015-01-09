@@ -1,6 +1,8 @@
 package edu.hm.counterobfuscator.parser.token.trees;
 
-public interface ITypeTree {
+import java.util.function.Consumer;
+
+public interface ITypeTree extends Iterable<TypeTreeElement> {
 
 	public boolean isEmpty();
 
@@ -15,5 +17,4 @@ public interface ITypeTree {
 	public void clear();
 
 	public TypeTreeElement getLast();
-
 }

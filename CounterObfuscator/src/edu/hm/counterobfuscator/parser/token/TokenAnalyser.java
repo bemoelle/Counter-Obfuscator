@@ -6,7 +6,10 @@ import java.util.logging.Logger;
 
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.helper.Validate;
+import edu.hm.counterobfuscator.mapper.IMapper;
+import edu.hm.counterobfuscator.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.token.trees.ITypeTree;
+import edu.hm.counterobfuscator.parser.token.trees.TreeCreator;
 import edu.hm.counterobfuscator.parser.token.trees.TypeTree;
 import edu.hm.counterobfuscator.parser.token.trees.TypeTreeElement;
 import edu.hm.counterobfuscator.types.AbstractType;
@@ -117,53 +120,9 @@ class TokenAnalyser implements ITokenAnalyser {
 			getNextToken();
 		}
 
-		createTypeTree();
-
-		programmTree.print();
-
 	}
 
-	//TODO extract in own class in package trees
-	private void createTypeTree() {
-
-		int highestEndPos = -1;
-		TypeTreeElement parent = null;
-		programmTree = new TypeTree();
-		for (AbstractType actualType : allTypes) {
-
-			int startPos = actualType.getPos().getStartPos();
-			int endPos = actualType.getPos().getEndPos();
-			if (programmTree.isEmpty() || startPos > highestEndPos) {
-
-				TypeTreeElement tte = new TypeTreeElement(actualType);
-				programmTree.add(tte);
-				highestEndPos = endPos;
-				parent = tte;
-			}
-			else {
-				findPositionForChild(parent, actualType);
-			}
-		}
-	}
-
-	private void findPositionForChild(TypeTreeElement parent, AbstractType child) {
-
-		if (!parent.hasChildren()) {
-			parent.addChild(new TypeTreeElement(child));
-		}
-		else {
-			int startPos = child.getPos().getStartPos();
-
-			TypeTreeElement latestChild = parent.getLatestChild();
-
-			if (startPos > latestChild.getType().getPos().getEndPos()) {
-				parent.addChild(new TypeTreeElement(child));
-			}
-			else {
-				findPositionForChild(latestChild, child);
-			}
-		}
-	}
+	
 
 	private void processDefault() {
 

@@ -22,6 +22,10 @@ public class Position {
 	public int getStartPos() {
 		return startPos;
 	}
+	
+	public void setEndPos(int endPos) {
+		this.endPos=endPos;
+	}
 
 	public int getEndPos() {
 		return endPos;

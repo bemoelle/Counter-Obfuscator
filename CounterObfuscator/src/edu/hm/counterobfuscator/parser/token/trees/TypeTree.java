@@ -3,8 +3,11 @@
  */
 package edu.hm.counterobfuscator.parser.token.trees;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -14,10 +17,10 @@ import java.util.List;
  */
 public class TypeTree implements ITypeTree {
 
-	private List<TypeTreeElement> typeTree;
+	private LinkedList<TypeTreeElement> typeTree;
 
 	public TypeTree() {
-		typeTree = new LinkedList<>();
+		typeTree = new LinkedList<TypeTreeElement>();
 	}
 
 	public boolean isEmpty() {
@@ -29,6 +32,7 @@ public class TypeTree implements ITypeTree {
 		typeTree.add(element);
 	}
 	
+	//TODO
 	public TypeTreeElement walk() {
 		
 		return null;
@@ -36,13 +40,15 @@ public class TypeTree implements ITypeTree {
 
 	public void print() {
 
-		printChildElement("", typeTree);
+		printChildElement("", this);
 
 	}
 
-	private void printChildElement(String tab, List<TypeTreeElement> tree) {
+	private void printChildElement(String tab, ITypeTree tree) {
 
-		for (TypeTreeElement element : tree) {
+		for(int i=0; i<tree.size(); i++) {
+		
+			TypeTreeElement element = tree.get(i);
 			System.out.println("|" + tab
 					+ element.getType().getType().toString());
 
@@ -61,4 +67,26 @@ public class TypeTree implements ITypeTree {
 
 		return typeTree.get(index);
 	}
+
+	public void clear() {
+		typeTree.clear();
+		
+	}
+	
+	
+	
+	
+	//-----------------------------------------------------
+	// Iterator
+	public TypeTreeElement getLast() {
+		return typeTree.getLast();
+	}
+
+	@Override
+	public Iterator<TypeTreeElement> iterator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 }

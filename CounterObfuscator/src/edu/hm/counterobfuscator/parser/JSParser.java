@@ -16,6 +16,7 @@ import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.parser.token.ITokenAnalyser;
 import edu.hm.counterobfuscator.parser.token.Token;
 import edu.hm.counterobfuscator.parser.token.trees.ITypeTree;
+import edu.hm.counterobfuscator.parser.token.trees.TreeCreator;
 import edu.hm.counterobfuscator.parser.token.trees.TypeTreeElement;
 
 /**
@@ -31,6 +32,7 @@ public class JSParser implements IJSParser {
 	private String				unparsedJSCode;
 	private static Logger	log;
 	private ITokenAnalyser	tokenanalyser;
+	private ITypeTree programmTree;
 
 	/**
 	 * @param client
@@ -66,6 +68,11 @@ public class JSParser implements IJSParser {
 		String parsed = unparsedJSCode.replaceAll("\"", "\\\"");
 
 		tokenanalyser = TokenAnalyserFactory.create(parsed);
+		
+		programmTree = TreeCreator.createTypeTree(tokenanalyser.getAllTypes());
+
+		programmTree.print();
+
 
 		log.info("parsing jscode finished");
 
@@ -107,12 +114,9 @@ public class JSParser implements IJSParser {
 		return tokenanalyser.getAllPosOfTokensByValue(value);
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.parser.IJSParser#getProgrammTree()
-	 */
-	@Override
 	public ITypeTree getProgrammTree() {
-		// TODO Auto-generated method stub
-		return tokenanalyser.getProgrammTree();
+	
+		return programmTree;
 	}
+
 }

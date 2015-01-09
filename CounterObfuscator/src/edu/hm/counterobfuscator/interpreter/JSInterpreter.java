@@ -1,6 +1,5 @@
 package edu.hm.counterobfuscator.interpreter;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.script.ScriptException;
@@ -23,11 +22,11 @@ import edu.hm.counterobfuscator.types.Variable;
  */
 public class JSInterpreter implements IInterpreter {
 
-	private IClient					client;
-	private static Logger			log;
-	private String						output;
-	private String						jsScriptBuffer	= "";
-	private ITypeTree	programmTree;
+	private IClient client;
+	private static Logger log;
+	private String output;
+	private String jsScriptBuffer = "";
+	private ITypeTree programmTree;
 
 	public JSInterpreter(IJSParser jsParser, IClient client) {
 
@@ -35,7 +34,7 @@ public class JSInterpreter implements IInterpreter {
 
 		this.client = client;
 
-		//TODO replace with print methode in tree structure 
+		// TODO replace with print methode in tree structure
 		this.output = "";
 
 		this.programmTree = jsParser.getProgrammTree();
@@ -45,8 +44,7 @@ public class JSInterpreter implements IInterpreter {
 
 		log.info("start renaming process...");
 
-		for(int i=0; i<programmTree.size(); i++) {
-		
+		for (int i = 0; i < programmTree.size(); i++) {
 
 			processTreeElement(programmTree.get(i));
 
@@ -55,7 +53,7 @@ public class JSInterpreter implements IInterpreter {
 		System.out.println(output);
 
 		log.info("finished renaming process");
-		
+
 		return programmTree;
 
 	}
@@ -66,7 +64,9 @@ public class JSInterpreter implements IInterpreter {
 
 		if (element.hasChildren()) {
 			String body = "";
-			for (TypeTreeElement child : element.getChildren()) {
+			for (int i = 0; i < element.getChildren().size(); i++) {
+				TypeTreeElement child = element.getChild(i);
+
 				body += processTreeElement(child);
 			}
 			output += " }\n";
@@ -74,8 +74,7 @@ public class JSInterpreter implements IInterpreter {
 			// TODO refactor
 			if (element.getType().getType() == TYPE.FUNCTION) {
 				((Function) element.getType()).setBody(body);
-			}
-			else if (element.getType().getType() == TYPE.FOR) {
+			} else if (element.getType().getType() == TYPE.FOR) {
 				((ForWhile) element.getType()).setBody(body);
 			}
 
@@ -108,9 +107,9 @@ public class JSInterpreter implements IInterpreter {
 		if (func.isPacked()) {
 			// execute
 			element.removeAllChildren();
-		}
-		else {
-			output += "function " + func.getName() + func.getHeadString() + " {\n";
+		} else {
+			output += "function " + func.getName() + func.getHeadString()
+					+ " {\n";
 		}
 
 		return "function " + func.getName() + func.getHeadString() + " {";
@@ -160,8 +159,7 @@ public class JSInterpreter implements IInterpreter {
 		Object result = null;
 		try {
 			result = client.getJSResult(jsScriptBuffer + script);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			result = script;
 		}
 
