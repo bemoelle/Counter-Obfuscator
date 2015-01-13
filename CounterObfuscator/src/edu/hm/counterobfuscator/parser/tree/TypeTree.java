@@ -1,10 +1,14 @@
 /**
  * 
  */
-package edu.hm.counterobfuscator.parser.token.trees;
+package edu.hm.counterobfuscator.parser.tree;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import org.hamcrest.core.IsInstanceOf;
+
+import edu.hm.counterobfuscator.types.Variable;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -14,7 +18,7 @@ import java.util.LinkedList;
  */
 public class TypeTree implements ITypeTree {
 
-	private LinkedList<TypeTreeElement> typeTree;
+	private LinkedList<TypeTreeElement>	typeTree;
 
 	/**
 	 * 
@@ -23,31 +27,38 @@ public class TypeTree implements ITypeTree {
 		typeTree = new LinkedList<TypeTreeElement>();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#isEmpty()
 	 */
 	public boolean isEmpty() {
 		return typeTree.isEmpty();
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#add(edu.hm.counterobfuscator.parser.token.trees.TypeTreeElement)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#add(edu.hm.
+	 * counterobfuscator.parser.token.trees.TypeTreeElement)
 	 */
 	public void add(TypeTreeElement element) {
 
 		typeTree.add(element);
 	}
-	
-	//TODO
+
+	// TODO
 	/**
 	 * @return
 	 */
 	public TypeTreeElement walk() {
-		
+
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#print()
 	 */
 	public void print() {
@@ -62,19 +73,28 @@ public class TypeTree implements ITypeTree {
 	 */
 	private void printChildElement(String tab, ITypeTree tree) {
 
-		for(int i=0; i<tree.size(); i++) {
-		
+		for (int i = 0; i < tree.size(); i++) {
+
 			TypeTreeElement element = tree.get(i);
-			System.out.println("|" + tab
-					+ element.getType().getType().toString());
+
+			String test = "";
+			if (element.getType() instanceof Variable) {
+				test += ((Variable) element.getType()).getName() + " = ";
+				test += ((Variable) element.getType()).getValue();
+			}
+
+			System.out.println("|" + tab + element.getType().getType().toString() + " -- " + test);
 
 			if (element.hasChildren()) {
+
 				printChildElement(tab + "__", element.getChildren());
 			}
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#size()
 	 */
 	public int size() {
@@ -82,7 +102,9 @@ public class TypeTree implements ITypeTree {
 		return typeTree.size();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#get(int)
 	 */
 	public TypeTreeElement get(int index) {
@@ -90,15 +112,17 @@ public class TypeTree implements ITypeTree {
 		return typeTree.get(index);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#clear()
 	 */
 	public void clear() {
 		typeTree.clear();
-		
+
 	}
-	
-	//-----------------------------------------------------
+
+	// -----------------------------------------------------
 	// Iterator
 	public TypeTreeElement getLast() {
 		return typeTree.getLast();
@@ -109,6 +133,5 @@ public class TypeTree implements ITypeTree {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 }

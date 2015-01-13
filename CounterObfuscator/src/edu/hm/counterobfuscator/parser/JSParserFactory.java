@@ -14,9 +14,8 @@ public class JSParserFactory {
 
 		// TODO settings ?!?
 		JSParser jsParser = new JSParser(null, file, null);
-
 		jsParser.process();
-
+		
 		return jsParser;
 	}
 

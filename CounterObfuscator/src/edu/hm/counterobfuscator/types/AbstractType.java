@@ -20,7 +20,7 @@ public abstract class AbstractType {
 		this.pos = pos;
 		this.name = name;
 	}
-	
+
 	public TYPE getType() {
 		return type;
 	}
@@ -39,6 +39,20 @@ public abstract class AbstractType {
 
 	public void print() {
 		System.out.println("startPos: " + pos.getStartPos() + " -- " + "endPos: " + pos.getEndPos());
+
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		
+		AbstractType otherType = (AbstractType) other;
+
+		if (!this.name.equals(otherType.name))
+			return false;
+		if (!this.pos.equals(otherType.pos))
+			return false;
+
+		return true;
 
 	}
 }

@@ -5,7 +5,7 @@ package edu.hm.counterobfuscator.interpreter;
 
 import javax.script.ScriptException;
 
-import edu.hm.counterobfuscator.parser.token.trees.ITypeTree;
+import edu.hm.counterobfuscator.parser.tree.ITypeTree;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -15,6 +15,6 @@ import edu.hm.counterobfuscator.parser.token.trees.ITypeTree;
  */
 public interface IInterpreter {
 	
-	public ITypeTree process() throws ScriptException;
+	public void process() throws ScriptException;
 
 }

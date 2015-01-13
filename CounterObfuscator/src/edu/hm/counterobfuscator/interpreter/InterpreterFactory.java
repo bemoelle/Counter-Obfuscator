@@ -8,11 +8,14 @@ import java.util.List;
 
 import javax.script.ScriptException;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+
+import edu.hm.counterobfuscator.HTMLUnitClient;
 import edu.hm.counterobfuscator.IClient;
 import edu.hm.counterobfuscator.mapper.Mapper;
 import edu.hm.counterobfuscator.mapper.MapperElement;
 import edu.hm.counterobfuscator.parser.IJSParser;
-import edu.hm.counterobfuscator.parser.token.trees.ITypeTree;
+import edu.hm.counterobfuscator.parser.tree.ITypeTree;
 import edu.hm.counterobfuscator.types.TYPE;
 
 
@@ -32,10 +35,15 @@ public class InterpreterFactory {
 	 * @throws IOException 
 	 * @throws ScriptException 
 	 */
-	public static void create(IJSParser jsParser, IClient client) throws IOException, ScriptException {
+	public static void create(IJSParser jsParser) throws IOException, ScriptException {
 
-		IInterpreter interpreter = new JSInterpreter(jsParser, client);
-		ITypeTree programmTree = interpreter.process();
+		IClient client = new HTMLUnitClient("http://www.google.com/", BrowserVersion.FIREFOX_24);
+		
+		ITypeTree programmTree = jsParser.getProgrammTree();
+		
+		IInterpreter interpreter = new JSInterpreter(programmTree, client);
+		interpreter.process();
+		
 		programmTree.print();
 		
 		List<MapperElement> mappedVars = Mapper.process(TYPE.VARIABLE, programmTree);
@@ -43,6 +51,7 @@ public class InterpreterFactory {
 		IInterpreter jsVarRenamer = new JSVarRenamer(programmTree, mappedVars);
 		jsVarRenamer.process();
 		
+		programmTree.print();
 	}
 
 }

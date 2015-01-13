@@ -6,18 +6,19 @@ import javax.script.ScriptException;
 
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.mapper.MapperElement;
-import edu.hm.counterobfuscator.parser.token.trees.ITypeTree;
-import edu.hm.counterobfuscator.parser.token.trees.TypeTreeElement;
+import edu.hm.counterobfuscator.parser.tree.ITypeTree;
+import edu.hm.counterobfuscator.parser.tree.TypeTreeElement;
 import edu.hm.counterobfuscator.types.AbstractType;
+import edu.hm.counterobfuscator.types.TYPE;
 import edu.hm.counterobfuscator.types.Variable;
 
 public class JSVarRenamer implements IInterpreter {
 
-	private ITypeTree programmTree;
-	private String var = "var";
-	private int number = 1;
-	private List<MapperElement> mappedVars;
-	private Position actualScope = null;
+	private ITypeTree					programmTree;
+	private String						var			= "var";
+	private int							number		= 1;
+	private List<MapperElement>	mappedVars;
+	private Position					actualScope	= null;
 
 	public JSVarRenamer(ITypeTree programmTree, List<MapperElement> mappedVars) {
 		this.programmTree = programmTree;
@@ -25,7 +26,7 @@ public class JSVarRenamer implements IInterpreter {
 
 	}
 
-	public ITypeTree process() throws ScriptException {
+	public void process() throws ScriptException {
 
 		Position globalScope = findGlobalScope();
 
@@ -35,9 +36,6 @@ public class JSVarRenamer implements IInterpreter {
 			processTreeElement(programmTree, me.getType());
 
 		}
-
-		return programmTree;
-
 	}
 
 	private Position findGlobalScope() {
@@ -55,32 +53,34 @@ public class JSVarRenamer implements IInterpreter {
 		return globalScope;
 	}
 
-	private void processTreeElement(ITypeTree programmTree, AbstractType type) {
+	private void processTreeElement(ITypeTree programmTree, AbstractType elementToTest) {
 
 		for (int i = 0; i < programmTree.size(); i++) {
 
-			TypeTreeElement element = programmTree.get(i);
+			TypeTreeElement actualElement = programmTree.get(i);
 
-			// TODO test if it is same element
-			if (element.getType().getType() == type.getType()
-					&& (element.getType().getPos().getStartPos() > actualScope
-							.getStartPos() && element.getType().getPos()
-							.getEndPos() < actualScope.getEndPos())) {
+			if (actualElement.getType().getType() == TYPE.VARIABLE) {
 
-				String name = ((Variable) element.getType()).getName();
-				String value = ((Variable) element.getType()).getValue();
+				Variable var = (Variable) actualElement.getType();
+				Variable var2 = (Variable) elementToTest;
 
-				String nameToReplace = ((Variable) type).getName();
-				String valueToReplace = ((Variable) type).getValue();
+				String nameToTest = var2.getName();
+				String value = var.getValue();
 
-				name = name.replaceAll(nameToReplace, valueToReplace);
-				value = value.replaceAll(nameToReplace, valueToReplace);
+				if (value.contains(nameToTest)) {
 
+					String valueToTest = var2.getValue();
+
+					value = value.replaceAll(nameToTest, valueToTest);
+
+					var.setValue(value);
+
+				}
 			}
 
-			if (element.hasChildren()) {
+			if (actualElement.hasChildren()) {
 
-				processTreeElement(element.getChildren(), type);
+				processTreeElement(actualElement.getChildren(), elementToTest);
 			}
 
 		}

@@ -1,4 +1,4 @@
-package edu.hm.counterobfuscator.parser.token.trees;
+package edu.hm.counterobfuscator.parser.tree;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
