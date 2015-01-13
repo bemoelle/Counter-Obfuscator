@@ -1,31 +1,62 @@
 package edu.hm.counterobfuscator.mapper;
 
-
 import edu.hm.counterobfuscator.helper.Position;
-import edu.hm.counterobfuscator.types.AbstractType;
+import edu.hm.counterobfuscator.parser.tree.TypeTreeElement;
 
+/**
+ * @author Benjamin Moellerke <bemoelle@gmail.com>
+ * @date 13.01.2015
+ * 
+ * 
+ */
 public class MapperElement {
-	
-	private Position scope;
-	private AbstractType type;
 
-	public MapperElement(Position scope, AbstractType type) {
+	private Position			scope;
+	private TypeTreeElement	element;
+	private int					positionInList;
+
+	/**
+	 * @param positionInList
+	 * @param scope
+	 * @param element
+	 */
+	public MapperElement(int positionInList, Position scope, TypeTreeElement element) {
+		this.positionInList = positionInList;
 		this.scope = scope;
-		this.type = type;
+		this.element = element;
 	}
 
-	public AbstractType getType() {
-		return type;
+	/**
+	 * @return
+	 */
+	public int getPositionInList() {
+		return positionInList;
 	}
 
-	public void setType(AbstractType type) {
-		this.type = type;
+	/**
+	 * @return
+	 */
+	public TypeTreeElement getElement() {
+		return element;
 	}
 
+	/**
+	 * @param type
+	 */
+	public void setType(TypeTreeElement type) {
+		this.element = type;
+	}
+
+	/**
+	 * @return
+	 */
 	public Position getScope() {
 		return scope;
 	}
 
+	/**
+	 * @param scope
+	 */
 	public void setScope(Position scope) {
 		this.scope = scope;
 	}

@@ -1,10 +1,8 @@
 package edu.hm.counterobfuscator.parser.token;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.hm.counterobfuscator.parser.tree.ITypeTree;
-import edu.hm.counterobfuscator.parser.tree.TypeTreeElement;
 import edu.hm.counterobfuscator.types.AbstractType;
 
 /**

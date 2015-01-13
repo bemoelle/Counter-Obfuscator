@@ -102,17 +102,17 @@ public class TypeTreeElement {
 	@Override
 	public boolean equals(Object other){
 		
-		if (!(other instanceof TypeTreeElement)) {
-			return false;
-		} else  {
+//		if (!(other instanceof TypeTreeElement)) {
+//			return false;
+//		} else  {
 			TypeTreeElement otherTypeTreeElement = (TypeTreeElement)other;
 			
-			if(this.getType() != otherTypeTreeElement.getType()) return false;
+			//if(this.getType() != otherTypeTreeElement.getType()) return false;
 			if(!this.getType().getPos().equals(otherTypeTreeElement.getType().getPos())) return false;
-			if(!this.getType().getName().equals(otherTypeTreeElement.getType().getName())) return false;
+			//if(!this.getType().getName().equals(otherTypeTreeElement.getType().getName())) return false;
 			
 			return true;
-		}
+//		}
 	}
 
 }

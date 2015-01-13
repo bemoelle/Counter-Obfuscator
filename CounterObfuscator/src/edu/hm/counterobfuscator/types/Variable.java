@@ -11,8 +11,9 @@ import edu.hm.counterobfuscator.helper.Position;
  */
 public class Variable extends AbstractType {
 
-	private String	value;
-	private boolean isGlobal;
+	private String		value;
+	private boolean	isGlobal;
+	private boolean	noexe;
 
 	public Variable(Position pos, String name, String value, boolean isGlobal) {
 		super(TYPE.VARIABLE, pos, name);
@@ -23,7 +24,7 @@ public class Variable extends AbstractType {
 		else {
 			this.value = value;
 		}
-		
+
 		this.isGlobal = isGlobal;
 	}
 
@@ -41,6 +42,17 @@ public class Variable extends AbstractType {
 
 	public void setGlobal(boolean isGlobal) {
 		this.isGlobal = isGlobal;
+	}
+
+	/**
+	 * @param b
+	 */
+	public void setNoExe(boolean b) {
+		this.noexe = b;
+	}
+
+	public boolean getNoExe() {
+		return noexe;
 	}
 
 }

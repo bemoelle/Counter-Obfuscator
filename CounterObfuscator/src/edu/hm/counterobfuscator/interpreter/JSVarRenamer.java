@@ -1,68 +1,90 @@
 package edu.hm.counterobfuscator.interpreter;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.script.ScriptException;
 
 import edu.hm.counterobfuscator.helper.Position;
+import edu.hm.counterobfuscator.helper.Setting;
+import edu.hm.counterobfuscator.mapper.Mapper;
 import edu.hm.counterobfuscator.mapper.MapperElement;
 import edu.hm.counterobfuscator.parser.tree.ITypeTree;
 import edu.hm.counterobfuscator.parser.tree.TypeTreeElement;
-import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.TYPE;
 import edu.hm.counterobfuscator.types.Variable;
 
 public class JSVarRenamer implements IInterpreter {
 
-	private ITypeTree					programmTree;
-	private String						var			= "var";
-	private int							number		= 1;
-	private List<MapperElement>	mappedVars;
-	private Position					actualScope	= null;
+	private ITypeTree	programmTree;
+	private String		var			= "var";
+	private int			number		= 1;
+	private Position	actualScope	= null;
+	private Mapper		mapper;
+	private Setting	setting;
 
-	public JSVarRenamer(ITypeTree programmTree, List<MapperElement> mappedVars) {
+	public JSVarRenamer(ITypeTree programmTree, Setting setting) {
 		this.programmTree = programmTree;
-		this.mappedVars = mappedVars;
+		this.setting = setting;
 
+		// TODO Factory
+		this.mapper = new Mapper(TYPE.VARIABLE, programmTree);
+		this.mapper.process();
+		// ------------
 	}
 
 	public void process() throws ScriptException {
 
-		Position globalScope = findGlobalScope();
+		ITypeTree flatProgrammTree = programmTree.flatten();
 
-		for (MapperElement me : mappedVars) {
+		// TODO refactor
+		for (int i = 0; i < mapper.getMappedVars().size(); i++) {
+
+			MapperElement me = mapper.getMappedVars().get(i);
 			actualScope = me.getScope();
 
-			processTreeElement(programmTree, me.getType());
+			processTreeElement(flatProgrammTree, me);
 
 		}
+
+		removeVars(flatProgrammTree);
+
 	}
 
-	private Position findGlobalScope() {
+	// TODO REFACTOR: move to typetreeelement
+	/**
+	 * @param elementToTest
+	 * @param actualElement
+	 * @return
+	 */
+	private boolean isInScopeOf(MapperElement mappedElement, TypeTreeElement elementToTest) {
 
-		Position globalScope = new Position(0, 0);
+		Position pos1 = mappedElement.getScope();
+		Position pos2 = elementToTest.getType().getPos();
 
-		for (int i = 0; i < programmTree.size(); i++) {
-			AbstractType element = programmTree.get(i).getType();
-
-			if (element.getPos().getEndPos() > globalScope.getEndPos()) {
-				globalScope.setEndPos(element.getPos().getEndPos());
-			}
+		if (pos1.getStartPos() < pos2.getStartPos() && pos2.getStartPos() < pos1.getEndPos()) {
+			return true;
 		}
 
-		return globalScope;
+		return false;
 	}
 
-	private void processTreeElement(ITypeTree programmTree, AbstractType elementToTest) {
+	// TODO REFACTOR: move in typetree, maybe :)
+	/**
+	 * @param programmTree
+	 * @param me
+	 */
+	private void processTreeElement(ITypeTree programmTree, MapperElement me) {
 
 		for (int i = 0; i < programmTree.size(); i++) {
 
 			TypeTreeElement actualElement = programmTree.get(i);
 
-			if (actualElement.getType().getType() == TYPE.VARIABLE) {
+			if (isInScopeOf(me, actualElement) && actualElement.getType().getType() == TYPE.VARIABLE) {
 
 				Variable var = (Variable) actualElement.getType();
-				Variable var2 = (Variable) elementToTest;
+				Variable var2 = (Variable) me.getElement().getType();
 
 				String nameToTest = var2.getName();
 				String value = var.getValue();
@@ -74,16 +96,21 @@ public class JSVarRenamer implements IInterpreter {
 					value = value.replaceAll(nameToTest, valueToTest);
 
 					var.setValue(value);
-
 				}
 			}
 
-			if (actualElement.hasChildren()) {
+		}
+	}
 
-				processTreeElement(actualElement.getChildren(), elementToTest);
-			}
+	public void removeVars(ITypeTree programmTree) {
 
+		ITypeTree reverseFlat = programmTree.reverseOrder();
+
+		for (int i = 0; i < programmTree.size(); i++) {
+			
+			
 		}
 
 	}
+
 }

@@ -2,7 +2,6 @@ package edu.hm.counterobfuscator.parser.tree;
 
 import java.util.List;
 
-import edu.hm.counterobfuscator.mapper.IMapper;
 import edu.hm.counterobfuscator.types.AbstractType;
 
 /**

@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 import javax.script.ScriptException;
 
 import edu.hm.counterobfuscator.IClient;
-import edu.hm.counterobfuscator.parser.IJSParser;
 import edu.hm.counterobfuscator.parser.tree.ITypeTree;
 import edu.hm.counterobfuscator.parser.tree.TypeTreeElement;
 import edu.hm.counterobfuscator.types.Default;
@@ -120,12 +119,19 @@ public class JSInterpreter implements IInterpreter {
 
 		Object result = executeJS(var.getValue());
 
+		if(result.toString().indexOf("NOTEXE") > -1) {
+			result = result.toString().substring(6);
+			var.setNoExe(true);
+		}
+		
 		var.setValue(result.toString());
 
 		if (!var.isGlobal()) {
 			jsScriptBuffer += "var ";
 			output += "var ";
 		}
+		
+		
 
 		jsScriptBuffer += var.getName() + "=" + result + ";";
 		output += var.getName() + "=" + result + ";\n";
@@ -160,7 +166,8 @@ public class JSInterpreter implements IInterpreter {
 			result = client.getJSResult(jsScriptBuffer + script);
 		}
 		catch (Exception e) {
-			result = script;
+			System.out.println("Exception:" + script);
+			result = "NOTEXE" + script;
 		}
 
 		return result;

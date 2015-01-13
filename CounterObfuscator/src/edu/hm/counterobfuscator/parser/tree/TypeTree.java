@@ -3,11 +3,14 @@
  */
 package edu.hm.counterobfuscator.parser.tree;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 
-import org.hamcrest.core.IsInstanceOf;
-
+import edu.hm.counterobfuscator.helper.Position;
+import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Variable;
 
 /**
@@ -18,13 +21,13 @@ import edu.hm.counterobfuscator.types.Variable;
  */
 public class TypeTree implements ITypeTree {
 
-	private LinkedList<TypeTreeElement>	typeTree;
+	private List<TypeTreeElement>	typeTree;
 
 	/**
 	 * 
 	 */
 	public TypeTree() {
-		typeTree = new LinkedList<TypeTreeElement>();
+		typeTree = new ArrayList<TypeTreeElement>();
 	}
 
 	/*
@@ -46,14 +49,10 @@ public class TypeTree implements ITypeTree {
 
 		typeTree.add(element);
 	}
+	
+	public void addAll(List<TypeTreeElement> treeList) {
 
-	// TODO
-	/**
-	 * @return
-	 */
-	public TypeTreeElement walk() {
-
-		return null;
+		typeTree.addAll(treeList);
 	}
 
 	/*
@@ -112,6 +111,10 @@ public class TypeTree implements ITypeTree {
 		return typeTree.get(index);
 	}
 
+	public TypeTreeElement remove(int index) {
+		return typeTree.remove(index);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -125,13 +128,78 @@ public class TypeTree implements ITypeTree {
 	// -----------------------------------------------------
 	// Iterator
 	public TypeTreeElement getLast() {
-		return typeTree.getLast();
+		return typeTree.get(typeTree.size() - 1);
 	}
 
 	@Override
 	public Iterator<TypeTreeElement> iterator() {
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.parser.tree.ITypeTree#removeElementOfType(edu
+	 * .hm.counterobfuscator.types.AbstractType)
+	 */
+	@Override
+	public boolean removeElement(TypeTreeElement type) {
+
+		return typeTree.remove(type);
+	}
+
+	public Position findGlobalScope() {
+
+		Position globalScope = new Position(0, 0);
+
+		for (int i = 0; i < typeTree.size(); i++) {
+			AbstractType element = typeTree.get(i).getType();
+
+			if (element.getPos().getEndPos() > globalScope.getEndPos()) {
+				globalScope.setEndPos(element.getPos().getEndPos());
+			}
+		}
+
+		return globalScope;
+	}
+
+	public ITypeTree flatten() {
+
+		ITypeTree list = new TypeTree();
+
+		return walkThroughElement(this, list);
+	}
+
+	/**
+	 * @return
+	 */
+	private ITypeTree walkThroughElement(ITypeTree tree, ITypeTree flatList) {
+
+		for (int i = 0; i < tree.size(); i++) {
+
+			flatList.add(tree.get(i));
+
+			if (tree.get(i).hasChildren()) {
+
+				return walkThroughElement(tree.get(i).getChildren(), flatList);
+			}
+		}
+		return flatList;
+
+	}
+	
+	public ITypeTree reverseOrder() {
+		
+		List<TypeTreeElement> reverse = typeTree;
+		
+		Collections.reverse(reverse);
+		
+		ITypeTree reverseTree = new TypeTree();
+		
+		reverseTree.addAll(reverse);
+		
+		return reverseTree;
 	}
 
 }

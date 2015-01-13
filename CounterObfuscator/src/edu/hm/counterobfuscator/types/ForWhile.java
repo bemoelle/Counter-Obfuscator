@@ -3,10 +3,7 @@
  */
 package edu.hm.counterobfuscator.types;
 
-import java.util.List;
-
 import edu.hm.counterobfuscator.helper.Position;
-import edu.hm.counterobfuscator.parser.token.Token;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>

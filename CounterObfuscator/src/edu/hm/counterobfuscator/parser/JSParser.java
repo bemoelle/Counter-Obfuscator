@@ -3,13 +3,11 @@ package edu.hm.counterobfuscator.parser;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import edu.hm.counterobfuscator.IClient;
-import edu.hm.counterobfuscator.parser.token.TOKENTYPE;
 import edu.hm.counterobfuscator.parser.token.TokenAnalyserFactory;
 import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Function;

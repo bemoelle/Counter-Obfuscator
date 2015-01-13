@@ -6,12 +6,7 @@ import java.util.logging.Logger;
 
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.helper.Validate;
-import edu.hm.counterobfuscator.mapper.IMapper;
-import edu.hm.counterobfuscator.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.ITypeTree;
-import edu.hm.counterobfuscator.parser.tree.TreeCreator;
-import edu.hm.counterobfuscator.parser.tree.TypeTree;
-import edu.hm.counterobfuscator.parser.tree.TypeTreeElement;
 import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;

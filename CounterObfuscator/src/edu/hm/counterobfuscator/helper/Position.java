@@ -3,7 +3,6 @@
  */
 package edu.hm.counterobfuscator.helper;
 
-import org.hamcrest.core.IsInstanceOf;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
