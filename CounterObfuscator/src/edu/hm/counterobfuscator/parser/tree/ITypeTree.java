@@ -24,7 +24,7 @@ public interface ITypeTree extends Iterable<TypeTreeElement> {
 	/**
 	 * 
 	 */
-	public void print();
+	public void print(boolean flat);
 
 	/**
 	 * @return

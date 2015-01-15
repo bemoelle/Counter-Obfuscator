@@ -1,8 +1,9 @@
 package edu.hm.counterobfuscator.interpreter;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.script.ScriptException;
 
@@ -18,17 +19,16 @@ import edu.hm.counterobfuscator.types.Variable;
 public class JSVarRenamer implements IInterpreter {
 
 	private ITypeTree	programmTree;
-	private String		var			= "var";
-	private int			number		= 1;
-	private Position	actualScope	= null;
+	private String		varName	= "var";
+	private int			number	= 1;
 	private Mapper		mapper;
 	private Setting	setting;
 
 	public JSVarRenamer(ITypeTree programmTree, Setting setting) {
-		this.programmTree = programmTree;
+		this.programmTree = programmTree.flatten();
 		this.setting = setting;
 
-		// TODO Factory
+		// TODO refactor to Factory
 		this.mapper = new Mapper(TYPE.VARIABLE, programmTree);
 		this.mapper.process();
 		// ------------
@@ -36,20 +36,17 @@ public class JSVarRenamer implements IInterpreter {
 
 	public void process() throws ScriptException {
 
-		ITypeTree flatProgrammTree = programmTree.flatten();
-
-		// TODO refactor
-		for (int i = 0; i < mapper.getMappedVars().size(); i++) {
-
-			MapperElement me = mapper.getMappedVars().get(i);
-			actualScope = me.getScope();
-
-			processTreeElement(flatProgrammTree, me);
-
-		}
-
-		removeVars(flatProgrammTree);
-
+		System.out.println("start...............");
+		programmTree.print(true);
+		replaceVars();
+		System.out.println("after process ............................");
+		programmTree.print(true);
+		removeVars();
+		System.out.println("after remove............................");
+		programmTree.print(true);
+		renameVars();
+		System.out.println("after rename............................");
+		programmTree.print(true);
 	}
 
 	// TODO REFACTOR: move to typetreeelement
@@ -70,47 +67,139 @@ public class JSVarRenamer implements IInterpreter {
 		return false;
 	}
 
-	// TODO REFACTOR: move in typetree, maybe :)
 	/**
 	 * @param programmTree
 	 * @param me
 	 */
-	private void processTreeElement(ITypeTree programmTree, MapperElement me) {
+	private void replaceVars() {
+
+		for (int i = 0; i < mapper.getMappedVars().size(); i++) {
+
+			MapperElement me = mapper.getMappedVars().get(i);
+
+			for (int j = 0; j < programmTree.size(); j++) {
+
+				TypeTreeElement actualElement = programmTree.get(j);
+
+				// TODO gleiches element
+				// name = name + 12233; ??!?
+				// test ob value überhaupt ausfuehrbar ist -> wenn nicht muss diese
+				// nicht ersetzt werden.
+				if (actualElement.getType().getType() == TYPE.VARIABLE
+						&& isInScopeOf(me, actualElement)) {
+
+					Variable var = (Variable) actualElement.getType();
+					Variable var2 = (Variable) me.getElement().getType();
+
+					String nameToTest = var2.getName();
+					String value = var.getValue();
+
+					if (value.contains(nameToTest)) {
+
+						String valueToTest = var2.getValue();
+
+						if (valueToTest.length() > 20) {
+							continue;
+						}
+
+						value = value.replaceAll(nameToTest, valueToTest);
+
+						var.setValue(value);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param programmTree
+	 */
+	public void removeVars() {
+
+		ITypeTree reverseFlat = programmTree.reverseOrder();
+
+		for (int i = 0; i < mapper.getMappedVars().size(); i++) {
+
+			MapperElement me = mapper.getMappedVars().get(i);
+			String nameLookingFor = me.getElement().getType().getName();
+
+			int refCounter = 0;
+			for (int j = 0; j < reverseFlat.size(); j++) {
+
+				TypeTreeElement actualElement = reverseFlat.get(j);
+
+				if (actualElement.getType().getType() == TYPE.VARIABLE) {
+					Variable var = (Variable) actualElement.getType();
+
+					if (var.getValue().indexOf(nameLookingFor) > -1) {
+						refCounter++;
+					}
+
+					if (var.getName().indexOf(nameLookingFor) > -1) {
+						if (var.getNoExe())
+							refCounter++;
+						if (refCounter == 0) {
+
+							reverseFlat.removeElement(actualElement);
+						}
+					}
+				}
+			}
+		}
+
+		programmTree = reverseFlat.reverseOrder();
+	}
+
+	private List<String> isStringIsInMap(Map<String, String> mappedNames, String stringToTest) {
+
+		List<String> values = new ArrayList<String>();
+		for (String key : mappedNames.keySet()) {
+			if (stringToTest.indexOf(key) > -1) {
+				values.add(key);
+			}
+		}
+
+		return values;
+	}
+
+	/**
+	 * @param flatProgrammTree
+	 */
+	private void renameVars() {
+
+		Map<String, String> mappedNames = new HashMap<String, String>();
 
 		for (int i = 0; i < programmTree.size(); i++) {
 
 			TypeTreeElement actualElement = programmTree.get(i);
 
-			if (isInScopeOf(me, actualElement) && actualElement.getType().getType() == TYPE.VARIABLE) {
-
+			if (actualElement.getType().getType() == TYPE.VARIABLE) {
 				Variable var = (Variable) actualElement.getType();
-				Variable var2 = (Variable) me.getElement().getType();
 
-				String nameToTest = var2.getName();
-				String value = var.getValue();
+				String oldName = var.getName();
 
-				if (value.contains(nameToTest)) {
-
-					String valueToTest = var2.getValue();
-
-					value = value.replaceAll(nameToTest, valueToTest);
-
-					var.setValue(value);
+				if (mappedNames.containsKey(oldName)) {
+					var.setName(mappedNames.get(oldName));
 				}
+				else {
+					String newName = varName + number++;
+					mappedNames.put(oldName, newName);
+					var.setName(newName);
+				}
+
+				String value = var.getValue();
+				List<String> returnValue = isStringIsInMap(mappedNames, value);
+				if (returnValue != null) {
+
+					for (String replaceValue : returnValue) {
+						var.setValue(var.getValue().replaceAll(replaceValue,
+								mappedNames.get(replaceValue)));
+					}
+
+				}
+
 			}
-
-		}
-	}
-
-	public void removeVars(ITypeTree programmTree) {
-
-		ITypeTree reverseFlat = programmTree.reverseOrder();
-
-		for (int i = 0; i < programmTree.size(); i++) {
-			
-			
 		}
 
 	}
-
 }

@@ -114,7 +114,7 @@ public class Mapper implements IMapper {
 				MapperElement me2 = mappedElements.get(j);
 				if (me.getElement().getType().getName().equals(me2.getElement().getType().getName())) {
 					me.setScope(new Position(me.getScope().getStartPos(),
-							me.getScope().getStartPos() - 1));
+							me2.getScope().getStartPos() - 1));
 				}
 
 			}

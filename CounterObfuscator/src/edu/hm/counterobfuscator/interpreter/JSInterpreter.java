@@ -33,10 +33,8 @@ public class JSInterpreter implements IInterpreter {
 
 		this.client = client;
 
-		// TODO replace with print methode in tree structure
-		this.output = "";
-
 		this.programmTree = programmTree;
+		programmTree.print(false);
 	}
 
 	public void process() throws ScriptException {
@@ -49,10 +47,8 @@ public class JSInterpreter implements IInterpreter {
 
 		}
 
-		System.out.println(output);
-
 		log.info("finished renaming process");
-
+		
 	}
 
 	private String processTreeElement(TypeTreeElement element) {
@@ -66,7 +62,7 @@ public class JSInterpreter implements IInterpreter {
 
 				body += processTreeElement(child);
 			}
-			output += " }\n";
+			//output += " }\n";
 
 			// TODO refactor
 			if (element.getType().getType() == TYPE.FUNCTION) {
@@ -103,7 +99,7 @@ public class JSInterpreter implements IInterpreter {
 
 		Function func = ((Function) element.getType());
 		if (func.isPacked()) {
-			// execute
+			// TODO execute
 			element.removeAllChildren();
 		}
 		else {

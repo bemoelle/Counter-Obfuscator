@@ -4,7 +4,6 @@
 package edu.hm.counterobfuscator.parser.tree;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -27,7 +26,14 @@ public class TypeTree implements ITypeTree {
 	 * 
 	 */
 	public TypeTree() {
-		typeTree = new ArrayList<TypeTreeElement>();
+		this.typeTree = new ArrayList<TypeTreeElement>();
+	}
+
+	/**
+	 * 
+	 */
+	public TypeTree(List<TypeTreeElement> typeTree) {
+		this.typeTree = typeTree;
 	}
 
 	/*
@@ -49,7 +55,7 @@ public class TypeTree implements ITypeTree {
 
 		typeTree.add(element);
 	}
-	
+
 	public void addAll(List<TypeTreeElement> treeList) {
 
 		typeTree.addAll(treeList);
@@ -60,9 +66,25 @@ public class TypeTree implements ITypeTree {
 	 * 
 	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#print()
 	 */
-	public void print() {
+	public void print(boolean flat) {
 
-		printChildElement("", this);
+		if (!flat)
+			printChildElement("", this);
+		else {
+
+			for (int i = 0; i < typeTree.size(); i++) {
+
+				TypeTreeElement element = typeTree.get(i);
+
+				String test = "";
+				if (element.getType() instanceof Variable) {
+					test += ((Variable) element.getType()).getName() + " = ";
+					test += ((Variable) element.getType()).getValue();
+				}
+
+				System.out.println("|__" + element.getType().getType().toString() + " -- " + test);
+			}
+		}
 
 	}
 
@@ -188,18 +210,14 @@ public class TypeTree implements ITypeTree {
 		return flatList;
 
 	}
-	
+
 	public ITypeTree reverseOrder() {
-		
+
 		List<TypeTreeElement> reverse = typeTree;
-		
+
 		Collections.reverse(reverse);
-		
-		ITypeTree reverseTree = new TypeTree();
-		
-		reverseTree.addAll(reverse);
-		
-		return reverseTree;
+
+		return new TypeTree(reverse);
 	}
 
 }

@@ -39,12 +39,10 @@ public class InterpreterFactory {
 		IInterpreter interpreter = new JSInterpreter(programmTree, client);
 		interpreter.process();
 		
-		programmTree.print();
 				
 		IInterpreter jsVarRenamer = new JSVarRenamer(programmTree, null);
 		jsVarRenamer.process();
-		
-		programmTree.print();
+
 	}
 
 }
