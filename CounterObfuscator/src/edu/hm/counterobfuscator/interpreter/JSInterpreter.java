@@ -11,6 +11,7 @@ import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.types.TYPE;
+import edu.hm.counterobfuscator.types.This;
 import edu.hm.counterobfuscator.types.Variable;
 
 /**
@@ -86,6 +87,8 @@ public class JSInterpreter implements IInterpreter {
 			return executeVariable(element);
 		case FOR:
 			return executeFor(element);
+		case THIS:
+			return executeThis(element);
 		case DEFAULT:
 			return executeDefault(element);
 		default:
@@ -145,7 +148,7 @@ public class JSInterpreter implements IInterpreter {
 		return forWhile.getName() + forWhile.getHeadString() + " {";
 
 	}
-
+	
 	private String executeDefault(TypeTreeElement element) {
 
 		Default defaultType = ((Default) element.getType());
@@ -153,6 +156,16 @@ public class JSInterpreter implements IInterpreter {
 		output += defaultType.getName() + ";\n";
 
 		return defaultType.getName() + ";";
+	}
+	
+	private String executeThis(TypeTreeElement element) {
+
+		This type = ((This) element.getType());
+
+		String name = type.getName();
+		type.setName(executeJS(name)+"");
+
+		return type.getName() + ";";
 	}
 
 	private Object executeJS(String script) {

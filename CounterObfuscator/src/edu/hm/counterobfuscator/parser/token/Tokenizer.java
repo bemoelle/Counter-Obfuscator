@@ -78,6 +78,13 @@ class Tokenizer {
 		}
 		
 		log.info("tokinizing process finished");
+		
+		int i=0;
+		for(Token t: tokens) {
+			
+			System.out.println(i++ + "--" + t.getValue());
+		}
+		
 	}
 
 	List<Token> getTokens() {

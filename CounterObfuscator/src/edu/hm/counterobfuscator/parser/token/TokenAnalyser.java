@@ -11,6 +11,7 @@ import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
+import edu.hm.counterobfuscator.types.This;
 import edu.hm.counterobfuscator.types.Variable;
 
 /**
@@ -26,11 +27,11 @@ import edu.hm.counterobfuscator.types.Variable;
 // TODO clean!
 class TokenAnalyser implements ITokenAnalyser {
 
-	private static Logger					log;
-	private List<Token>						allTokensOfJSCode;
-	private Token								actualToken;
-	private List<AbstractType>				allTypes;
-	private ITypeTree	programmTree;
+	private static Logger		log;
+	private List<Token>			allTokensOfJSCode;
+	private Token					actualToken;
+	private List<AbstractType>	allTypes;
+	private ITypeTree				programmTree;
 
 	public TokenAnalyser(Tokenizer tokenizer) {
 
@@ -43,6 +44,21 @@ class TokenAnalyser implements ITokenAnalyser {
 		allTypes = new ArrayList<AbstractType>();
 
 		actualToken = allTokensOfJSCode.get(0);
+
+	}
+
+	/**
+	 * @throws Exception
+	 * 
+	 */
+	protected void process() throws IllegalArgumentException {
+
+		while (hasNextToken()) {
+
+			call(actualToken.getType());
+
+			getNextToken();
+		}
 
 	}
 
@@ -96,6 +112,9 @@ class TokenAnalyser implements ITokenAnalyser {
 		case FOR:
 			processFor();
 			break;
+		case THIS:
+			processThis();
+			break;
 		case RETURN:
 			processDefault();
 		default:
@@ -103,31 +122,17 @@ class TokenAnalyser implements ITokenAnalyser {
 	}
 
 	/**
-	 * @throws Exception
 	 * 
 	 */
-	protected void process() throws IllegalArgumentException {
-
-		while (hasNextToken()) {
-
-			call(actualToken.getType());
-
-			getNextToken();
-		}
-
-	}
-
-	
-
 	private void processDefault() {
 
 		int startPos = getActualToken().getPos();
 		int endPos = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
-		
+
 		String name = getNameOfType(startPos, endPos - 1);
-		
+
 		allTypes.add(new Default(new Position(startPos, endPos), name));
-		
+
 	}
 
 	private void processGlobalVar() {
@@ -237,6 +242,26 @@ class TokenAnalyser implements ITokenAnalyser {
 
 		setNextTokenTo(nextCurlyOpenBracket);
 
+	}
+
+	private void processThis() {
+
+		Validate.isTrue(allTokensOfJSCode.size() > 0);
+		Validate.notNull(allTypes);
+
+		log.info("start processThis analyse process...");
+
+		int startPos = getActualToken().getPos();
+
+		int assign = getPositionOfNextToken(startPos, TOKENTYPE.ASSIGN);
+		int endPos = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
+
+		String name = getNameOfType(startPos + 1, assign - 1);
+		String value = getNameOfType(assign + 1, endPos - 1);
+
+		allTypes.add(new This(new Position(startPos, endPos), name, value));
+
+		setNextTokenTo(endPos);
 	}
 
 	/**
