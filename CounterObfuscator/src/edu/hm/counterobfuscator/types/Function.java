@@ -28,7 +28,7 @@ public class Function extends AbstractType {
 
 		String[] heads = headString.split(",");
 		for (String varName : heads) {
-			head.add(new Variable(pos, varName, "", false));
+			head.add(new Variable(pos, varName, ""));
 		}
 
 	}

@@ -33,10 +33,4 @@ public interface ITokenAnalyser {
 	 * @return
 	 */
 	public List<AbstractType> getAllTypes();
-
-	/**
-	 * @return
-	 */
-	public ITypeTree getProgrammTree();
-
 }

@@ -37,7 +37,7 @@ public class JSParser implements IJSParser {
 	 * @param settings
 	 * @throws IOException
 	 */
-	public JSParser(IClient client, String file, Map<String, String> settings) throws IOException {
+	public JSParser(String file, Map<String, String> settings) throws IOException {
 
 		JSParser.log = Logger.getLogger(Function.class.getName());
 

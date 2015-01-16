@@ -40,7 +40,7 @@ class Tokenizer {
 		
 		Validate.notNull(tokens);
 
-		String matches = "(|)|[|]|;|=|{|}|,";
+		String matches = "(|)|[|]|;|=|{|}|,|.";
 
 		IMatch matcher = new TokenMatcher(matches);
 

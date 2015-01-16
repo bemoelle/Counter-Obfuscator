@@ -14,8 +14,10 @@ public class Variable extends AbstractType {
 	private String		value;
 	private boolean	isGlobal;
 	private boolean	noexe;
+	private boolean	isArray;
+	private boolean	hasNew;
 
-	public Variable(Position pos, String name, String value, boolean isGlobal) {
+	public Variable(Position pos, String name, String value) {
 		super(TYPE.VARIABLE, pos, name);
 
 		if (value.equals("")) {
@@ -25,7 +27,9 @@ public class Variable extends AbstractType {
 			this.value = value;
 		}
 
-		this.isGlobal = isGlobal;
+		this.isGlobal = false;
+		this.isArray = false;
+		this.hasNew = false;
 	}
 
 	public String getValue() {
@@ -44,15 +48,28 @@ public class Variable extends AbstractType {
 		this.isGlobal = isGlobal;
 	}
 
-	/**
-	 * @param b
-	 */
-	public void setNoExe(boolean b) {
-		this.noexe = b;
+	public void setNoExe(boolean notExe) {
+		this.noexe = notExe;
 	}
 
 	public boolean getNoExe() {
 		return noexe;
+	}
+
+	public boolean isArray() {
+		return isArray;
+	}
+
+	public void setArray(boolean isArray) {
+		this.isArray = isArray;
+	}
+
+	public boolean isHasNew() {
+		return hasNew;
+	}
+
+	public void setHasNew(boolean hasNew) {
+		this.hasNew = hasNew;
 	}
 
 }

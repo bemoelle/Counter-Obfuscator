@@ -30,7 +30,7 @@ public class ForWhile extends AbstractType {
 			isGlobal = true;
 		}
 
-		this.head = new Variable(pos, varName, "", isGlobal);
+		this.head = new Variable(pos, varName, "");
 		this.body = "";
 	}
 

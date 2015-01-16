@@ -13,7 +13,7 @@ public class JSParserFactory {
 	public static IJSParser create(String file) throws IOException {
 
 		// TODO settings ?!?
-		JSParser jsParser = new JSParser(null, file, null);
+		JSParser jsParser = new JSParser(file, null);
 		jsParser.process();
 		
 		return jsParser;

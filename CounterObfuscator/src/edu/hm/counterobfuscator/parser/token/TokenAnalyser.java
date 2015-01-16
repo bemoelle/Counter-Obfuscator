@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.jboss.netty.handler.codec.http.websocketx.PongWebSocketFrame;
+
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.helper.Validate;
-import edu.hm.counterobfuscator.parser.tree.ITypeTree;
 import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
+import edu.hm.counterobfuscator.types.FunctionCall;
+import edu.hm.counterobfuscator.types.Return;
 import edu.hm.counterobfuscator.types.This;
 import edu.hm.counterobfuscator.types.Variable;
 
@@ -31,7 +34,6 @@ class TokenAnalyser implements ITokenAnalyser {
 	private List<Token>			allTokensOfJSCode;
 	private Token					actualToken;
 	private List<AbstractType>	allTypes;
-	private ITypeTree				programmTree;
 
 	public TokenAnalyser(Tokenizer tokenizer) {
 
@@ -100,9 +102,6 @@ class TokenAnalyser implements ITokenAnalyser {
 		case VAR:
 			processVar();
 			break;
-		case ASSIGN:
-			processGlobalVar();
-			break;
 		case FUNCTION:
 			processFunction();
 			break;
@@ -116,8 +115,12 @@ class TokenAnalyser implements ITokenAnalyser {
 			processThis();
 			break;
 		case RETURN:
-			processDefault();
+			processReturn();
+			break;
 		default:
+			processDefault();
+			break;
+
 		}
 	}
 
@@ -129,30 +132,97 @@ class TokenAnalyser implements ITokenAnalyser {
 		int startPos = getActualToken().getPos();
 		int endPos = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
 
-		String name = getNameOfType(startPos, endPos - 1);
+		getNextToken();
 
-		allTypes.add(new Default(new Position(startPos, endPos), name));
+		Token nextToken = getActualToken();
+
+		switch (nextToken.getType()) {
+		case DOT:
+			System.out.println("FunctionCall");
+			int dot = getActualToken().getPos();
+
+			int openBracket = getPositionOfNextToken(startPos, TOKENTYPE.OPEN_BRACKET);
+
+			String nameFC = getNameOfType(startPos, dot - 1);
+			String functionFC = getNameOfType(dot + 1, openBracket - 1);
+			// -2 because ignore last )
+			String valueFC = getNameOfType(openBracket + 1, endPos - 2);
+
+			allTypes
+					.add(new FunctionCall(new Position(startPos, endPos), nameFC, functionFC, valueFC));
+
+			break;
+		case ASSIGN:
+
+			// TODO
+			// ++ --
+			// test -= test;
+			// test += test;
+
+			Variable var = null;
+
+			int assign = getActualToken().getPos();
+
+			String name = getNameOfType(startPos, assign - 1);
+			String value = getNameOfType(assign + 1, endPos - 1);
+
+			getNextToken();
+			Token nextSecondToken = getActualToken();
+
+			if (nextSecondToken.getType() == TOKENTYPE.NEW) {
+				System.out.println("NEWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+
+			}
+			else {
+
+				var = new Variable(new Position(startPos, endPos), name, value);
+
+				if (!allTypes.contains(var)) {
+					var.setGlobal(true);
+				}
+				
+				allTypes.add(var);
+			}
+			
+
+			break;
+		default:
+		}
+		setNextTokenTo(endPos);
 
 	}
 
-	private void processGlobalVar() {
+	private void processReturn() {
 
-		int assign = getActualToken().getPos();
-		int startPos = getPositionOfPreviousToken(assign - 1, TOKENTYPE.STRING);
+		int startPos = getActualToken().getPos();
 		int endPos = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
 
-		String name = getNameOfType(startPos, assign - 1);
-		String value = getNameOfType(assign + 1, endPos - 1);
+		String name = getNameOfType(startPos + 1, endPos - 1);
 
-		Variable var = new Variable(new Position(startPos, endPos), name, value, false);
+		allTypes.add(new Return(new Position(startPos, endPos), name));
 
-		if (!allTypes.contains(var)) {
-			var.setGlobal(true);
-		}
-
-		allTypes.add(var);
+		setNextTokenTo(endPos);
 
 	}
+
+	// private void processGlobalVar() {
+	//
+	// int assign = getActualToken().getPos();
+	// int startPos = getPositionOfPreviousToken(assign - 1, TOKENTYPE.STRING);
+	// int endPos = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
+	//
+	// String name = getNameOfType(startPos, assign - 1);
+	// String value = getNameOfType(assign + 1, endPos - 1);
+	//
+	// Variable var = new Variable(new Position(startPos, endPos), name, value);
+	//
+	// if (!allTypes.contains(var)) {
+	// var.setGlobal(true);
+	// }
+	//
+	// allTypes.add(var);
+	//
+	// }
 
 	/**
 	 * @return
@@ -167,7 +237,7 @@ class TokenAnalyser implements ITokenAnalyser {
 		String name = getNameOfType(startPos + 1, assign - 1);
 		String value = getNameOfType(assign + 1, endPos - 1);
 
-		allTypes.add(new Variable(new Position(startPos, endPos), name, value, false));
+		allTypes.add(new Variable(new Position(startPos, endPos), name, value));
 
 		setNextTokenTo(endPos);
 
@@ -610,13 +680,4 @@ class TokenAnalyser implements ITokenAnalyser {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.hm.counterobfuscator.parser.token.ITokenAnalyser#programmTree()
-	 */
-	@Override
-	public ITypeTree getProgrammTree() {
-		return programmTree;
-	}
 }

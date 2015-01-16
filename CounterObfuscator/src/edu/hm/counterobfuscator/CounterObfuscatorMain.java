@@ -22,7 +22,7 @@ public class CounterObfuscatorMain {
 	 */
 	public static void main(String[] args) throws IOException, ScriptException {
 
-		IJSParser jsParser = JSParserFactory.create("functionTest2");
+		IJSParser jsParser = JSParserFactory.create("functionTest");
 
 		InterpreterFactory.create(jsParser);
 	}

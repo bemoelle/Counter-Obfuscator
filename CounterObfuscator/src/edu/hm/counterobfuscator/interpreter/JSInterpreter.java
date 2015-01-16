@@ -10,6 +10,7 @@ import edu.hm.counterobfuscator.parser.tree.TypeTreeElement;
 import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
+import edu.hm.counterobfuscator.types.FunctionCall;
 import edu.hm.counterobfuscator.types.TYPE;
 import edu.hm.counterobfuscator.types.This;
 import edu.hm.counterobfuscator.types.Variable;
@@ -24,7 +25,6 @@ public class JSInterpreter implements IInterpreter {
 
 	private IClient			client;
 	private static Logger	log;
-	private String				output;
 	private String				jsScriptBuffer	= "";
 	private ITypeTree			programmTree;
 
@@ -63,7 +63,6 @@ public class JSInterpreter implements IInterpreter {
 
 				body += processTreeElement(child);
 			}
-			//output += " }\n";
 
 			// TODO refactor
 			if (element.getType().getType() == TYPE.FUNCTION) {
@@ -83,6 +82,8 @@ public class JSInterpreter implements IInterpreter {
 		switch (element.getType().getType()) {
 		case FUNCTION:
 			return executeFunction(element);
+		case FUNCTIONCALL:
+			return executeFunctionCall(element);
 		case VARIABLE:
 			return executeVariable(element);
 		case FOR:
@@ -105,11 +106,19 @@ public class JSInterpreter implements IInterpreter {
 			// TODO execute
 			element.removeAllChildren();
 		}
-		else {
-			output += "function " + func.getName() + func.getHeadString() + " {\n";
-		}
 
 		return "function " + func.getName() + func.getHeadString() + " {";
+	}
+	
+	private String executeFunctionCall(TypeTreeElement element) {
+
+		FunctionCall func = ((FunctionCall) element.getType());
+		
+		Object result = executeJS(func.getValue()+";");
+		
+		System.out.println(result + " weeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+	
+		return func.getName(); 
 	}
 
 	private String executeVariable(TypeTreeElement element) {
@@ -127,14 +136,10 @@ public class JSInterpreter implements IInterpreter {
 
 		if (!var.isGlobal()) {
 			jsScriptBuffer += "var ";
-			output += "var ";
 		}
 		
-		
-
 		jsScriptBuffer += var.getName() + "=" + result + ";";
-		output += var.getName() + "=" + result + ";\n";
-
+	
 		return var.getName() + "=" + result + ";";
 
 	}
@@ -143,8 +148,6 @@ public class JSInterpreter implements IInterpreter {
 
 		ForWhile forWhile = ((ForWhile) element.getType());
 
-		output += forWhile.getName() + forWhile.getHeadString() + " {\n";
-
 		return forWhile.getName() + forWhile.getHeadString() + " {";
 
 	}
@@ -152,8 +155,6 @@ public class JSInterpreter implements IInterpreter {
 	private String executeDefault(TypeTreeElement element) {
 
 		Default defaultType = ((Default) element.getType());
-
-		output += defaultType.getName() + ";\n";
 
 		return defaultType.getName() + ";";
 	}
@@ -171,13 +172,13 @@ public class JSInterpreter implements IInterpreter {
 	private Object executeJS(String script) {
 
 		Object result = null;
-		try {
+//		try {
 			result = client.getJSResult(jsScriptBuffer + script);
-		}
-		catch (Exception e) {
-			System.out.println("Exception:" + script);
-			result = "NOTEXE" + script;
-		}
+//		}
+//		catch (Exception e) {
+//			System.out.println("Exception:" + script);
+//			result = "NOTEXE" + script;
+//		}
 
 		return result;
 	}

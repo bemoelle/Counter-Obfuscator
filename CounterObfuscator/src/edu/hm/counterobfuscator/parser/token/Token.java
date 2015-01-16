@@ -29,7 +29,7 @@ public class Token {
 		this.pos = pos;
 		this.type = tokentype;
 		this.value = value;
-		this.hasWhitespace = tokentype == TOKENTYPE.RETURN ? true : false;
+		this.hasWhitespace = (tokentype == TOKENTYPE.RETURN || tokentype == TOKENTYPE.NEW) ? true : false;
 	}
 
 	/**
