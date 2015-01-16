@@ -10,6 +10,8 @@ import java.util.List;
 
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.types.AbstractType;
+import edu.hm.counterobfuscator.types.ForWhile;
+import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.types.Variable;
 
 /**
@@ -20,7 +22,7 @@ import edu.hm.counterobfuscator.types.Variable;
  */
 public class TypeTree implements ITypeTree {
 
-	private List<TypeTreeElement>	typeTree;
+	private List<TypeTreeElement> typeTree;
 
 	/**
 	 * 
@@ -82,7 +84,9 @@ public class TypeTree implements ITypeTree {
 					test += ((Variable) element.getType()).getValue();
 				}
 
-				System.out.println("|__" + element.getType().getType().toString() + " -- " + test);
+				System.out.println("|__"
+						+ element.getType().getType().toString() + " -- "
+						+ test);
 			}
 		}
 
@@ -104,13 +108,65 @@ public class TypeTree implements ITypeTree {
 				test += ((Variable) element.getType()).getValue();
 			}
 
-			System.out.println("|" + tab + element.getType().getType().toString() + " -- " + test);
+			System.out.println("|" + tab
+					+ element.getType().getType().toString() + " -- " + test);
 
 			if (element.hasChildren()) {
 
 				printChildElement(tab + "__", element.getChildren());
 			}
 		}
+	}
+
+	public void prettyPrint() {
+
+		String output = prettyPrintChildElement("", this);
+		System.out.println(output);
+
+	}
+
+	private String prettyPrintChildElement(String tab, ITypeTree tree) {
+
+		String test = "";
+
+		for (int i = 0; i < tree.size(); i++) {
+
+			TypeTreeElement element = tree.get(i);
+
+			test += call(element.getType());
+
+			if (element.hasChildren()) {
+				test+= prettyPrintChildElement(tab, element.getChildren());
+			}
+		}
+		
+		test += "};\n";
+
+		
+
+		return tab + test;
+	}
+
+	private String call(AbstractType abstractType) {
+
+		switch (abstractType.getType()) {
+
+		case FUNCTION:
+			Function func = (Function) abstractType;
+			return "function " + func.getName() + func.getHeadString() + "{\n";
+		case VARIABLE:
+			Variable var = (Variable) abstractType;
+			return var.isGlobal() ? "" : "var " + var.getName() + "="
+					+ var.getValue() + ";\n";
+		case FOR:
+		case WHILE:
+			ForWhile loop = (ForWhile) abstractType;
+			return loop.getName() + loop.getHeadString() + "{\n";
+		default:
+			break;
+		}
+		return null;
+
 	}
 
 	/*
@@ -204,7 +260,7 @@ public class TypeTree implements ITypeTree {
 
 			if (tree.get(i).hasChildren()) {
 
-				return walkThroughElement(tree.get(i).getChildren(), flatList);
+				walkThroughElement(tree.get(i).getChildren(), flatList);
 			}
 		}
 		return flatList;
@@ -219,5 +275,5 @@ public class TypeTree implements ITypeTree {
 
 		return new TypeTree(reverse);
 	}
-
+	
 }

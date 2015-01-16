@@ -3,6 +3,8 @@ package edu.hm.counterobfuscator;
 import java.io.IOException;
 import javax.script.ScriptException;
 
+import org.apache.commons.codec.EncoderException;
+
 import edu.hm.counterobfuscator.interpreter.InterpreterFactory;
 import edu.hm.counterobfuscator.parser.IJSParser;
 import edu.hm.counterobfuscator.parser.JSParserFactory;
@@ -19,10 +21,16 @@ public class CounterObfuscatorMain {
 	 * @param args
 	 * @throws IOException
 	 * @throws ScriptException
+	 * @throws EncoderException 
+	 * @throws IllegalArgumentException 
 	 */
-	public static void main(String[] args) throws IOException, ScriptException {
+	public static void main(String[] args) throws IOException, ScriptException, IllegalArgumentException, EncoderException {
 
 		IJSParser jsParser = JSParserFactory.create("functionTest");
+		
+		
+		jsParser.getProgrammTree().print(false);
+		jsParser.getProgrammTree().prettyPrint();
 
 		InterpreterFactory.create(jsParser);
 	}

@@ -2,6 +2,8 @@ package edu.hm.counterobfuscator.parser.token;
 
 import java.io.IOException;
 
+import org.apache.commons.codec.EncoderException;
+
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 25.12.2014
@@ -16,8 +18,10 @@ public class TokenAnalyserFactory {
 	 *           input
 	 * @return TokenAnalyser
 	 * @throws IOException 
+	 * @throws EncoderException 
+	 * @throws IllegalArgumentException 
 	 */
-	public static TokenAnalyser create(String input) throws IOException {
+	public static TokenAnalyser create(String input) throws IOException, IllegalArgumentException, EncoderException {
 
 		Tokenizer tokenizer = new Tokenizer(input);
 		tokenizer.process();

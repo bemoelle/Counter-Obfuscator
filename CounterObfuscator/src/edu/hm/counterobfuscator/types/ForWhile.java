@@ -13,14 +13,16 @@ import edu.hm.counterobfuscator.helper.Position;
  */
 public class ForWhile extends AbstractType {
 
-	private Variable	head;
-	private String		body;
-	private String		headString;
+	private Variable head;
+	private String headString;
+	private String bodyAsString;
 
-	public ForWhile(Position pos, String name, String headString) {
+	public ForWhile(Position pos, String name, String headString,
+			String bodyAsString) {
 
 		super(name.equals("for") ? TYPE.FOR : TYPE.WHILE, pos, name);
 		this.headString = headString;
+		this.bodyAsString = bodyAsString;
 
 		boolean isGlobal = false;
 
@@ -30,8 +32,7 @@ public class ForWhile extends AbstractType {
 			isGlobal = true;
 		}
 
-		this.head = new Variable(pos, varName, "");
-		this.body = "";
+		this.head = new Variable(pos, varName, "", isGlobal);
 	}
 
 	public Variable getHead() {
@@ -46,12 +47,12 @@ public class ForWhile extends AbstractType {
 		this.headString = headString;
 	}
 
-	public String getBody() {
-		return body;
+	public String getBodyAsString() {
+		return bodyAsString;
 	}
 
-	public void setBody(String body) {
-		this.body = body;
+	public void setBodyAsString(String body) {
+		this.bodyAsString = body;
 	}
 
 }

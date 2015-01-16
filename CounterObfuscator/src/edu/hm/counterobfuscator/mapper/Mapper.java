@@ -19,11 +19,11 @@ import edu.hm.counterobfuscator.types.TYPE;
  */
 public class Mapper implements IMapper {
 
-	private List<MapperElement>	mappedElements;
-	private TYPE						typeSearchFor;
-	private ITypeTree					programmTree;
+	private List<MapperElement> mappedElements;
+	private TYPE[] typeSearchFor;
+	private ITypeTree programmTree;
 
-	public Mapper(TYPE typeSearchFor, ITypeTree programmTree) {
+	public Mapper(ITypeTree programmTree, TYPE... typeSearchFor) {
 
 		this.typeSearchFor = typeSearchFor;
 		this.programmTree = programmTree;
@@ -41,11 +41,21 @@ public class Mapper implements IMapper {
 		testOfReAssign();
 	}
 
+	private boolean isSearchedType(TYPE typeToTest) {
+
+		for (TYPE test : typeSearchFor) {
+
+			if (test == typeToTest)
+				return true;
+		}
+		return false;
+	}
+
 	/**
 	 * @param tree
 	 * 
-	 *           recursive iteration of an @ITypeTree to collect all elements
-	 *           which type we are searching for.
+	 *            recursive iteration of an @ITypeTree to collect all elements
+	 *            which type we are searching for.
 	 * 
 	 */
 	private void callElement(ITypeTree tree) {
@@ -53,21 +63,23 @@ public class Mapper implements IMapper {
 		for (int i = 0, positionInList = 0; i < tree.size(); i++) {
 
 			TypeTreeElement element = tree.get(i);
-			if (element.getType().getType() == typeSearchFor) {
+			if (isSearchedType(element.getType().getType())) {
 
 				Position scope = null;
 
 				TypeTreeElement parent = element.getParent();
 				if (parent != null) {
-					scope = new Position(element.getType().getPos().getStartPos(), parent.getType()
-							.getPos().getEndPos());
-				}
-				else {
+					scope = new Position(element.getType().getPos()
+							.getStartPos(), parent.getType().getPos()
+							.getEndPos());
+				} else {
 					// -1 element has scope until EOF
-					scope = new Position(element.getType().getPos().getStartPos(), -1);
+					scope = new Position(element.getType().getPos()
+							.getStartPos(), -1);
 				}
 
-				mappedElements.add(new MapperElement(positionInList++, scope, element));
+				mappedElements.add(new MapperElement(positionInList++, scope,
+						element));
 			}
 
 			if (element.hasChildren()) {
@@ -77,31 +89,11 @@ public class Mapper implements IMapper {
 	}
 
 	/**
-	 * @param mapperElement
-	 * @return
-	 */
-	public boolean mappedElementHasReassign(MapperElement mapperElement) {
-
-		if (mapperElement.getPositionInList() + 1 < mappedElements.size()) {
-			return false;
-		}
-
-		String nameToTest = mapperElement.getElement().getType().getName();
-
-		for (int i = mapperElement.getPositionInList() + 1; i < mappedElements.size(); i++) {
-
-			String actualNameOfElement = mappedElements.get(i).getElement().getType().getName();
-
-			if (nameToTest.equals(actualNameOfElement)) {
-				return true;
-			}
-
-		}
-		return false;
-	}
-
-	/**
 	 * TODO REFACTOR
+	 *  
+	 * to test the scope of each element, it is possible an element has to be
+	 * reassinged. in this case, the scope have to be changed of this element
+	 * 
 	 */
 	private void testOfReAssign() {
 
@@ -112,9 +104,10 @@ public class Mapper implements IMapper {
 			for (int j = i + 1; j < mappedElements.size(); j++) {
 
 				MapperElement me2 = mappedElements.get(j);
-				if (me.getElement().getType().getName().equals(me2.getElement().getType().getName())) {
-					me.setScope(new Position(me.getScope().getStartPos(),
-							me2.getScope().getStartPos() - 1));
+				if (me.getElement().getType().getName()
+						.equals(me2.getElement().getType().getName())) {
+					me.setScope(new Position(me.getScope().getStartPos(), me2
+							.getScope().getStartPos() - 1));
 				}
 
 			}
@@ -130,15 +123,16 @@ public class Mapper implements IMapper {
 
 		for (MapperElement me : mappedElements) {
 			System.out.println(me.getElement().getType().getName() + "-->"
-					+ me.getScope().getStartPos() + ":" + me.getScope().getEndPos());
+					+ me.getScope().getStartPos() + ":"
+					+ me.getScope().getEndPos());
 		}
 	}
 
 	/**
-	 * @return a List<> of mapped Elements in the programm Tree which has the
-	 *         same type
+	 * @return a List of mapped Elements in the programm Tree which have the
+	 *         type we are looking for
 	 */
-	public List<MapperElement> getMappedVars() {
+	public List<MapperElement> getMappedElements() {
 
 		return mappedElements;
 	}

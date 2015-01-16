@@ -11,25 +11,29 @@ import edu.hm.counterobfuscator.helper.Position;
  */
 public class Variable extends AbstractType {
 
-	private String		value;
-	private boolean	isGlobal;
-	private boolean	noexe;
-	private boolean	isArray;
-	private boolean	hasNew;
+	private String value;
+	private boolean isGlobal;
+	private boolean noexe;
+	private boolean isArray;
+	private boolean isObject;
+	private String parameter;
 
-	public Variable(Position pos, String name, String value) {
+	public Variable(Position pos, String name, String value, boolean isObject) {
 		super(TYPE.VARIABLE, pos, name);
 
-		if (value.equals("")) {
-			this.value = "undefined";
-		}
-		else {
+		if (isObject) {
+			this.value = value.substring(4, value.indexOf("("));
+			this.parameter = value.substring(value.indexOf("(") + 1,
+					value.indexOf(")"));
+
+		} else {
 			this.value = value;
+			this.parameter = "";
 		}
 
 		this.isGlobal = false;
 		this.isArray = false;
-		this.hasNew = false;
+		this.isObject = isObject;
 	}
 
 	public String getValue() {
@@ -65,11 +69,19 @@ public class Variable extends AbstractType {
 	}
 
 	public boolean isHasNew() {
-		return hasNew;
+		return isObject;
 	}
 
 	public void setHasNew(boolean hasNew) {
-		this.hasNew = hasNew;
+		this.isObject = hasNew;
+	}
+
+	public String getParameter() {
+		return parameter;
+	}
+
+	public void setParameter(String parameter) {
+		this.parameter = parameter;
 	}
 
 }

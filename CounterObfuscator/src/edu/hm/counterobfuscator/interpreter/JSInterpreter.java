@@ -23,10 +23,10 @@ import edu.hm.counterobfuscator.types.Variable;
  */
 public class JSInterpreter implements IInterpreter {
 
-	private IClient			client;
-	private static Logger	log;
-	private String				jsScriptBuffer	= "";
-	private ITypeTree			programmTree;
+	private IClient client;
+	private static Logger log;
+	private String jsScriptBuffer = "";
+	private ITypeTree flatProgrammTree;
 
 	public JSInterpreter(ITypeTree programmTree, IClient client) {
 
@@ -34,91 +34,84 @@ public class JSInterpreter implements IInterpreter {
 
 		this.client = client;
 
-		this.programmTree = programmTree;
+		// create an flat structure of a programmtree
+		this.flatProgrammTree = programmTree.flatten();
 		programmTree.print(false);
 	}
 
 	public void process() throws ScriptException {
 
-		log.info("start renaming process...");
+		log.info("start javascript interpreter process...");
 
-		for (int i = 0; i < programmTree.size(); i++) {
+		for (int i = 0; i < flatProgrammTree.size(); i++) {
 
-			processTreeElement(programmTree.get(i));
-
+			callExecuteElement(flatProgrammTree.get(i));
 		}
 
-		log.info("finished renaming process");
-		
+		log.info("finished javascript interpreter process");
+
 	}
 
-	private String processTreeElement(TypeTreeElement element) {
-
-		String result = callExecuteElement(element);
-
-		if (element.hasChildren()) {
-			String body = "";
-			for (int i = 0; i < element.getChildren().size(); i++) {
-				TypeTreeElement child = element.getChild(i);
-
-				body += processTreeElement(child);
-			}
-
-			// TODO refactor
-			if (element.getType().getType() == TYPE.FUNCTION) {
-				((Function) element.getType()).setBody(body);
-			}
-			else if (element.getType().getType() == TYPE.FOR) {
-				((ForWhile) element.getType()).setBody(body);
-			}
-
-			return result + body + "";
-		}
-		return result;
-	};
-
-	private String callExecuteElement(TypeTreeElement element) {
+	/**
+	 * @param element
+	 */
+	private void callExecuteElement(TypeTreeElement element) {
 
 		switch (element.getType().getType()) {
 		case FUNCTION:
-			return executeFunction(element);
+			executeFunction(element);
+			break;
 		case FUNCTIONCALL:
-			return executeFunctionCall(element);
+			executeFunctionCall(element);
+			break;
 		case VARIABLE:
-			return executeVariable(element);
+			executeVariable(element);
+			break;
 		case FOR:
-			return executeFor(element);
+			executeFor(element);
+			break;
 		case THIS:
-			return executeThis(element);
+			executeThis(element);
+			break;
 		case DEFAULT:
-			return executeDefault(element);
+			executeDefault(element);
 		default:
 
 		}
-		return "";
-
 	}
 
-	private String executeFunction(TypeTreeElement element) {
+	/**
+	 * @param element
+	 * @return result if a function is executable packed or called
+	 * 
+	 *         execute function if function is packed and return result
+	 *         (function(a,b,c){return a+b+c;})(1,2,3) -> result is 6
+	 * 
+	 */
+	private void executeFunction(TypeTreeElement element) {
 
 		Function func = ((Function) element.getType());
 		if (func.isPacked()) {
-			// TODO execute
+			log.info("packed function found!");
+
+			String script = "(function " + func.getName()
+					+ func.getHeadString() + func.getBodyAsString() + ";";
+			Object result = executeJS(script);
 			element.removeAllChildren();
+			func.setBodyAsString(result.toString());
+			log.info("result is " + result);
 		}
 
-		return "function " + func.getName() + func.getHeadString() + " {";
 	}
-	
-	private String executeFunctionCall(TypeTreeElement element) {
+
+	private void executeFunctionCall(TypeTreeElement element) {
 
 		FunctionCall func = ((FunctionCall) element.getType());
-		
-		Object result = executeJS(func.getValue()+";");
-		
+
+		Object result = executeJS(func.getValue() + ";");
+
 		System.out.println(result + " weeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-	
-		return func.getName(); 
+
 	}
 
 	private String executeVariable(TypeTreeElement element) {
@@ -127,44 +120,41 @@ public class JSInterpreter implements IInterpreter {
 
 		Object result = executeJS(var.getValue());
 
-		if(result.toString().indexOf("NOTEXE") > -1) {
+		if (result.toString().indexOf("NOTEXE") > -1) {
 			result = result.toString().substring(6);
 			var.setNoExe(true);
 		}
-		
+
 		var.setValue(result.toString());
 
 		if (!var.isGlobal()) {
 			jsScriptBuffer += "var ";
 		}
-		
+
 		jsScriptBuffer += var.getName() + "=" + result + ";";
-	
+
 		return var.getName() + "=" + result + ";";
 
 	}
 
-	private String executeFor(TypeTreeElement element) {
+	private void executeFor(TypeTreeElement element) {
 
 		ForWhile forWhile = ((ForWhile) element.getType());
 
-		return forWhile.getName() + forWhile.getHeadString() + " {";
-
 	}
-	
-	private String executeDefault(TypeTreeElement element) {
+
+	private void executeDefault(TypeTreeElement element) {
 
 		Default defaultType = ((Default) element.getType());
 
-		return defaultType.getName() + ";";
 	}
-	
+
 	private String executeThis(TypeTreeElement element) {
 
 		This type = ((This) element.getType());
 
 		String name = type.getName();
-		type.setName(executeJS(name)+"");
+		type.setName(executeJS(name) + "");
 
 		return type.getName() + ";";
 	}
@@ -172,13 +162,12 @@ public class JSInterpreter implements IInterpreter {
 	private Object executeJS(String script) {
 
 		Object result = null;
-//		try {
+		try {
 			result = client.getJSResult(jsScriptBuffer + script);
-//		}
-//		catch (Exception e) {
-//			System.out.println("Exception:" + script);
-//			result = "NOTEXE" + script;
-//		}
+		} catch (Exception e) {
+			System.out.println("Exception:" + script);
+			result = "NOTEXE" + script;
+		}
 
 		return result;
 	}

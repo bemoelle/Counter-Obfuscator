@@ -78,4 +78,6 @@ public interface ITypeTree extends Iterable<TypeTreeElement> {
 	 * @return
 	 */
 	public ITypeTree reverseOrder();
+
+	public void prettyPrint();
 }

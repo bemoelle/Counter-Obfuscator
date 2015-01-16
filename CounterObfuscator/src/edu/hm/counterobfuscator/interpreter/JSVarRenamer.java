@@ -13,26 +13,30 @@ import edu.hm.counterobfuscator.mapper.Mapper;
 import edu.hm.counterobfuscator.mapper.MapperElement;
 import edu.hm.counterobfuscator.parser.tree.ITypeTree;
 import edu.hm.counterobfuscator.parser.tree.TypeTreeElement;
+import edu.hm.counterobfuscator.types.FunctionCall;
 import edu.hm.counterobfuscator.types.TYPE;
 import edu.hm.counterobfuscator.types.Variable;
 
 public class JSVarRenamer implements IInterpreter {
 
-	private ITypeTree	programmTree;
-	private String		varName	= "var";
-	private int			number	= 1;
-	private Mapper		mapper;
-	private Setting	setting;
+	private ITypeTree programmTree;
+	private String varName = "var";
+	private int number = 1;
+	private Mapper mapper;
+	private Setting setting;
 
 	public JSVarRenamer(ITypeTree programmTree, Setting setting) {
 		this.programmTree = programmTree.flatten();
 		this.setting = setting;
 
 		// TODO refactor to Factory
-		this.mapper = new Mapper(TYPE.VARIABLE, programmTree);
+		this.mapper = new Mapper(programmTree,TYPE.VARIABLE, TYPE.FUNCTIONCALL);
 		this.mapper.process();
 		// ------------
 	}
+
+	// TODO change operations to work on mapped elements instead of original
+	// programmtree
 
 	public void process() throws ScriptException {
 
@@ -55,12 +59,14 @@ public class JSVarRenamer implements IInterpreter {
 	 * @param actualElement
 	 * @return
 	 */
-	private boolean isInScopeOf(MapperElement mappedElement, TypeTreeElement elementToTest) {
+	private boolean isInScopeOf(MapperElement mappedElement,
+			MapperElement elementToTest) {
 
 		Position pos1 = mappedElement.getScope();
-		Position pos2 = elementToTest.getType().getPos();
+		Position pos2 = elementToTest.getElement().getType().getPos();
 
-		if (pos1.getStartPos() < pos2.getStartPos() && pos2.getStartPos() < pos1.getEndPos()) {
+		if (pos1.getStartPos() < pos2.getStartPos()
+				&& pos2.getStartPos() < pos1.getEndPos()) {
 			return true;
 		}
 
@@ -73,22 +79,22 @@ public class JSVarRenamer implements IInterpreter {
 	 */
 	private void replaceVars() {
 
-		for (int i = 0; i < mapper.getMappedVars().size(); i++) {
+		for (int i = 0; i < mapper.getMappedElements().size(); i++) {
 
-			MapperElement me = mapper.getMappedVars().get(i);
+			MapperElement me = mapper.getMappedElements().get(i);
 
-			for (int j = 0; j < programmTree.size(); j++) {
+			for (int j = i+1; j < mapper.getMappedElements().size(); j++) {
 
-				TypeTreeElement actualElement = programmTree.get(j);
+				MapperElement me2 = mapper.getMappedElements().get(j);
 
 				// TODO gleiches element
 				// name = name + 12233; ??!?
-				// test ob value überhaupt ausfuehrbar ist -> wenn nicht muss diese
+				// test ob value ï¿½berhaupt ausfuehrbar ist -> wenn nicht muss
+				// diese
 				// nicht ersetzt werden.
-				if (actualElement.getType().getType() == TYPE.VARIABLE
-						&& isInScopeOf(me, actualElement)) {
+				if (isInScopeOf(me, me2)) {
 
-					Variable var = (Variable) actualElement.getType();
+					Variable var = (Variable) me2.getElement().getType();
 					Variable var2 = (Variable) me.getElement().getType();
 
 					String nameToTest = var2.getName();
@@ -118,9 +124,9 @@ public class JSVarRenamer implements IInterpreter {
 
 		ITypeTree reverseFlat = programmTree.reverseOrder();
 
-		for (int i = 0; i < mapper.getMappedVars().size(); i++) {
+		for (int i = 0; i < mapper.getMappedElements().size(); i++) {
 
-			MapperElement me = mapper.getMappedVars().get(i);
+			MapperElement me = mapper.getMappedElements().get(i);
 			String nameLookingFor = me.getElement().getType().getName();
 
 			int refCounter = 0;
@@ -143,6 +149,16 @@ public class JSVarRenamer implements IInterpreter {
 							reverseFlat.removeElement(actualElement);
 						}
 					}
+				} else if (actualElement.getType().getType() == TYPE.FUNCTIONCALL) {
+					FunctionCall functionCall = (FunctionCall) actualElement
+							.getType();
+					String name = functionCall.getName();
+					String parameter = functionCall.getValue();
+
+					if (name.indexOf(nameLookingFor) > -1
+							|| parameter.indexOf(nameLookingFor) > -1) {
+						refCounter++;
+					}
 				}
 			}
 		}
@@ -150,7 +166,8 @@ public class JSVarRenamer implements IInterpreter {
 		programmTree = reverseFlat.reverseOrder();
 	}
 
-	private List<String> isStringIsInMap(Map<String, String> mappedNames, String stringToTest) {
+	private List<String> isStringIsInMap(Map<String, String> mappedNames,
+			String stringToTest) {
 
 		List<String> values = new ArrayList<String>();
 		for (String key : mappedNames.keySet()) {
@@ -180,8 +197,7 @@ public class JSVarRenamer implements IInterpreter {
 
 				if (mappedNames.containsKey(oldName)) {
 					var.setName(mappedNames.get(oldName));
-				}
-				else {
+				} else {
 					String newName = varName + number++;
 					mappedNames.put(oldName, newName);
 					var.setName(newName);

@@ -36,7 +36,7 @@ public final class TreeCreator {
 			int endPos = actualType.getPos().getEndPos();
 			if (programmTree.isEmpty() || startPos > highestEndPos) {
 
-				TypeTreeElement tte = new TypeTreeElement(parent, actualType);
+				TypeTreeElement tte = new TypeTreeElement(null, actualType);
 				programmTree.add(tte);
 				highestEndPos = endPos;
 				parent = tte;

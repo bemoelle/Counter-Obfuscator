@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.apache.commons.codec.EncoderException;
+
 import edu.hm.counterobfuscator.IClient;
 import edu.hm.counterobfuscator.parser.token.TokenAnalyserFactory;
 import edu.hm.counterobfuscator.types.AbstractType;
@@ -56,9 +58,11 @@ public class JSParser implements IJSParser {
 
 	/**
 	 * @throws IOException
+	 * @throws EncoderException 
+	 * @throws IllegalArgumentException 
 	 * 
 	 */
-	public void process() throws IOException {
+	public void process() throws IOException, IllegalArgumentException, EncoderException {
 
 		log.info("start parsing jscode...");
 

@@ -14,21 +14,23 @@ import edu.hm.counterobfuscator.helper.Position;
  */
 public class Function extends AbstractType {
 
-	private List<Variable>	head;
-	private String				body;
-	private boolean			isPacked;
-	private String				headString;
+	private List<Variable> head;
+	private boolean isPacked;
+	private String headString;
+	private String bodyAsString;
 
-	public Function(Position pos, String name, String headString, boolean isPacked) {
+	public Function(Position pos, String name, String headString,
+			String bodyAsString, boolean isPacked) {
 		super(TYPE.FUNCTION, pos, name);
+		
 		this.headString = headString;
+		this.bodyAsString = bodyAsString;
 		this.isPacked = isPacked;
-		this.body = "";
 		this.head = new ArrayList<Variable>();
 
 		String[] heads = headString.split(",");
 		for (String varName : heads) {
-			head.add(new Variable(pos, varName, ""));
+			head.add(new Variable(pos, varName, "", false));
 		}
 
 	}
@@ -37,16 +39,16 @@ public class Function extends AbstractType {
 		return head;
 	}
 
-	public String getBody() {
-		return body;
+	public String getBodyAsString() {
+		return bodyAsString;
 	}
 
 	public boolean isPacked() {
 		return isPacked;
 	}
 
-	public void setBody(String boby) {
-		this.body = boby;
+	public void setBodyAsString(String bodyAsString) {
+		this.bodyAsString = bodyAsString;
 	}
 
 	public String getHeadString() {
