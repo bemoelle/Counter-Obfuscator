@@ -11,6 +11,6 @@ package edu.hm.counterobfuscator.types;
  */
 public enum TYPE {
 
-	VARIABLE, FUNCTION, FOR, WHILE, IF, TRY, DEFAULT, THIS, FUNCTIONCALL, RETURN, NEW
+	VARIABLE, FUNCTION, FOR, WHILE, IF, TRY, DEFAULT, THIS, RETURN, NEW, CALL
 
 }

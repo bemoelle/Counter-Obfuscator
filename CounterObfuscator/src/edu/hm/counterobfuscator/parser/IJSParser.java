@@ -2,7 +2,7 @@ package edu.hm.counterobfuscator.parser;
 
 import java.util.List;
 
-import edu.hm.counterobfuscator.parser.tree.ITypeTree;
+import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.types.AbstractType;
 
 public interface IJSParser {
@@ -23,6 +23,6 @@ public interface IJSParser {
 	/**
 	 * @return
 	 */
-	public ITypeTree getProgrammTree();
+	public IProgrammTree getProgrammTree();
 
 }

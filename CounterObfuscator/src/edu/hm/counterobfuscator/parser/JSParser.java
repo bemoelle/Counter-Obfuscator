@@ -15,7 +15,7 @@ import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.parser.token.ITokenAnalyser;
 import edu.hm.counterobfuscator.parser.token.Token;
-import edu.hm.counterobfuscator.parser.tree.ITypeTree;
+import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.TreeCreator;
 
 /**
@@ -31,7 +31,7 @@ public class JSParser implements IJSParser {
 	private String				unparsedJSCode;
 	private static Logger	log;
 	private ITokenAnalyser	tokenanalyser;
-	private ITypeTree			programmTree;
+	private IProgrammTree			programmTree;
 
 	/**
 	 * @param client
@@ -109,7 +109,7 @@ public class JSParser implements IJSParser {
 		return tokenanalyser.getAllPosOfTokensByValue(value);
 	}
 
-	public ITypeTree getProgrammTree() {
+	public IProgrammTree getProgrammTree() {
 
 		return programmTree;
 	}

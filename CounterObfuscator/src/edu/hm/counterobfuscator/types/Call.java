@@ -14,12 +14,12 @@ import edu.hm.counterobfuscator.helper.Position;
  *       name: obj function: SayHello value: _0xd237[3]
  * 
  */
-public class FunctionCall extends AbstractType {
+public class Call extends AbstractType {
 	private String	value;
 	private String	parameter;
 
-	public FunctionCall(Position pos, String name, String parameter, String value) {
-		super(TYPE.FUNCTIONCALL, pos, name);
+	public Call(Position pos, String name, String parameter, String value) {
+		super(TYPE.CALL, pos, name);
 		this.parameter = parameter;
 		
 		this.value = value;

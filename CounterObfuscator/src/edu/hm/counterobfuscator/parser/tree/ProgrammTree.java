@@ -13,7 +13,7 @@ import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
-import edu.hm.counterobfuscator.types.FunctionCall;
+import edu.hm.counterobfuscator.types.Call;
 import edu.hm.counterobfuscator.types.Return;
 import edu.hm.counterobfuscator.types.This;
 import edu.hm.counterobfuscator.types.Variable;
@@ -24,21 +24,21 @@ import edu.hm.counterobfuscator.types.Variable;
  * 
  * 
  */
-public class TypeTree implements ITypeTree {
+public class ProgrammTree implements IProgrammTree {
 
-	private List<TypeTreeElement>	typeTree;
+	private List<Element>	typeTree;
 
 	/**
 	 * 
 	 */
-	public TypeTree() {
-		this.typeTree = new ArrayList<TypeTreeElement>();
+	public ProgrammTree() {
+		this.typeTree = new ArrayList<Element>();
 	}
 
 	/**
 	 * 
 	 */
-	public TypeTree(List<TypeTreeElement> typeTree) {
+	public ProgrammTree(List<Element> typeTree) {
 		this.typeTree = typeTree;
 	}
 
@@ -57,12 +57,12 @@ public class TypeTree implements ITypeTree {
 	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#add(edu.hm.
 	 * counterobfuscator.parser.token.trees.TypeTreeElement)
 	 */
-	public void add(TypeTreeElement element) {
+	public void add(Element element) {
 
 		typeTree.add(element);
 	}
 
-	public void addAll(List<TypeTreeElement> treeList) {
+	public void addAll(List<Element> treeList) {
 
 		typeTree.addAll(treeList);
 	}
@@ -80,7 +80,7 @@ public class TypeTree implements ITypeTree {
 
 			for (int i = 0; i < typeTree.size(); i++) {
 
-				TypeTreeElement element = typeTree.get(i);
+				Element element = typeTree.get(i);
 
 				String test = "";
 				if (element.getType() instanceof Variable) {
@@ -101,11 +101,11 @@ public class TypeTree implements ITypeTree {
 	 * @param tab
 	 * @param tree
 	 */
-	private void printChildElement(String tab, ITypeTree tree) {
+	private void printChildElement(String tab, IProgrammTree tree) {
 
 		for (int i = 0; i < tree.size(); i++) {
 
-			TypeTreeElement element = tree.get(i);
+			Element element = tree.get(i);
 
 			String test = "";
 			if (element.getType() instanceof Variable) {
@@ -132,13 +132,13 @@ public class TypeTree implements ITypeTree {
 
 	}
 
-	private String prettyPrintChildElement(String tab, ITypeTree tree) {
+	private String prettyPrintChildElement(String tab, IProgrammTree tree) {
 
 		String test = "";
 
 		for (int i = 0; i < tree.size(); i++) {
 
-			TypeTreeElement element = tree.get(i);
+			Element element = tree.get(i);
 
 			test += call(element.getType());
 
@@ -157,8 +157,8 @@ public class TypeTree implements ITypeTree {
 		case FUNCTION:
 			Function func = (Function) abstractType;
 			return "function " + func.getName() + func.getHeadString() + "{\n";
-		case FUNCTIONCALL:
-			FunctionCall fc = (FunctionCall) abstractType;
+		case CALL:
+			Call fc = (Call) abstractType;
 			return "var " + fc.getName() + "." + fc.getFunction() + "(" + fc.getParameter() + ");\n";
 		case VARIABLE:
 			Variable var = (Variable) abstractType;
@@ -200,12 +200,12 @@ public class TypeTree implements ITypeTree {
 	 * 
 	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#get(int)
 	 */
-	public TypeTreeElement get(int index) {
+	public Element get(int index) {
 
 		return typeTree.get(index);
 	}
 
-	public TypeTreeElement remove(int index) {
+	public Element remove(int index) {
 		return typeTree.remove(index);
 	}
 
@@ -221,12 +221,12 @@ public class TypeTree implements ITypeTree {
 
 	// -----------------------------------------------------
 	// Iterator
-	public TypeTreeElement getLast() {
+	public Element getLast() {
 		return typeTree.get(typeTree.size() - 1);
 	}
 
 	@Override
-	public Iterator<TypeTreeElement> iterator() {
+	public Iterator<Element> iterator() {
 		return null;
 	}
 
@@ -238,7 +238,7 @@ public class TypeTree implements ITypeTree {
 	 * .hm.counterobfuscator.types.AbstractType)
 	 */
 	@Override
-	public boolean removeElement(TypeTreeElement type) {
+	public boolean removeElement(Element type) {
 
 		return typeTree.remove(type);
 	}
@@ -258,9 +258,9 @@ public class TypeTree implements ITypeTree {
 		return globalScope;
 	}
 
-	public ITypeTree flatten() {
+	public IProgrammTree flatten() {
 
-		ITypeTree list = new TypeTree();
+		IProgrammTree list = new ProgrammTree();
 
 		return walkThroughElement(this, list);
 	}
@@ -268,7 +268,7 @@ public class TypeTree implements ITypeTree {
 	/**
 	 * @return
 	 */
-	private ITypeTree walkThroughElement(ITypeTree tree, ITypeTree flatList) {
+	private IProgrammTree walkThroughElement(IProgrammTree tree, IProgrammTree flatList) {
 
 		for (int i = 0; i < tree.size(); i++) {
 
@@ -283,13 +283,13 @@ public class TypeTree implements ITypeTree {
 
 	}
 
-	public ITypeTree reverseOrder() {
+	public IProgrammTree reverseOrder() {
 
-		List<TypeTreeElement> reverse = typeTree;
+		List<Element> reverse = typeTree;
 
 		Collections.reverse(reverse);
 
-		return new TypeTree(reverse);
+		return new ProgrammTree(reverse);
 	}
 
 }

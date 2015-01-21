@@ -11,54 +11,54 @@ import edu.hm.counterobfuscator.types.AbstractType;
  * 
  * 
  */
-public class TypeTreeElement {
+public class Element {
 
-	private ITypeTree children;
+	private IProgrammTree children;
 	private AbstractType type;
-	private TypeTreeElement parent;
+	private Element parent;
 
 	/**
 	 * @param parent
 	 * @param type
 	 */
-	public TypeTreeElement(TypeTreeElement parent, AbstractType type) {
+	public Element(Element parent, AbstractType type) {
 		this.parent = parent;
 		this.type = type;
-		this.children = new TypeTree();
+		this.children = new ProgrammTree();
 	}
 
 	/**
 	 * @return
 	 */
-	public TypeTreeElement getParent() {
+	public Element getParent() {
 		return parent;
 	}
 
 	/**
 	 * @param parent
 	 */
-	public void setParent(TypeTreeElement parent) {
+	public void setParent(Element parent) {
 		this.parent = parent;
 	}
 
 	/**
 	 * @return
 	 */
-	public ITypeTree getChildren() {
+	public IProgrammTree getChildren() {
 		return children;
 	}
 
 	/**
 	 * @param child
 	 */
-	public void addChild(TypeTreeElement child) {
+	public void addChild(Element child) {
 		children.add(child);
 	}
 
 	/**
 	 * @return
 	 */
-	public TypeTreeElement getLatestChild() {
+	public Element getLatestChild() {
 		return children.getLast();
 	}
 
@@ -95,7 +95,7 @@ public class TypeTreeElement {
 	 * @param index
 	 * @return
 	 */
-	public TypeTreeElement getChild(int index) {
+	public Element getChild(int index) {
 		return children.get(index);
 	}
 	
@@ -105,7 +105,7 @@ public class TypeTreeElement {
 //		if (!(other instanceof TypeTreeElement)) {
 //			return false;
 //		} else  {
-			TypeTreeElement otherTypeTreeElement = (TypeTreeElement)other;
+			Element otherTypeTreeElement = (Element)other;
 			
 			//if(this.getType() != otherTypeTreeElement.getType()) return false;
 			if(!this.getType().getPos().equals(otherTypeTreeElement.getType().getPos())) return false;

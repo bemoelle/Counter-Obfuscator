@@ -5,12 +5,12 @@ import java.util.logging.Logger;
 import javax.script.ScriptException;
 
 import edu.hm.counterobfuscator.IClient;
-import edu.hm.counterobfuscator.parser.tree.ITypeTree;
-import edu.hm.counterobfuscator.parser.tree.TypeTreeElement;
+import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
+import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
-import edu.hm.counterobfuscator.types.FunctionCall;
+import edu.hm.counterobfuscator.types.Call;
 import edu.hm.counterobfuscator.types.TYPE;
 import edu.hm.counterobfuscator.types.This;
 import edu.hm.counterobfuscator.types.Variable;
@@ -26,9 +26,9 @@ public class JSInterpreter implements IInterpreter {
 	private IClient			client;
 	private static Logger	log;
 	private String				jsScriptBuffer	= "";
-	private ITypeTree			flatProgrammTree;
+	private IProgrammTree			flatProgrammTree;
 
-	public JSInterpreter(ITypeTree programmTree, IClient client) {
+	public JSInterpreter(IProgrammTree programmTree, IClient client) {
 
 		JSInterpreter.log = Logger.getLogger(Function.class.getName());
 
@@ -55,13 +55,13 @@ public class JSInterpreter implements IInterpreter {
 	/**
 	 * @param element
 	 */
-	private void callExecuteElement(TypeTreeElement element) {
+	private void callExecuteElement(Element element) {
 
 		switch (element.getType().getType()) {
 		case FUNCTION:
 			executeFunction(element);
 			break;
-		case FUNCTIONCALL:
+		case CALL:
 			executeFunctionCall(element);
 			break;
 		case VARIABLE:
@@ -88,7 +88,7 @@ public class JSInterpreter implements IInterpreter {
 	 *         (function(a,b,c){return a+b+c;})(1,2,3) -> result is 6
 	 * 
 	 */
-	private void executeFunction(TypeTreeElement element) {
+	private void executeFunction(Element element) {
 
 		Function func = ((Function) element.getType());
 		if (func.isPacked()) {
@@ -104,9 +104,9 @@ public class JSInterpreter implements IInterpreter {
 
 	}
 
-	private void executeFunctionCall(TypeTreeElement element) {
+	private void executeFunctionCall(Element element) {
 
-		FunctionCall func = ((FunctionCall) element.getType());
+		Call func = ((Call) element.getType());
 
 		
 		String resultValue = executeJS(func.getValue()).toString();
@@ -121,7 +121,7 @@ public class JSInterpreter implements IInterpreter {
 		}
 	}
 
-	private void executeVariable(TypeTreeElement element) {
+	private void executeVariable(Element element) {
 
 		Variable var = ((Variable) element.getType());
 		
@@ -140,19 +140,19 @@ public class JSInterpreter implements IInterpreter {
 		
 	}
 
-	private void executeFor(TypeTreeElement element) {
+	private void executeFor(Element element) {
 
 		ForWhile forWhile = ((ForWhile) element.getType());
 
 	}
 
-	private void executeDefault(TypeTreeElement element) {
+	private void executeDefault(Element element) {
 
 		Default defaultType = ((Default) element.getType());
 
 	}
 
-	private String executeThis(TypeTreeElement element) {
+	private String executeThis(Element element) {
 
 		This type = ((This) element.getType());
 

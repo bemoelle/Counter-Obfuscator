@@ -10,7 +10,7 @@ import edu.hm.counterobfuscator.interpreter.IInterpreter;
 import edu.hm.counterobfuscator.interpreter.JSInterpreterFactory;
 import edu.hm.counterobfuscator.parser.IJSParser;
 import edu.hm.counterobfuscator.parser.JSParserFactory;
-import edu.hm.counterobfuscator.parser.tree.ITypeTree;
+import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -31,7 +31,7 @@ public class CounterObfuscatorMain {
 
 		IJSParser jsParser = JSParserFactory.create("functionTest");
 		
-		ITypeTree tree = jsParser.getProgrammTree();
+		IProgrammTree tree = jsParser.getProgrammTree();
 		
 		tree.print(false);
 		tree.prettyPrint();

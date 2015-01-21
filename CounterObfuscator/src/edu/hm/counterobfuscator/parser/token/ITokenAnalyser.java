@@ -2,7 +2,7 @@ package edu.hm.counterobfuscator.parser.token;
 
 import java.util.List;
 
-import edu.hm.counterobfuscator.parser.tree.ITypeTree;
+import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.types.AbstractType;
 
 /**

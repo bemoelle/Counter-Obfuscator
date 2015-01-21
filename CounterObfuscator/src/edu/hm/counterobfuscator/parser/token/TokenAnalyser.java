@@ -13,7 +13,7 @@ import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
-import edu.hm.counterobfuscator.types.FunctionCall;
+import edu.hm.counterobfuscator.types.Call;
 import edu.hm.counterobfuscator.types.Return;
 import edu.hm.counterobfuscator.types.This;
 import edu.hm.counterobfuscator.types.Variable;
@@ -160,7 +160,7 @@ class TokenAnalyser implements ITokenAnalyser {
 			String valueFC = getNameOfType(openBracket + 1, endPos - 2);
 
 			allTypes
-					.add(new FunctionCall(new Position(startPos, endPos), nameFC, functionFC, valueFC));
+					.add(new Call(new Position(startPos, endPos), nameFC, functionFC, valueFC));
 
 			break;
 		case ASSIGN:
@@ -177,10 +177,10 @@ class TokenAnalyser implements ITokenAnalyser {
 
 			Variable var = null;
 
-			int assign = getActualToken().getPos();
+			int assign = nextToken.getPos();
 
 			String name = getNameOfType(startPos, assign - 1);
-			String value = getNameOfType(assign + 1, endPos - 1);
+			String value = getNameOfType(assign +1, endPos - 1);
 
 			var = new Variable(new Position(startPos, endPos), name, value, false);
 

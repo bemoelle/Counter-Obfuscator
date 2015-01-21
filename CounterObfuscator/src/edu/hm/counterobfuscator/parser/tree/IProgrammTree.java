@@ -9,7 +9,7 @@ import edu.hm.counterobfuscator.helper.Position;
  * @date 09.01.2015
  *
  */
-public interface ITypeTree extends Iterable<TypeTreeElement> {
+public interface IProgrammTree extends Iterable<Element> {
 
 	/**
 	 * @return
@@ -19,7 +19,7 @@ public interface ITypeTree extends Iterable<TypeTreeElement> {
 	/**
 	 * @param typeTreeElement
 	 */
-	public void add(TypeTreeElement typeTreeElement);
+	public void add(Element typeTreeElement);
 
 	/**
 	 * 
@@ -35,7 +35,7 @@ public interface ITypeTree extends Iterable<TypeTreeElement> {
 	 * @param index
 	 * @return
 	 */
-	public TypeTreeElement get(int index);
+	public Element get(int index);
 
 	/**
 	 * 
@@ -45,19 +45,19 @@ public interface ITypeTree extends Iterable<TypeTreeElement> {
 	/**
 	 * @return
 	 */
-	public TypeTreeElement getLast();
+	public Element getLast();
 
 	/**
 	 * @param index
 	 * @return 
 	 */
-	public TypeTreeElement remove(int index);
+	public Element remove(int index);
 	
 	/**
 	 * @param type
 	 * @return
 	 */
-	public boolean removeElement(TypeTreeElement type);
+	public boolean removeElement(Element type);
 	
 	/**
 	 * @return
@@ -67,17 +67,17 @@ public interface ITypeTree extends Iterable<TypeTreeElement> {
 	/**
 	 * @return
 	 */
-	public ITypeTree flatten();
+	public IProgrammTree flatten();
 
 	/**
 	 * @param reverse
 	 */
-	public void addAll(List<TypeTreeElement> treeList);
+	public void addAll(List<Element> treeList);
 
 	/**
 	 * @return
 	 */
-	public ITypeTree reverseOrder();
+	public IProgrammTree reverseOrder();
 
 	public void prettyPrint();
 }

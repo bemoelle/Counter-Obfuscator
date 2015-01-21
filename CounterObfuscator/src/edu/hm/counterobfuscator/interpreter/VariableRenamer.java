@@ -10,24 +10,25 @@ import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.mapper.Mapper;
 import edu.hm.counterobfuscator.mapper.MapperElement;
-import edu.hm.counterobfuscator.parser.tree.ITypeTree;
-import edu.hm.counterobfuscator.parser.tree.TypeTreeElement;
+import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
+import edu.hm.counterobfuscator.parser.tree.Element;
+import edu.hm.counterobfuscator.parser.tree.ValueExtractor;
 import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Default;
-import edu.hm.counterobfuscator.types.FunctionCall;
+import edu.hm.counterobfuscator.types.Call;
 import edu.hm.counterobfuscator.types.TYPE;
 import edu.hm.counterobfuscator.types.Variable;
 
-public class JSVarRenamer implements IInterpreter {
+public class VariableRenamer implements IInterpreter {
 
-	private ITypeTree					programmTree;
+	private IProgrammTree					programmTree;
 	private String						varName	= "var";
 	private int							number	= 1;
 	private List<MapperElement>	mappedElements;
 	private Setting					setting;
 	private Map<String, String>	mappedNames;
 
-	public JSVarRenamer(ITypeTree programmTree, Setting setting) {
+	public VariableRenamer(IProgrammTree programmTree, Setting setting) {
 		this.programmTree = programmTree.flatten();
 		this.setting = setting;
 
@@ -63,42 +64,38 @@ public class JSVarRenamer implements IInterpreter {
 
 			MapperElement actualElement = mappedElements.get(i);
 			Variable var = (Variable) actualElement.getElement().getType();
-
+			
+			//TODO SCOPE
 			Position actualScope = actualElement.getScope();
 
-			// to map parameters
-			Map<String, String> mappedNames = new HashMap<String, String>();
-
+			String oldName = ValueExtractor.getName(actualElement.getElement());
 			String newName = varName + number++;
-			mappedNames.put(var.getName(), newName);
 			var.setName(newName);
 
 			// TODO begin at scope
 			for (int k = 0; k < programmTree.size(); k++) {
-				TypeTreeElement type = programmTree.get(k);
+				
+				Element element = programmTree.get(k);
 
-				if (actualScope.getStartPos() < type.getType().getPos().getStartPos()
-						&& type.getType().getPos().getStartPos() < actualScope.getEndPos()) {
-
-					if (type.getType().getType() == TYPE.VARIABLE) {
-
-					} 
-//					else if(type.getType().getType() == TYPE.FUNCTIONCALL) {
-//						
-//					} 
-					else {
-					}
-						String test = type.getType().getName();
-						type.getType().setName(isStringInMap(mappedNames, test));
-						
-					}
-
+				String name = ValueExtractor.getName(element);
+				//foound
+				if(name.indexOf(oldName) > -1) {
+					element.getType().setName(element.getType().getName().replaceAll(oldName, newName));
 				}
+				
+				String value = ValueExtractor.getValue(element);
+				if(value.indexOf(oldName) > -1) {
+					String toReplace = ValueExtractor.getValue(actualElement.getElement());
+					String test = value.replaceAll(oldName, toReplace);					
+					ValueExtractor.setValue(element, test);
+				}
+
 
 			}
 
 		}
-	
+
+	}
 
 	// // TODO change operations to work on mapped elements instead of original
 	// // programmtree
@@ -281,7 +278,7 @@ public class JSVarRenamer implements IInterpreter {
 	 */
 	private void renameFunctionCall(AbstractType type, String oldName, String newName) {
 
-		FunctionCall fc = (FunctionCall) type;
+		Call fc = (Call) type;
 
 		String nerere = fc.getName().replaceAll(oldName, newName);
 		fc.setName(nerere);

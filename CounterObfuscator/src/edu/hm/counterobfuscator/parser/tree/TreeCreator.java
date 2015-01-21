@@ -11,7 +11,7 @@ import edu.hm.counterobfuscator.types.AbstractType;
  */
 public final class TreeCreator {
 
-	private static ITypeTree programmTree;
+	private static IProgrammTree programmTree;
 
 	/**
 	 * 
@@ -24,11 +24,11 @@ public final class TreeCreator {
 	 * @param allTypes
 	 * @return
 	 */
-	public static ITypeTree createTypeTree(List<AbstractType> allTypes) {
+	public static IProgrammTree createTypeTree(List<AbstractType> allTypes) {
 
 		int highestEndPos = -1;
-		TypeTreeElement parent = null;
-		programmTree = new TypeTree();
+		Element parent = null;
+		programmTree = new ProgrammTree();
 		
 		for (AbstractType actualType : allTypes) {
 
@@ -36,7 +36,7 @@ public final class TreeCreator {
 			int endPos = actualType.getPos().getEndPos();
 			if (programmTree.isEmpty() || startPos > highestEndPos) {
 
-				TypeTreeElement tte = new TypeTreeElement(null, actualType);
+				Element tte = new Element(null, actualType);
 				programmTree.add(tte);
 				highestEndPos = endPos;
 				parent = tte;
@@ -51,17 +51,17 @@ public final class TreeCreator {
 	 * @param parent
 	 * @param child
 	 */
-	private static void findPositionForChild(TypeTreeElement parent, AbstractType child) {
+	private static void findPositionForChild(Element parent, AbstractType child) {
 
 		if (!parent.hasChildren()) {
-			parent.addChild(new TypeTreeElement(parent, child));
+			parent.addChild(new Element(parent, child));
 		} else {
 			int startPos = child.getPos().getStartPos();
 
-			TypeTreeElement latestChild = parent.getLatestChild();
+			Element latestChild = parent.getLatestChild();
 
 			if (startPos > latestChild.getType().getPos().getEndPos()) {
-				parent.addChild(new TypeTreeElement(parent, child));
+				parent.addChild(new Element(parent, child));
 			} else {
 				findPositionForChild(latestChild, child);
 			}

@@ -10,8 +10,8 @@ import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.mapper.Mapper;
 import edu.hm.counterobfuscator.mapper.MapperElement;
-import edu.hm.counterobfuscator.parser.tree.ITypeTree;
-import edu.hm.counterobfuscator.parser.tree.TypeTreeElement;
+import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
+import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.types.TYPE;
@@ -19,7 +19,7 @@ import edu.hm.counterobfuscator.types.Variable;
 
 public class JSFunctionRenamer implements IInterpreter {
 
-	private ITypeTree					programmTree;
+	private IProgrammTree					programmTree;
 	private Setting					setting;
 	private List<MapperElement>	mappedElements;
 	private String						funcVarName	= "funcVar";
@@ -27,7 +27,7 @@ public class JSFunctionRenamer implements IInterpreter {
 	private String						funcName		= "function";
 	private int							funcNumber	= 1;
 
-	public JSFunctionRenamer(ITypeTree programmTree, Setting setting) {
+	public JSFunctionRenamer(IProgrammTree programmTree, Setting setting) {
 		this.programmTree = programmTree.flatten();
 		this.setting = setting;
 
@@ -81,7 +81,7 @@ public class JSFunctionRenamer implements IInterpreter {
 
 			// TODO begin at scope
 			for (int k = 0; k < programmTree.size(); k++) {
-				TypeTreeElement type = programmTree.get(k);
+				Element type = programmTree.get(k);
 
 				if (actualScope.getStartPos() < type.getType().getPos().getStartPos()
 						&& type.getType().getPos().getStartPos() < actualScope.getEndPos()) {

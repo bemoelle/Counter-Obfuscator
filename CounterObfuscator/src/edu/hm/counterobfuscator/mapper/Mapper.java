@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.hm.counterobfuscator.helper.Position;
-import edu.hm.counterobfuscator.parser.tree.ITypeTree;
-import edu.hm.counterobfuscator.parser.tree.TypeTreeElement;
+import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
+import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.types.TYPE;
 
 /**
@@ -21,9 +21,9 @@ public class Mapper implements IMapper {
 
 	private List<MapperElement> mappedElements;
 	private TYPE[] typeSearchFor;
-	private ITypeTree programmTree;
+	private IProgrammTree programmTree;
 
-	public Mapper(ITypeTree programmTree, TYPE... typeSearchFor) {
+	public Mapper(IProgrammTree programmTree, TYPE... typeSearchFor) {
 
 		this.typeSearchFor = typeSearchFor;
 		this.programmTree = programmTree;
@@ -58,16 +58,16 @@ public class Mapper implements IMapper {
 	 *            which type we are searching for.
 	 * 
 	 */
-	private void callElement(ITypeTree tree) {
+	private void callElement(IProgrammTree tree) {
 
 		for (int i = 0, positionInList = 0; i < tree.size(); i++) {
 
-			TypeTreeElement element = tree.get(i);
+			Element element = tree.get(i);
 			if (isSearchedType(element.getType().getType())) {
 
 				Position scope = null;
 
-				TypeTreeElement parent = element.getParent();
+				Element parent = element.getParent();
 				if (parent != null) {
 					scope = new Position(element.getType().getPos()
 							.getStartPos(), parent.getType().getPos()

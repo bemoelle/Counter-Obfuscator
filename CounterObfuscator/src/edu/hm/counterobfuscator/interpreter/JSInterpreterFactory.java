@@ -11,7 +11,7 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 import edu.hm.counterobfuscator.HTMLUnitClient;
 import edu.hm.counterobfuscator.IClient;
 import edu.hm.counterobfuscator.parser.IJSParser;
-import edu.hm.counterobfuscator.parser.tree.ITypeTree;
+import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 
 
 
@@ -33,7 +33,7 @@ public class JSInterpreterFactory {
 
 		IClient client = new HTMLUnitClient("http://www.google.com/", BrowserVersion.FIREFOX_24);
 		
-		ITypeTree programmTree = jsParser.getProgrammTree();
+		IProgrammTree programmTree = jsParser.getProgrammTree();
 		
 		IInterpreter interpreter = new JSInterpreter(programmTree, client);
 		interpreter.process();
@@ -41,7 +41,7 @@ public class JSInterpreterFactory {
 		IInterpreter jsFunctionRenamer = new JSFunctionRenamer(programmTree, null);
 		jsFunctionRenamer.process();
 				
-		IInterpreter jsVarRenamer = new JSVarRenamer(programmTree, null);
+		IInterpreter jsVarRenamer = new VariableRenamer(programmTree, null);
 		jsVarRenamer.process();
 		
 		programmTree.prettyPrint();
