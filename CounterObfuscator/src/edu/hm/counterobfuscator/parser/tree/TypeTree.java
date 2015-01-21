@@ -10,8 +10,12 @@ import java.util.List;
 
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.types.AbstractType;
+import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
+import edu.hm.counterobfuscator.types.FunctionCall;
+import edu.hm.counterobfuscator.types.Return;
+import edu.hm.counterobfuscator.types.This;
 import edu.hm.counterobfuscator.types.Variable;
 
 /**
@@ -22,7 +26,7 @@ import edu.hm.counterobfuscator.types.Variable;
  */
 public class TypeTree implements ITypeTree {
 
-	private List<TypeTreeElement> typeTree;
+	private List<TypeTreeElement>	typeTree;
 
 	/**
 	 * 
@@ -83,10 +87,11 @@ public class TypeTree implements ITypeTree {
 					test += ((Variable) element.getType()).getName() + " = ";
 					test += ((Variable) element.getType()).getValue();
 				}
+				if (element.getType() instanceof Default) {
+					test += ((Default) element.getType()).getName();
+				}
 
-				System.out.println("|__"
-						+ element.getType().getType().toString() + " -- "
-						+ test);
+				System.out.println("|__" + element.getType().getType().toString() + " -- " + test);
 			}
 		}
 
@@ -107,9 +112,11 @@ public class TypeTree implements ITypeTree {
 				test += ((Variable) element.getType()).getName() + " = ";
 				test += ((Variable) element.getType()).getValue();
 			}
+			if (element.getType() instanceof Default) {
+				test += ((Default) element.getType()).getName();
+			}
 
-			System.out.println("|" + tab
-					+ element.getType().getType().toString() + " -- " + test);
+			System.out.println("|" + tab + element.getType().getType().toString() + " -- " + test);
 
 			if (element.hasChildren()) {
 
@@ -136,15 +143,11 @@ public class TypeTree implements ITypeTree {
 			test += call(element.getType());
 
 			if (element.hasChildren()) {
-				test+= prettyPrintChildElement(tab, element.getChildren());
+				test += tab + prettyPrintChildElement(tab, element.getChildren());
 			}
 		}
-		
-		test += "};\n";
 
-		
-
-		return tab + test;
+		return test;
 	}
 
 	private String call(AbstractType abstractType) {
@@ -154,18 +157,31 @@ public class TypeTree implements ITypeTree {
 		case FUNCTION:
 			Function func = (Function) abstractType;
 			return "function " + func.getName() + func.getHeadString() + "{\n";
+		case FUNCTIONCALL:
+			FunctionCall fc = (FunctionCall) abstractType;
+			return "var " + fc.getName() + "." + fc.getFunction() + "(" + fc.getParameter() + ");\n";
 		case VARIABLE:
 			Variable var = (Variable) abstractType;
-			return var.isGlobal() ? "" : "var " + var.getName() + "="
-					+ var.getValue() + ";\n";
+			return (var.isGlobal() ? "" : "var ") + var.getName() + "="
+					+ (var.isObject() ? "new " : "") + var.getValue()
+					+ (var.isObject() ? "(" + var.getParameter() + ")" : "") + ";\n";
 		case FOR:
 		case WHILE:
 			ForWhile loop = (ForWhile) abstractType;
 			return loop.getName() + loop.getHeadString() + "{\n";
+		case THIS:
+			This thisStatement = (This) abstractType;
+			return "this" + thisStatement.getName() + "=";
+		case RETURN:
+			Return returnStatement = (Return) abstractType;
+			return "return " + returnStatement.getName() + ";\n";
+		case DEFAULT:
+			Default defaultStatement = (Default) abstractType;
+			return defaultStatement.getName() + ";\n";
 		default:
 			break;
 		}
-		return null;
+		return "";
 
 	}
 
@@ -275,5 +291,5 @@ public class TypeTree implements ITypeTree {
 
 		return new TypeTree(reverse);
 	}
-	
+
 }

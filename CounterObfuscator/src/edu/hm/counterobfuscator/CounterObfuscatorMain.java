@@ -1,13 +1,16 @@
 package edu.hm.counterobfuscator;
 
 import java.io.IOException;
+
 import javax.script.ScriptException;
 
 import org.apache.commons.codec.EncoderException;
 
-import edu.hm.counterobfuscator.interpreter.InterpreterFactory;
+import edu.hm.counterobfuscator.interpreter.IInterpreter;
+import edu.hm.counterobfuscator.interpreter.JSInterpreterFactory;
 import edu.hm.counterobfuscator.parser.IJSParser;
 import edu.hm.counterobfuscator.parser.JSParserFactory;
+import edu.hm.counterobfuscator.parser.tree.ITypeTree;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -28,11 +31,14 @@ public class CounterObfuscatorMain {
 
 		IJSParser jsParser = JSParserFactory.create("functionTest");
 		
+		ITypeTree tree = jsParser.getProgrammTree();
 		
-		jsParser.getProgrammTree().print(false);
-		jsParser.getProgrammTree().prettyPrint();
+		tree.print(false);
+		tree.prettyPrint();
 
-		InterpreterFactory.create(jsParser);
+		JSInterpreterFactory.create(jsParser);
+		
+		tree.prettyPrint();
 	}
 
 }

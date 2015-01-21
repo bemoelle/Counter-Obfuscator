@@ -21,12 +21,11 @@ import edu.hm.counterobfuscator.parser.tree.ITypeTree;
  * 
  * 
  */
-public class InterpreterFactory {
+public class JSInterpreterFactory {
 
 	/**
 	 * @param String
 	 *           input
-	 * @return TokenAnalyser
 	 * @throws IOException 
 	 * @throws ScriptException 
 	 */

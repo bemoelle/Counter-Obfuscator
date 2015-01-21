@@ -14,7 +14,6 @@ public class Variable extends AbstractType {
 	private String value;
 	private boolean isGlobal;
 	private boolean noexe;
-	private boolean isArray;
 	private boolean isObject;
 	private String parameter;
 
@@ -32,7 +31,6 @@ public class Variable extends AbstractType {
 		}
 
 		this.isGlobal = false;
-		this.isArray = false;
 		this.isObject = isObject;
 	}
 
@@ -52,30 +50,10 @@ public class Variable extends AbstractType {
 		this.isGlobal = isGlobal;
 	}
 
-	public void setNoExe(boolean notExe) {
-		this.noexe = notExe;
-	}
-
-	public boolean getNoExe() {
-		return noexe;
-	}
-
-	public boolean isArray() {
-		return isArray;
-	}
-
-	public void setArray(boolean isArray) {
-		this.isArray = isArray;
-	}
-
-	public boolean isHasNew() {
+	public boolean isObject() {
 		return isObject;
 	}
-
-	public void setHasNew(boolean hasNew) {
-		this.isObject = hasNew;
-	}
-
+	
 	public String getParameter() {
 		return parameter;
 	}

@@ -65,6 +65,9 @@ public class HTMLUnitClient implements IClient {
 		else if (result.getClass() == Double.class) {
 			return result;
 		}
+		else if (result.getClass() == Integer.class) {
+			return result;
+		}
 		else if (result.getClass() == net.sourceforge.htmlunit.corejs.javascript.NativeArray.class) {
 			
 			net.sourceforge.htmlunit.corejs.javascript.NativeArray array = (net.sourceforge.htmlunit.corejs.javascript.NativeArray)result;

@@ -23,10 +23,10 @@ import edu.hm.counterobfuscator.types.Variable;
  */
 public class JSInterpreter implements IInterpreter {
 
-	private IClient client;
-	private static Logger log;
-	private String jsScriptBuffer = "";
-	private ITypeTree flatProgrammTree;
+	private IClient			client;
+	private static Logger	log;
+	private String				jsScriptBuffer	= "";
+	private ITypeTree			flatProgrammTree;
 
 	public JSInterpreter(ITypeTree programmTree, IClient client) {
 
@@ -94,8 +94,8 @@ public class JSInterpreter implements IInterpreter {
 		if (func.isPacked()) {
 			log.info("packed function found!");
 
-			String script = "(function " + func.getName()
-					+ func.getHeadString() + func.getBodyAsString() + ";";
+			String script = "(function " + func.getName() + func.getHeadString()
+					+ func.getBodyAsString() + ";";
 			Object result = executeJS(script);
 			element.removeAllChildren();
 			func.setBodyAsString(result.toString());
@@ -108,33 +108,36 @@ public class JSInterpreter implements IInterpreter {
 
 		FunctionCall func = ((FunctionCall) element.getType());
 
-		Object result = executeJS(func.getValue() + ";");
-
-		System.out.println(result + " weeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-
+		
+		String resultValue = executeJS(func.getValue()).toString();
+		if(resultValue.indexOf("NO_EXECUTION") < 0) {
+			func.setValue(resultValue);
+		}
+		
+			String resultParameter = executeJS(func.getFunction()).toString();
+			if(resultParameter.indexOf("NO_EXECUTION") < 0) {
+				func.setFunction(resultParameter);
+			
+		}
 	}
 
-	private String executeVariable(TypeTreeElement element) {
+	private void executeVariable(TypeTreeElement element) {
 
 		Variable var = ((Variable) element.getType());
-
-		Object result = executeJS(var.getValue());
-
-		if (result.toString().indexOf("NOTEXE") > -1) {
-			result = result.toString().substring(6);
-			var.setNoExe(true);
+		
+		String resultValue = executeJS(var.getValue()).toString();
+		if(resultValue.indexOf("NO_EXECUTION") < 0) {
+			var.setValue(resultValue);
+			jsScriptBuffer += "var " + var.getName() + "=" + resultValue + ";";
 		}
-
-		var.setValue(result.toString());
-
-		if (!var.isGlobal()) {
-			jsScriptBuffer += "var ";
+		
+		if(var.isObject()) {
+			String resultParameter = executeJS(var.getParameter()).toString();
+			if(resultParameter.indexOf("NO_EXECUTION") < 0) {
+				var.setParameter(resultParameter);
+			}
 		}
-
-		jsScriptBuffer += var.getName() + "=" + result + ";";
-
-		return var.getName() + "=" + result + ";";
-
+		
 	}
 
 	private void executeFor(TypeTreeElement element) {
@@ -164,9 +167,10 @@ public class JSInterpreter implements IInterpreter {
 		Object result = null;
 		try {
 			result = client.getJSResult(jsScriptBuffer + script);
-		} catch (Exception e) {
-			System.out.println("Exception:" + script);
-			result = "NOTEXE" + script;
+		}
+		catch (Exception e) {
+			System.out.println("Exception: " + e);
+			result = "NO_EXECUTION";
 		}
 
 		return result;

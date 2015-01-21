@@ -18,10 +18,6 @@ public abstract class AbstractType {
 
 		this.type = type;
 		this.pos = pos;
-		
-		if(name.equals("")) {
-			name = "annouymus";
-		}
 		this.name = name;
 	}
 

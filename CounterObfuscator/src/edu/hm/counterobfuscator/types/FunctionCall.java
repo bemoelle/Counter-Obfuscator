@@ -41,4 +41,11 @@ public class FunctionCall extends AbstractType {
 		this.parameter = parameter;
 	}
 
+	/**
+	 * @return
+	 */
+	public String getParameter() {
+		return parameter;
+	}
+
 }
