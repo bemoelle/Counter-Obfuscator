@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.hm.counterobfuscator.interpreter;
+package edu.hm.counterobfuscator.refactor;
 
 import java.io.IOException;
 import javax.script.ScriptException;
@@ -21,7 +21,7 @@ import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
  * 
  * 
  */
-public class JSInterpreterFactory {
+public class RefactorFactory {
 
 	/**
 	 * @param String
@@ -35,16 +35,24 @@ public class JSInterpreterFactory {
 		
 		IProgrammTree programmTree = jsParser.getProgrammTree();
 		
-		IInterpreter interpreter = new JSInterpreter(programmTree, client);
+		
+		
+		IRefactor interpreter = new Refactor(programmTree, client);
 		interpreter.process();
 		
-		IInterpreter jsFunctionRenamer = new JSFunctionRenamer(programmTree, null);
-		jsFunctionRenamer.process();
+//		IRefactor jsFunctionRenamer = new JSFunctionRenamer(programmTree, null);
+//		jsFunctionRenamer.process();
 				
-		IInterpreter jsVarRenamer = new VariableRenamer(programmTree, null);
-		jsVarRenamer.process();
+		IRefactor varReplacer = new VariableReplacer(programmTree, null);
+		varReplacer.process();
 		
-		programmTree.prettyPrint();
+		IRefactor varRemover = new VariableRemover(programmTree, null);
+		IProgrammTree removed = varRemover.process();
+		
+		IRefactor varRenamer = new VariableRenamer(removed, null);
+		IProgrammTree renamed = varRenamer.process();
+		renamed.prettyPrint();
+
 
 	}
 

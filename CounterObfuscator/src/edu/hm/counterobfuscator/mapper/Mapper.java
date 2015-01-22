@@ -75,8 +75,7 @@ public class Mapper implements IMapper {
 				} else {
 					// -1 element has scope until EOF
 					scope = new Position(element.getType().getPos()
-							.getStartPos(), element.getType().getPos()
-							.getEndPos());
+							.getStartPos(), 100000);
 				}
 
 				mappedElements.add(new MapperElement(positionInList++, scope,

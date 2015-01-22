@@ -54,4 +54,14 @@ public final class ValueExtractor {
 		}
 	}
 
+	/**
+	 * @param element
+	 * @param newName
+	 */
+	public static void setName(Element element, String newName) {
+		
+		element.getType().setName(newName);
+		
+	}
+
 }

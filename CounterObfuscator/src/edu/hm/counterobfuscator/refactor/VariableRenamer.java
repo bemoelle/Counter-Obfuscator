@@ -1,5 +1,6 @@
-package edu.hm.counterobfuscator.interpreter;
+package edu.hm.counterobfuscator.refactor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,17 +20,28 @@ import edu.hm.counterobfuscator.types.Call;
 import edu.hm.counterobfuscator.types.TYPE;
 import edu.hm.counterobfuscator.types.Variable;
 
-public class VariableRenamer implements IInterpreter {
+/**
+ * @author Benjamin Moellerke <bemoelle@gmail.com>
+ * @date 22.01.2015
+ * 
+ * 
+ */
+public class VariableRenamer implements IRefactor {
 
-	private IProgrammTree					programmTree;
+	private IProgrammTree			programmTree;
 	private String						varName	= "var";
 	private int							number	= 1;
 	private List<MapperElement>	mappedElements;
 	private Setting					setting;
 	private Map<String, String>	mappedNames;
 
+	/**
+	 * @param programmTree
+	 * @param setting
+	 */
 	public VariableRenamer(IProgrammTree programmTree, Setting setting) {
-		this.programmTree = programmTree.flatten();
+
+		this.programmTree = programmTree;
 		this.setting = setting;
 
 		// TODO refactor to Factory
@@ -42,54 +54,80 @@ public class VariableRenamer implements IInterpreter {
 
 	}
 
-	public void process() throws ScriptException {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see edu.hm.counterobfuscator.refactor.IRefactor#process()
+	 */
+	public IProgrammTree process() throws ScriptException {
 
-		renmameVars();
+		renameVars();
+
+		return programmTree;
 	}
 
-	private String isStringInMap(Map<String, String> mappedNames, String stringToTest) {
+	/**
+	 * @param actualScope
+	 * @param pos
+	 * @return
+	 */
+	private boolean isInScope(Position actualScope, Position pos) {
 
+		if (actualScope.getStartPos() <= pos.getStartPos()
+				&& pos.getStartPos() < actualScope.getEndPos())
+			return true;
+		return false;
+	}
+
+	/**
+	 * @param mappedNames
+	 * @return
+	 */
+	private List<String> isStringInMap(String stringToTest) {
+
+		List<String> values = new ArrayList<String>();
 		for (String key : mappedNames.keySet()) {
 			if (stringToTest.indexOf(key) > -1) {
-				stringToTest = stringToTest.replaceAll(key, mappedNames.get(key));
+				values.add(key);
 			}
 		}
 
-		return stringToTest;
+		return values;
 	}
 
-	private void renmameVars() {
+	private void renameVars() {
 
 		for (int i = 0; i < mappedElements.size(); i++) {
 
 			MapperElement actualElement = mappedElements.get(i);
-			Variable var = (Variable) actualElement.getElement().getType();
-			
-			//TODO SCOPE
+
 			Position actualScope = actualElement.getScope();
 
 			String oldName = ValueExtractor.getName(actualElement.getElement());
-			String newName = varName + number++;
-			var.setName(newName);
+		
 
-			// TODO begin at scope
 			for (int k = 0; k < programmTree.size(); k++) {
-				
+
 				Element element = programmTree.get(k);
 
-				String name = ValueExtractor.getName(element);
-				//foound
-				if(name.indexOf(oldName) > -1) {
-					element.getType().setName(element.getType().getName().replaceAll(oldName, newName));
-				}
-				
-				String value = ValueExtractor.getValue(element);
-				if(value.indexOf(oldName) > -1) {
-					String toReplace = ValueExtractor.getValue(actualElement.getElement());
-					String test = value.replaceAll(oldName, toReplace);					
-					ValueExtractor.setValue(element, test);
-				}
+				if (isInScope(actualScope, element.getType().getPos())) {
 
+					String name = ValueExtractor.getName(element);
+					if(isStringInMap(name).size() > 0) {
+						
+					} else {
+						String newName = "var"+number;
+						mappedNames.put(oldName, newName);
+						ValueExtractor.setName(element, newName);
+					}
+					
+					String value = ValueExtractor.getValue(element);
+					if (value.indexOf(oldName) > -1) {
+						String toReplace = ValueExtractor.getValue(actualElement.getElement());
+						String test = value.replaceAll(oldName, toReplace);
+						ValueExtractor.setValue(element, test);
+					}
+				}
 
 			}
 

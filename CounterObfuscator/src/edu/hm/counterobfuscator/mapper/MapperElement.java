@@ -11,9 +11,9 @@ import edu.hm.counterobfuscator.parser.tree.Element;
  */
 public class MapperElement {
 
-	private Position			scope;
+	private Position	scope;
 	private Element	element;
-	private int					positionInList;
+	private int			positionInList;
 
 	/**
 	 * @param positionInList

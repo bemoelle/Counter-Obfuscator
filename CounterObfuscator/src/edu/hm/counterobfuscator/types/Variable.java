@@ -13,7 +13,7 @@ public class Variable extends AbstractType {
 
 	private String value;
 	private boolean isGlobal;
-	private boolean noexe;
+	private boolean executable;
 	private boolean isObject;
 	private String parameter;
 
@@ -31,6 +31,7 @@ public class Variable extends AbstractType {
 		}
 
 		this.isGlobal = false;
+		this.executable = true;
 		this.isObject = isObject;
 	}
 
@@ -60,6 +61,14 @@ public class Variable extends AbstractType {
 
 	public void setParameter(String parameter) {
 		this.parameter = parameter;
+	}
+
+	public boolean isExecutable() {
+		return executable;
+	}
+
+	public void setExecutable(boolean executable) {
+		this.executable = executable;
 	}
 
 }

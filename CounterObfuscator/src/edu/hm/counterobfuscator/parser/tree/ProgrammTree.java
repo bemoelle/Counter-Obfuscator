@@ -62,9 +62,9 @@ public class ProgrammTree implements IProgrammTree {
 		typeTree.add(element);
 	}
 
-	public void addAll(List<Element> treeList) {
+	public void addAll(ProgrammTree other) {
 
-		typeTree.addAll(treeList);
+		typeTree.addAll(other.typeTree);
 	}
 
 	/*
@@ -159,7 +159,7 @@ public class ProgrammTree implements IProgrammTree {
 			return "function " + func.getName() + func.getHeadString() + "{\n";
 		case CALL:
 			Call fc = (Call) abstractType;
-			return "var " + fc.getName() + "." + fc.getFunction() + "(" + fc.getParameter() + ");\n";
+			return fc.getName() + "." + fc.getFunction() + "(" + fc.getValue() + ");\n";
 		case VARIABLE:
 			Variable var = (Variable) abstractType;
 			return (var.isGlobal() ? "" : "var ") + var.getName() + "="

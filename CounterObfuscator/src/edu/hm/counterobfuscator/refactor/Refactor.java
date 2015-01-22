@@ -1,4 +1,4 @@
-package edu.hm.counterobfuscator.interpreter;
+package edu.hm.counterobfuscator.refactor;
 
 import java.util.logging.Logger;
 
@@ -21,25 +21,26 @@ import edu.hm.counterobfuscator.types.Variable;
  * 
  *       class to rename obfuscated names, replace them with the assigned value
  */
-public class JSInterpreter implements IInterpreter {
+public class Refactor implements IRefactor {
 
 	private IClient			client;
 	private static Logger	log;
 	private String				jsScriptBuffer	= "";
-	private IProgrammTree			flatProgrammTree;
+	private IProgrammTree	flatProgrammTree;
+	private IProgrammTree	programmTree;
 
-	public JSInterpreter(IProgrammTree programmTree, IClient client) {
+	public Refactor(IProgrammTree programmTree, IClient client) {
 
-		JSInterpreter.log = Logger.getLogger(Function.class.getName());
+		this.programmTree = programmTree;
+		Refactor.log = Logger.getLogger(Function.class.getName());
 
 		this.client = client;
 
 		// create an flat structure of a programmtree
-		this.flatProgrammTree = programmTree.flatten();
-		programmTree.print(false);
+		this.flatProgrammTree = this.programmTree.flatten();
 	}
 
-	public void process() throws ScriptException {
+	public IProgrammTree process() throws ScriptException {
 
 		log.info("start javascript interpreter process...");
 
@@ -49,6 +50,8 @@ public class JSInterpreter implements IInterpreter {
 		}
 
 		log.info("finished javascript interpreter process");
+
+		return null;
 
 	}
 
@@ -108,36 +111,38 @@ public class JSInterpreter implements IInterpreter {
 
 		Call func = ((Call) element.getType());
 
-		
 		String resultValue = executeJS(func.getValue()).toString();
-		if(resultValue.indexOf("NO_EXECUTION") < 0) {
+		if (resultValue.indexOf("NO_EXECUTION") < 0) {
 			func.setValue(resultValue);
 		}
-		
-			String resultParameter = executeJS(func.getFunction()).toString();
-			if(resultParameter.indexOf("NO_EXECUTION") < 0) {
-				func.setFunction(resultParameter);
-			
+
+		String resultParameter = executeJS(func.getFunction()).toString();
+		if (resultParameter.indexOf("NO_EXECUTION") < 0) {
+			func.setFunction(resultParameter);
+
 		}
 	}
 
 	private void executeVariable(Element element) {
 
 		Variable var = ((Variable) element.getType());
-		
+
 		String resultValue = executeJS(var.getValue()).toString();
-		if(resultValue.indexOf("NO_EXECUTION") < 0) {
+		if (resultValue.indexOf("NO_EXECUTION") < 0) {
 			var.setValue(resultValue);
 			jsScriptBuffer += "var " + var.getName() + "=" + resultValue + ";";
+		}  else {
+			var.setExecutable(false);
 		}
-		
-		if(var.isObject()) {
+
+		if (var.isObject()) {
 			String resultParameter = executeJS(var.getParameter()).toString();
-			if(resultParameter.indexOf("NO_EXECUTION") < 0) {
+			if (resultParameter.indexOf("NO_EXECUTION") < 0) {
 				var.setParameter(resultParameter);
+				var.setExecutable(false);
 			}
 		}
-		
+
 	}
 
 	private void executeFor(Element element) {

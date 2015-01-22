@@ -20,15 +20,15 @@ import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import edu.hm.counterobfuscator.HTMLUnitClient;
 import edu.hm.counterobfuscator.IClient;
 import edu.hm.counterobfuscator.helper.Position;
-import edu.hm.counterobfuscator.interpreter.JSInterpreter;
-import edu.hm.counterobfuscator.interpreter.JSInterpreterFactory;
 import edu.hm.counterobfuscator.parser.IJSParser;
 import edu.hm.counterobfuscator.parser.JSParserFactory;
-import edu.hm.counterobfuscator.parser.tree.ITypeTree;
-import edu.hm.counterobfuscator.parser.tree.TypeTreeElement;
+import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
+import edu.hm.counterobfuscator.parser.tree.Element;
+import edu.hm.counterobfuscator.refactor.Refactor;
+import edu.hm.counterobfuscator.refactor.RefactorFactory;
 import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.Function;
-import edu.hm.counterobfuscator.types.FunctionCall;
+import edu.hm.counterobfuscator.types.Call;
 import edu.hm.counterobfuscator.types.Return;
 import edu.hm.counterobfuscator.types.TYPE;
 import edu.hm.counterobfuscator.types.This;
@@ -61,17 +61,17 @@ public class TestJSInterpreter {
 			ScriptException {
 		IJSParser jsParser = JSParserFactory.create("functionTest");
 
-		JSInterpreterFactory.create(jsParser);
+		RefactorFactory.create(jsParser);
 
-		ITypeTree tree = jsParser.getProgrammTree();
+		IProgrammTree tree = jsParser.getProgrammTree();
 
 		assertNotNull(tree);
 		assertEquals(4, tree.size());
 
-		TypeTreeElement t0 = tree.get(0);
-		TypeTreeElement t1 = tree.get(1);
-		TypeTreeElement t2 = tree.get(2);
-		TypeTreeElement t3 = tree.get(3);
+		Element t0 = tree.get(0);
+		Element t1 = tree.get(1);
+		Element t2 = tree.get(2);
+		Element t3 = tree.get(3);
 
 		// t0 ---------------------------------------------------------
 		assertEquals(t0.getChildren().size(), 0);
@@ -146,9 +146,9 @@ public class TestJSInterpreter {
 		// t3
 		assertEquals(t3.getChildren().size(), 0);
 		assertNull(t3.getParent());
-		assertEquals(t3.getType().getType(), TYPE.FUNCTIONCALL);
+		assertEquals(t3.getType().getType(), TYPE.CALL);
 
-		FunctionCall fc3 = (FunctionCall) t3.getType();
+		Call fc3 = (Call) t3.getType();
 
 		assertEquals(fc3.getName(), "var3");
 		assertEquals(fc3.getValue(), "'You are welcome.'");
@@ -163,14 +163,14 @@ public class TestJSInterpreter {
 			ScriptException {
 		IJSParser jsParser = JSParserFactory.create("functionTest2");
 
-		JSInterpreterFactory.create(jsParser);
+		RefactorFactory.create(jsParser);
 
-		ITypeTree tree = jsParser.getProgrammTree();
+		IProgrammTree tree = jsParser.getProgrammTree();
 
 		assertNotNull(tree);
 		assertEquals(1, tree.size());
 
-		TypeTreeElement t0 = tree.get(0);
+		Element t0 = tree.get(0);
 		
 
 		// t0 ---------------------------------------------------------
@@ -181,7 +181,7 @@ public class TestJSInterpreter {
 		
 		assertEquals(func.getType(), TYPE.FUNCTION);
 		assertEquals(func.getName(), "");
-		assertEquals(func.getHeadString(), "");
+		assertEquals(func.getHeadString(), "()");
 		
 		Variable v1 = (Variable)t0.getChild(0).getType();
 		assertEquals(v1.getType(), TYPE.VARIABLE);

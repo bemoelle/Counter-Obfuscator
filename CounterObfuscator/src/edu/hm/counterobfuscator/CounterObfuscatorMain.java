@@ -6,11 +6,11 @@ import javax.script.ScriptException;
 
 import org.apache.commons.codec.EncoderException;
 
-import edu.hm.counterobfuscator.interpreter.IInterpreter;
-import edu.hm.counterobfuscator.interpreter.JSInterpreterFactory;
 import edu.hm.counterobfuscator.parser.IJSParser;
 import edu.hm.counterobfuscator.parser.JSParserFactory;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
+import edu.hm.counterobfuscator.refactor.IRefactor;
+import edu.hm.counterobfuscator.refactor.RefactorFactory;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -36,7 +36,7 @@ public class CounterObfuscatorMain {
 		tree.print(false);
 		tree.prettyPrint();
 
-		JSInterpreterFactory.create(jsParser);
+		RefactorFactory.create(jsParser);
 		
 		tree.prettyPrint();
 	}

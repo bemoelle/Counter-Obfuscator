@@ -72,7 +72,7 @@ public interface IProgrammTree extends Iterable<Element> {
 	/**
 	 * @param reverse
 	 */
-	public void addAll(List<Element> treeList);
+	public void addAll(ProgrammTree ProgrammTree);
 
 	/**
 	 * @return

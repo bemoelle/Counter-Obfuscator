@@ -1,4 +1,4 @@
-package edu.hm.counterobfuscator.interpreter;
+package edu.hm.counterobfuscator.refactor;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +17,7 @@ import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.types.TYPE;
 import edu.hm.counterobfuscator.types.Variable;
 
-public class JSFunctionRenamer implements IInterpreter {
+public class JSFunctionRenamer implements IRefactor {
 
 	private IProgrammTree					programmTree;
 	private Setting					setting;
