@@ -35,23 +35,24 @@ public class RefactorFactory {
 		
 		IProgrammTree programmTree = jsParser.getProgrammTree();
 		
-		
-		
+			
 		IRefactor interpreter = new Refactor(programmTree, client);
-		interpreter.process();
+		IProgrammTree tree = interpreter.process();
+					
+		IRefactor varReplacer = new VariableReplacer(tree, null);
+		tree = varReplacer.process();
 		
-//		IRefactor jsFunctionRenamer = new JSFunctionRenamer(programmTree, null);
-//		jsFunctionRenamer.process();
-				
-		IRefactor varReplacer = new VariableReplacer(programmTree, null);
-		varReplacer.process();
+		IRefactor varRemover = new VariableRemover(tree, null);
+		tree = varRemover.process();
 		
-		IRefactor varRemover = new VariableRemover(programmTree, null);
-		IProgrammTree removed = varRemover.process();
+//		IRefactor varRenamer = new VariableRenamer(tree, null);
+//		tree = varRenamer.process();
 		
-		IRefactor varRenamer = new VariableRenamer(removed, null);
-		IProgrammTree renamed = varRenamer.process();
-		renamed.prettyPrint();
+		IRefactor jsFunctionRenamer = new FunctionRenamer(tree, null);
+		tree = jsFunctionRenamer.process();
+		
+		
+		tree.print();
 
 
 	}

@@ -1,5 +1,6 @@
 package edu.hm.counterobfuscator.types;
 
+import net.sourceforge.htmlunit.corejs.javascript.ast.Name;
 import edu.hm.counterobfuscator.helper.Position;
 
 /**
@@ -16,9 +17,11 @@ public class Variable extends AbstractType {
 	private boolean executable;
 	private boolean isObject;
 	private String parameter;
+	private String	assign;
 
-	public Variable(Position pos, String name, String value, boolean isObject) {
+	public Variable(Position pos, String name, String assign, String value, boolean isObject) {
 		super(TYPE.VARIABLE, pos, name);
+		this.assign = assign;
 
 		if (isObject) {
 			this.value = value.substring(4, value.indexOf("("));
@@ -69,6 +72,35 @@ public class Variable extends AbstractType {
 
 	public void setExecutable(boolean executable) {
 		this.executable = executable;
+	}
+
+	public String getAssign() {
+		return assign;
+	}
+
+	public void setAssign(String assign) {
+		this.assign = assign;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.types.AbstractType#hasSameName(java.lang.Object)
+	 */
+	@Override
+	public boolean hasSameName(Object other) {
+		
+		if(!(other instanceof Variable)) {
+			return false;
+		}
+		
+		Variable var = (Variable) other;
+		
+		if(super.name.equals(var.name)) {
+			if(assign.equals(var.assign)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 }

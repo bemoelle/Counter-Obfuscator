@@ -17,9 +17,9 @@ import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.types.TYPE;
 import edu.hm.counterobfuscator.types.Variable;
 
-public class JSFunctionRenamer implements IRefactor {
+public class FunctionRenamer implements IRefactor {
 
-	private IProgrammTree					programmTree;
+	private IProgrammTree			programmTree;
 	private Setting					setting;
 	private List<MapperElement>	mappedElements;
 	private String						funcVarName	= "funcVar";
@@ -27,8 +27,9 @@ public class JSFunctionRenamer implements IRefactor {
 	private String						funcName		= "function";
 	private int							funcNumber	= 1;
 
-	public JSFunctionRenamer(IProgrammTree programmTree, Setting setting) {
-		this.programmTree = programmTree.flatten();
+	public FunctionRenamer(IProgrammTree programmTree, Setting setting) {
+		
+		this.programmTree = programmTree;
 		this.setting = setting;
 
 		// TODO refactor to Factory
@@ -40,9 +41,11 @@ public class JSFunctionRenamer implements IRefactor {
 		// ------------
 	}
 
-	public void process() throws ScriptException {
+	public IProgrammTree process() throws ScriptException {
 
 		renameFunction();
+		
+		return programmTree;
 	}
 
 	private String isStringInMap(Map<String, String> mappedNames, String stringToTest) {

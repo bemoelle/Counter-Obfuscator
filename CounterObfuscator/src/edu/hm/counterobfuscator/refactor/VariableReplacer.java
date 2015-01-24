@@ -27,7 +27,8 @@ public class VariableReplacer implements IRefactor {
 
 
 	public VariableReplacer(IProgrammTree programmTree, Setting setting) {
-		this.programmTree = programmTree.flatten();
+		
+		this.programmTree = programmTree;
 		this.setting = setting;
 
 		// TODO refactor to Factory

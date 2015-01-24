@@ -27,6 +27,7 @@ import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.refactor.Refactor;
 import edu.hm.counterobfuscator.refactor.RefactorFactory;
 import edu.hm.counterobfuscator.types.Default;
+import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.types.Call;
 import edu.hm.counterobfuscator.types.Return;
@@ -80,7 +81,7 @@ public class TestJSInterpreter {
 
 		Variable v0 = (Variable) t0.getType();
 
-		assertEquals(v0.getName(), "var1");
+		//assertEquals(v0.getName(), "var1");
 		assertEquals(v0.getValue(), "['SayHello','GetCount','Message : ','You are welcome.']");
 		assertEquals(v0.getPos(), new Position(0, 12));
 		// assertEquals(v0.getNoExe(), false);
@@ -106,7 +107,7 @@ public class TestJSInterpreter {
 		This f1t1 = (This) t1.getChild(1).getType();
 		This f1t2 = (This) t1.getChild(2).getType();
 		
-		assertEquals(f1v1.getName(), "var2");
+		assertEquals(f1v1.getName(), "var1");
 		assertEquals(f1v1.getValue(), "0.0");
 		
 		assertEquals(f1t1.getName(), "['SayHello']");
@@ -174,7 +175,7 @@ public class TestJSInterpreter {
 		
 
 		// t0 ---------------------------------------------------------
-		assertEquals(t0.getChildren().size(), 12);
+		assertEquals(t0.getChildren().size(), 3);
 		assertNull(t0.getParent());
 		
 		Function func = (Function)t0.getType();
@@ -186,42 +187,21 @@ public class TestJSInterpreter {
 		Variable v1 = (Variable)t0.getChild(0).getType();
 		assertEquals(v1.getType(), TYPE.VARIABLE);
 		assertEquals(v1.getName(), "var1");
-		assertEquals(v1.getValue(), "'b1bcb0c2bab2bbc17bb9bcb0aec1b6bcbb8a74b5c1c1bd877c7cc1b2c0c17bb1b2'");
+		assertEquals(v1.getValue(), "''");
 				
-		Variable v2 = (Variable)t0.getChild(1).getType();
-		assertEquals(v2.getType(), TYPE.VARIABLE);
-		assertEquals(v2.getName(), "var2");
-		assertEquals(v2.getValue(), "199");
+		ForWhile for1 = (ForWhile)t0.getChild(1).getType();
+		assertEquals(for1.getType(), TYPE.FOR);
+		assertEquals(t0.getChild(1).getChildren().size(), 1);
 		
-		Variable v3 = (Variable)t0.getChild(2).getType();
-		assertEquals(v3.getType(), TYPE.VARIABLE);
-		assertEquals(v3.getName(), "var3");
-		assertEquals(v3.getValue(), "window");
+		Variable for1v1 = (Variable)t0.getChild(1).getChild(0).getType();
+		assertEquals(for1v1.getType(), TYPE.VARIABLE);
+		assertEquals(for1v1.getName(), "var1");
+		assertEquals(for1v1.getValue(), "String['fromCharCode'](window['parseInt']('test'['slice'](mJvk,mJvk+2),16)-77)");
 		
-		Variable v4 = (Variable)t0.getChild(3).getType();
-		assertEquals(v4.getType(), TYPE.VARIABLE);
-		assertEquals(v4.getName(), "var4");
-		assertEquals(v4.getValue(), "String");
-		
-		Variable v5 = (Variable)t0.getChild(4).getType();
-		assertEquals(v5.getType(), TYPE.VARIABLE);
-		assertEquals(v5.getName(), "var5");
-		assertEquals(v5.getValue(), "'replace'");
-		
-		Variable v6 = (Variable)t0.getChild(5).getType();
-		assertEquals(v6.getType(), TYPE.VARIABLE);
-		assertEquals(v6.getName(), "var6");
-		assertEquals(v6.getValue(), "'parseInt'");
-		
-		Variable v7 = (Variable)t0.getChild(6).getType();
-		assertEquals(v7.getType(), TYPE.VARIABLE);
-		assertEquals(v7.getName(), "var7");
-		assertEquals(v7.getValue(), "'fromCharCode'");
-		
-		Variable v8 = (Variable)t0.getChild(7).getType();
-		assertEquals(v8.getType(), TYPE.VARIABLE);
-		assertEquals(v8.getName(), "var8");
-		assertEquals(v8.getValue(), "'b1bcb0c2bab2bbc17bb9bcb0aec1b6bcbb8a74b5c1c1bd877c7cc1b2c0c17bb1b2'");
+				
+		Return v3 = (Return)t0.getChild(2).getType();
+		assertEquals(v3.getType(), TYPE.RETURN);
+		assertEquals(v3.getName(), "var1");
 		
 		
 		

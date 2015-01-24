@@ -125,7 +125,7 @@ class TokenAnalyser implements ITokenAnalyser {
 			processReturn();
 			break;
 		case STRING:
- 			processString();
+			processString();
 			break;
 		default:
 			// processDefault();
@@ -159,30 +159,53 @@ class TokenAnalyser implements ITokenAnalyser {
 			// -2 because ignore last )
 			String valueFC = getNameOfType(openBracket + 1, endPos - 2);
 
-			allTypes
-					.add(new Call(new Position(startPos, endPos), nameFC, functionFC, valueFC));
+			allTypes.add(new Call(new Position(startPos, endPos), nameFC, functionFC, valueFC));
 
 			break;
-		case ASSIGN:
-
-			// TODO
+		case PLUS:
+		case MINUS:
+		
+			int assign1 = -100;
+			
+			if (getNextTokenOf(nextToken).getType() == TOKENTYPE.PLUS) {
+				allTypes.add(new Default(new Position(startPos, endPos), getNameOfType(startPos,
+						endPos - 1)));
+				break;
+			} else if (getNextTokenOf(nextToken).getType() == TOKENTYPE.MINUS) {
+				allTypes.add(new Default(new Position(startPos, endPos), getNameOfType(startPos,
+						endPos - 1)));
+				break;
+			} else {
+				assign1 = getNextTokenOf(nextToken).getPos();
+			}
 			// ++ --
 			// test -= test;
 			// test += test;
+			String name1 = getNameOfType(startPos, assign1 - 2);
+			String value1 = getNameOfType(assign1 + 1, endPos - 1);
+
+			Variable var1 = new Variable(new Position(startPos, endPos), name1, "+=", value1, false);
+
+			if (!allTypes.contains(var1)) {
+				var1.setGlobal(true);
+			}
+
+			allTypes.add(var1);
+
+			break;
+		case ASSIGN:
 
 			// Variable(Position pos, String name, String value, boolean
 			// isObject)
 			// var test = new Name(Parameter); wird in processVar() behandelt
 			// TODO test2 = new Name(Parameter);
 
-			Variable var = null;
-
 			int assign = nextToken.getPos();
 
 			String name = getNameOfType(startPos, assign - 1);
-			String value = getNameOfType(assign +1, endPos - 1);
+			String value = getNameOfType(assign + 1, endPos - 1);
 
-			var = new Variable(new Position(startPos, endPos), name, value, false);
+			Variable var = new Variable(new Position(startPos, endPos), name, "=", value, false);
 
 			if (!allTypes.contains(var)) {
 				var.setGlobal(true);
@@ -192,7 +215,8 @@ class TokenAnalyser implements ITokenAnalyser {
 
 			break;
 		default:
-			allTypes.add(new Default(new Position(startPos, endPos), getNameOfType(startPos, endPos-1)));
+			allTypes.add(new Default(new Position(startPos, endPos), getNameOfType(startPos,
+					endPos - 1)));
 		}
 		setNextTokenTo(endPos);
 
@@ -254,7 +278,7 @@ class TokenAnalyser implements ITokenAnalyser {
 		}
 
 		value = getNameOfType(assign + 1, endPos - 1);
-		allTypes.add(new Variable(new Position(startPos, endPos), name, value, isObject));
+		allTypes.add(new Variable(new Position(startPos, endPos), name, "=", value, isObject));
 
 		setNextTokenTo(endPos);
 

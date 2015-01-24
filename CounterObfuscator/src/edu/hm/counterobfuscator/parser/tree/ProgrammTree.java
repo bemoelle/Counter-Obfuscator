@@ -27,12 +27,14 @@ import edu.hm.counterobfuscator.types.Variable;
 public class ProgrammTree implements IProgrammTree {
 
 	private List<Element>	typeTree;
+	private boolean			isFlat;
 
 	/**
 	 * 
 	 */
 	public ProgrammTree() {
 		this.typeTree = new ArrayList<Element>();
+		this.isFlat = false;
 	}
 
 	/**
@@ -72,9 +74,9 @@ public class ProgrammTree implements IProgrammTree {
 	 * 
 	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#print()
 	 */
-	public void print(boolean flat) {
+	public void print() {
 
-		if (!flat)
+		if (!isFlat)
 			printChildElement("", this);
 		else {
 
@@ -127,8 +129,12 @@ public class ProgrammTree implements IProgrammTree {
 
 	public void prettyPrint() {
 
-		String output = prettyPrintChildElement("", this);
-		System.out.println(output);
+		if (!isFlat) {
+			System.out.println("prettyPrint() is not possible when tree is flat");
+		}
+		else {
+			System.out.println(prettyPrintChildElement("", this));
+		}
 
 	}
 
@@ -260,8 +266,9 @@ public class ProgrammTree implements IProgrammTree {
 
 	public IProgrammTree flatten() {
 
-		IProgrammTree list = new ProgrammTree();
-
+		ProgrammTree list = new ProgrammTree();
+		this.isFlat = true;
+		list.isFlat = true;
 		return walkThroughElement(this, list);
 	}
 
@@ -280,7 +287,6 @@ public class ProgrammTree implements IProgrammTree {
 			}
 		}
 		return flatList;
-
 	}
 
 	public IProgrammTree reverseOrder() {
@@ -289,7 +295,18 @@ public class ProgrammTree implements IProgrammTree {
 
 		Collections.reverse(reverse);
 
-		return new ProgrammTree(reverse);
+		ProgrammTree reversedTree = new ProgrammTree(reverse);
+		reversedTree.isFlat = this.isFlat;
+		
+		return reversedTree;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#isFlat()
+	 */
+	@Override
+	public boolean isFlat() {
+		return isFlat;
 	}
 
 }

@@ -28,10 +28,12 @@ public class Function extends AbstractType {
 		this.isPacked = isPacked;
 		this.head = new ArrayList<Variable>();
 
-		headString = headString.substring(1,headString.indexOf(")"));
-		String[] heads = headString.split(",");
-		for (String varName : heads) {
-			head.add(new Variable(pos, varName, "", false));
+		if (!headString.equals("()")) {
+			headString = headString.substring(1, headString.indexOf(")"));
+			String[] heads = headString.split(",");
+			for (String varName : heads) {
+				head.add(new Variable(pos, varName, "", "", false));
+			}
 		}
 
 	}
@@ -53,11 +55,29 @@ public class Function extends AbstractType {
 	}
 
 	public String getHeadString() {
+
+		String headString = "";
+		for (Variable var : head) {
+			headString += var.getName() + ",";
+		}
+
 		return headString;
 	}
 
 	public void setHeadString(String headString) {
 		this.headString = headString;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.types.AbstractType#hasSameName(java.lang.Object)
+	 */
+	@Override
+	public boolean hasSameName(Object other) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

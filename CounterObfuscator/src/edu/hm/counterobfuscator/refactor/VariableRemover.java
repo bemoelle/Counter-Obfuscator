@@ -25,7 +25,7 @@ public class VariableRemover implements IRefactor {
 
 	public VariableRemover(IProgrammTree programmTree, Setting setting) {
 
-		this.programmTree = programmTree.flatten().reverseOrder();
+		this.programmTree = programmTree.reverseOrder();
 
 		Mapper mapper = new Mapper(programmTree, TYPE.VARIABLE);
 		mapper.process();
@@ -72,6 +72,11 @@ public class VariableRemover implements IRefactor {
 						if (refCounter == 0) {
 
 							programmTree.removeElement(actualElement);
+							
+							Element parent = actualElement.getParent();
+							if(parent != null) {
+								parent.getChildren().removeElement(actualElement);
+							}
 						}
 
 						if (!var.isExecutable()) {

@@ -10,9 +10,9 @@ import edu.hm.counterobfuscator.helper.Position;
  */
 public abstract class AbstractType {
 
-	private String		name;
-	private Position	pos;
-	private TYPE		type;
+	protected String		name;
+	protected Position	pos;
+	protected TYPE			type;
 
 	public AbstractType(TYPE type, Position pos, String name) {
 
@@ -42,17 +42,7 @@ public abstract class AbstractType {
 
 	}
 
-	@Override
-	public boolean equals(Object other) {
-		
-		AbstractType otherType = (AbstractType) other;
+	public abstract boolean hasSameName(Object other);
 
-		if (!this.name.equals(otherType.name))
-			return false;
-		if (!this.pos.equals(otherType.pos))
-			return false;
-
-		return true;
-
-	}
+	// public abstract boolean isSame(Object other);
 }

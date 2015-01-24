@@ -51,7 +51,7 @@ public class Refactor implements IRefactor {
 
 		log.info("finished javascript interpreter process");
 
-		return null;
+		return flatProgrammTree;
 
 	}
 

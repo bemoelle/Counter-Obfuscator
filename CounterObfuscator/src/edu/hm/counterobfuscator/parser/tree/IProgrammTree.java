@@ -24,7 +24,7 @@ public interface IProgrammTree extends Iterable<Element> {
 	/**
 	 * 
 	 */
-	public void print(boolean flat);
+	public void print();
 
 	/**
 	 * @return
@@ -79,5 +79,13 @@ public interface IProgrammTree extends Iterable<Element> {
 	 */
 	public IProgrammTree reverseOrder();
 
+	/**
+	 * 
+	 */
 	public void prettyPrint();
+
+	/**
+	 * @return
+	 */
+	public boolean isFlat();
 }
