@@ -127,7 +127,7 @@ public class TestJSInterpreter {
 		assertEquals(t1.getChild(2).getChildren().get(0).getChildren().size(), 1);
 		
 		Return return1 = (Return)t1.getChild(2).getChildren().get(0).getChildren().get(0).getType();
-		assertEquals(return1.getName(), "var2");
+		assertEquals(return1.getName(), "var1");
 		// -------------------------------------------------------------
 
 		// t2
@@ -137,7 +137,7 @@ public class TestJSInterpreter {
 
 		Variable v2 = (Variable) t2.getType();
 
-		assertEquals(v2.getName(), "var3");
+		assertEquals(v2.getName(), "var2");
 		assertEquals(v2.isObject(), true);
 		assertEquals(v2.getValue(), "NewObject");
 		assertEquals(v2.getParameter(), "'Message : '");
@@ -151,7 +151,7 @@ public class TestJSInterpreter {
 
 		Call fc3 = (Call) t3.getType();
 
-		assertEquals(fc3.getName(), "var3");
+		assertEquals(fc3.getName(), "var2");
 		assertEquals(fc3.getValue(), "'You are welcome.'");
 		assertEquals(fc3.getFunction(), "SayHello");
 		// assertEquals(v2.getPos(), new Position(0,12));
@@ -182,7 +182,7 @@ public class TestJSInterpreter {
 		
 		assertEquals(func.getType(), TYPE.FUNCTION);
 		assertEquals(func.getName(), "");
-		assertEquals(func.getHeadString(), "()");
+		assertEquals(func.getHeadString(), "");
 		
 		Variable v1 = (Variable)t0.getChild(0).getType();
 		assertEquals(v1.getType(), TYPE.VARIABLE);

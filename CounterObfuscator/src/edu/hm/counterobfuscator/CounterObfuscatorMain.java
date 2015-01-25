@@ -9,7 +9,6 @@ import org.apache.commons.codec.EncoderException;
 import edu.hm.counterobfuscator.parser.IJSParser;
 import edu.hm.counterobfuscator.parser.JSParserFactory;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
-import edu.hm.counterobfuscator.refactor.IRefactor;
 import edu.hm.counterobfuscator.refactor.RefactorFactory;
 
 /**
@@ -33,9 +32,6 @@ public class CounterObfuscatorMain {
 		
 		IProgrammTree tree = jsParser.getProgrammTree();
 		
-		tree.print(false);
-		tree.prettyPrint();
-
 		RefactorFactory.create(jsParser);
 		
 		tree.prettyPrint();

@@ -92,6 +92,22 @@ public class ProgrammTree implements IProgrammTree {
 				if (element.getType() instanceof Default) {
 					test += ((Default) element.getType()).getName();
 				}
+				
+				if (element.getType() instanceof Return) {
+					test += ((Return) element.getType()).getName();
+				}
+				
+				if (element.getType() instanceof Call) {
+					test += ((Call) element.getType()).getName();
+					test += ((Call) element.getType()).getFunction();
+					test += ((Call) element.getType()).getValue();
+				}
+				
+				if (element.getType() instanceof Function) {
+					test += ((Function) element.getType()).getName();
+					test += ((Function) element.getType()).getHeadString();
+				}
+
 
 				System.out.println("|__" + element.getType().getType().toString() + " -- " + test);
 			}

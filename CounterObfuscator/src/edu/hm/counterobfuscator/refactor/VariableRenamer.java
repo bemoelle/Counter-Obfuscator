@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.script.ScriptException;
 
@@ -33,7 +34,7 @@ public class VariableRenamer implements IRefactor {
 	private String						varName	= "var";
 	private int							number	= 1;
 	private List<MapperElement>	mappedElements;
-	private Setting					setting;
+
 	private Map<String, String>	mappedNames;
 
 	/**
@@ -43,7 +44,6 @@ public class VariableRenamer implements IRefactor {
 	public VariableRenamer(IProgrammTree programmTree, Setting setting) {
 
 		this.programmTree = programmTree;
-		this.setting = setting;
 
 		// TODO refactor to Factory
 		Mapper mapper = new Mapper(programmTree, TYPE.VARIABLE);
@@ -52,7 +52,6 @@ public class VariableRenamer implements IRefactor {
 		// ------------
 
 		this.mappedNames = new HashMap<String, String>();
-
 	}
 
 	/*
@@ -78,7 +77,7 @@ public class VariableRenamer implements IRefactor {
 
 		Validate.notNull(actualScope);
 		Validate.notNull(posistionToTest);
-		
+
 		if (actualScope.getStartPos() <= posistionToTest.getStartPos()
 				&& posistionToTest.getStartPos() < actualScope.getEndPos()) {
 			return true;
@@ -95,9 +94,9 @@ public class VariableRenamer implements IRefactor {
 	 *         it, no: return null
 	 */
 	private String isStringInMap(String stringToTest) {
-		
+
 		Validate.notNull(stringToTest);
-		//Validate.notEmpty(stringToTest);
+		// Validate.notEmpty(stringToTest);
 
 		for (String key : mappedNames.keySet()) {
 			if (stringToTest.indexOf(key) > -1) {
@@ -112,7 +111,7 @@ public class VariableRenamer implements IRefactor {
 	 * rename all vars and replace them in the given programmtree
 	 */
 	private void renameVars() {
-		
+
 		Validate.notNull(mappedElements);
 		Validate.notNull(programmTree);
 
@@ -124,34 +123,49 @@ public class VariableRenamer implements IRefactor {
 
 			String oldName = ValueExtractor.getName(actualElement.getElement());
 
-			for (int k = 0; k < programmTree.size(); k++) {
+			// same variable
+			if (!mappedNames.containsKey(oldName))
+				mappedNames.put(oldName, varName + number++);
+		}
 
-				Element element = programmTree.get(k);
+		for (int k = 0; k < programmTree.size(); k++) {
 
-				if (isInScope(actualScope, element.getType().getPos())) {
+			Element element = programmTree.get(k);
 
-					String name = ValueExtractor.getName(element);
-					String result = isStringInMap(name);
-					if (result != null) {
+			for (Map.Entry<String, String> entry : mappedNames.entrySet()) {
 
-						ValueExtractor.setName(element, result);
-					}
-					else {
-						String newName = "var" + number;
-						mappedNames.put(oldName, newName);
-						ValueExtractor.setName(element, newName);
-					}
-
-					String value = ValueExtractor.getValue(element);
-					if (value.indexOf(oldName) > -1) {
-						String toReplace = ValueExtractor.getValue(actualElement.getElement());
-						String test = value.replaceAll(oldName, toReplace);
-						ValueExtractor.setValue(element, test);
-					}
-				}
-
+				call(element, entry);
 			}
 
+		}
+
+	}
+
+	private void call(Element element, Entry<String, String> entry) {
+
+		String name = ValueExtractor.getName(element);
+		if (name.contains(entry.getKey())) {
+			ValueExtractor.setName(element, entry.getValue());
+		}
+
+		String value = "";
+
+		switch (element.getType().getType()) {
+		case VARIABLE:
+			value = ValueExtractor.getValue(element);
+			break;
+		case FUNCTION:
+			break;
+		case CALL:
+			break;
+		case DEFAULT:
+			break;
+		case FOR:
+			break;
+		case RETURN:
+
+			break;
+		default:
 		}
 
 	}
