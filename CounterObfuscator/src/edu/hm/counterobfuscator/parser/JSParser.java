@@ -31,7 +31,7 @@ public class JSParser implements IJSParser {
 	private String				unparsedJSCode;
 	private static Logger	log;
 	private ITokenAnalyser	tokenanalyser;
-	private IProgrammTree			programmTree;
+	private IProgrammTree	programmTree;
 
 	/**
 	 * @param client
@@ -58,8 +58,8 @@ public class JSParser implements IJSParser {
 
 	/**
 	 * @throws IOException
-	 * @throws EncoderException 
-	 * @throws IllegalArgumentException 
+	 * @throws EncoderException
+	 * @throws IllegalArgumentException
 	 * 
 	 */
 	public void process() throws IOException, IllegalArgumentException, EncoderException {

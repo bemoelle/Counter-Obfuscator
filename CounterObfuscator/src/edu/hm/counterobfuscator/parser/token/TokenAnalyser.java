@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.codec.EncoderException;
-import org.jboss.netty.handler.codec.http.websocketx.PongWebSocketFrame;
-
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.types.AbstractType;
@@ -234,25 +232,6 @@ class TokenAnalyser implements ITokenAnalyser {
 		setNextTokenTo(endPos);
 
 	}
-
-	// private void processGlobalVar() {
-	//
-	// int assign = getActualToken().getPos();
-	// int startPos = getPositionOfPreviousToken(assign - 1, TOKENTYPE.STRING);
-	// int endPos = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
-	//
-	// String name = getNameOfType(startPos, assign - 1);
-	// String value = getNameOfType(assign + 1, endPos - 1);
-	//
-	// Variable var = new Variable(new Position(startPos, endPos), name, value);
-	//
-	// if (!allTypes.contains(var)) {
-	// var.setGlobal(true);
-	// }
-	//
-	// allTypes.add(var);
-	//
-	// }
 
 	/**
 	 * @return
