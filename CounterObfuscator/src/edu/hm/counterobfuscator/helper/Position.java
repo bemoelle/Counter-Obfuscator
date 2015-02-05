@@ -31,6 +31,14 @@ public class Position {
 	public int getEndPos() {
 		return endPos;
 	}
+	
+	public boolean isPosWithin(Position otherPos) {
+		
+		if(startPos > otherPos.startPos) return false;
+		if(endPos < otherPos.endPos) return false;
+		
+		return true;
+	}
 
 	@Override
 	public boolean equals(Object other) {

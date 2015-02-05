@@ -1,9 +1,9 @@
-package edu.hm.counterobfuscator.refactor;
+package edu.hm.counterobfuscator.refactor.modul;
 
 import java.util.List;
+
 import javax.script.ScriptException;
 
-import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.mapper.Mapper;
 import edu.hm.counterobfuscator.mapper.MapperElement;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
@@ -18,12 +18,12 @@ import edu.hm.counterobfuscator.types.Variable;
  * 
  * 
  */
-public class VariableRemover implements IRefactor {
+public class VariableRemover implements IModul {
 
 	private IProgrammTree			programmTree;
 	private List<MapperElement>	mappedElements;
 
-	public VariableRemover(IProgrammTree programmTree, Setting setting) {
+	public VariableRemover(IProgrammTree programmTree) {
 
 		this.programmTree = programmTree.reverseOrder();
 
@@ -33,19 +33,12 @@ public class VariableRemover implements IRefactor {
 		// ------------
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.hm.counterobfuscator.refactor.IRefactor#process()
 	 */
-	public IProgrammTree process() throws ScriptException {
-
-		removeVars();
-		return programmTree.reverseOrder();
-	}
-
-	/**
-	 * 
-	 */
-	public void removeVars() {
+	public IProgrammTree process() {
 
 		for (int i = 0; i < mappedElements.size(); i++) {
 
@@ -72,9 +65,9 @@ public class VariableRemover implements IRefactor {
 						if (refCounter == 0) {
 
 							programmTree.removeElement(actualElement);
-							
+
 							Element parent = actualElement.getParent();
-							if(parent != null) {
+							if (parent != null) {
 								parent.getChildren().removeElement(actualElement);
 							}
 						}
@@ -89,6 +82,8 @@ public class VariableRemover implements IRefactor {
 				}
 			}
 		}
+
+		return programmTree.reverseOrder();
 
 	}
 

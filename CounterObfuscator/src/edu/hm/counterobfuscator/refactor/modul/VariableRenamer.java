@@ -1,6 +1,5 @@
-package edu.hm.counterobfuscator.refactor;
+package edu.hm.counterobfuscator.refactor.modul;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,18 +8,13 @@ import java.util.Map.Entry;
 import javax.script.ScriptException;
 
 import edu.hm.counterobfuscator.helper.Position;
-import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.mapper.Mapper;
 import edu.hm.counterobfuscator.mapper.MapperElement;
-import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.Element;
+import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.ValueExtractor;
-import edu.hm.counterobfuscator.types.AbstractType;
-import edu.hm.counterobfuscator.types.Default;
-import edu.hm.counterobfuscator.types.Call;
 import edu.hm.counterobfuscator.types.TYPE;
-import edu.hm.counterobfuscator.types.Variable;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -28,7 +22,7 @@ import edu.hm.counterobfuscator.types.Variable;
  * 
  * 
  */
-public class VariableRenamer implements IRefactor {
+public class VariableRenamer implements IModul {
 
 	private IProgrammTree			programmTree;
 	private String						varName	= "var";
@@ -41,7 +35,7 @@ public class VariableRenamer implements IRefactor {
 	 * @param programmTree
 	 * @param setting
 	 */
-	public VariableRenamer(IProgrammTree programmTree, Setting setting) {
+	public VariableRenamer(IProgrammTree programmTree) {
 
 		this.programmTree = programmTree;
 
@@ -59,58 +53,7 @@ public class VariableRenamer implements IRefactor {
 	 * 
 	 * @see edu.hm.counterobfuscator.refactor.IRefactor#process()
 	 */
-	public IProgrammTree process() throws ScriptException {
-
-		renameVars();
-
-		return programmTree;
-	}
-
-	/**
-	 * @param actualScope
-	 * @param posistionToTest
-	 * @return boolean
-	 * 
-	 *         test if a given position is within the actual scope
-	 */
-	private boolean isInScope(Position actualScope, Position posistionToTest) {
-
-		Validate.notNull(actualScope);
-		Validate.notNull(posistionToTest);
-
-		if (actualScope.getStartPos() <= posistionToTest.getStartPos()
-				&& posistionToTest.getStartPos() < actualScope.getEndPos()) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param mappedNames
-	 * @return String
-	 * 
-	 *         test if a string is already mapped. yes: return the new name for
-	 *         it, no: return null
-	 */
-	private String isStringInMap(String stringToTest) {
-
-		Validate.notNull(stringToTest);
-		// Validate.notEmpty(stringToTest);
-
-		for (String key : mappedNames.keySet()) {
-			if (stringToTest.indexOf(key) > -1) {
-				return mappedNames.get(key);
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * rename all vars and replace them in the given programmtree
-	 */
-	private void renameVars() {
+	public IProgrammTree process() {
 
 		Validate.notNull(mappedElements);
 		Validate.notNull(programmTree);
@@ -138,6 +81,8 @@ public class VariableRenamer implements IRefactor {
 			}
 
 		}
+
+		return programmTree;
 
 	}
 

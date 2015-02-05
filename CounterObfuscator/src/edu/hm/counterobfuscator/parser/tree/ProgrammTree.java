@@ -1,6 +1,3 @@
-/**
- * 
- */
 package edu.hm.counterobfuscator.parser.tree;
 
 import java.util.ArrayList;
@@ -92,24 +89,24 @@ public class ProgrammTree implements IProgrammTree {
 				if (element.getType() instanceof Default) {
 					test += ((Default) element.getType()).getName();
 				}
-				
+
 				if (element.getType() instanceof Return) {
 					test += ((Return) element.getType()).getName();
 				}
-				
+
 				if (element.getType() instanceof Call) {
 					test += ((Call) element.getType()).getName();
 					test += ((Call) element.getType()).getFunction();
 					test += ((Call) element.getType()).getValue();
 				}
-				
+
 				if (element.getType() instanceof Function) {
 					test += ((Function) element.getType()).getName();
 					test += ((Function) element.getType()).getHeadString();
 				}
 
-
-				System.out.println("|__" + element.getType().getType().toString() + " -- " + test);
+				System.out.println("|__" + element.getDepth() + ":"
+						+ element.getType().getType().toString() + " -- " + test);
 			}
 		}
 
@@ -143,42 +140,84 @@ public class ProgrammTree implements IProgrammTree {
 		}
 	}
 
-	public void prettyPrint() {
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#prettyPrint(boolean)
+	 */
+	public void prettyPrint(boolean flat) {
 
 		if (!isFlat) {
 			System.out.println("prettyPrint() is not possible when tree is flat");
+			return;
 		}
 		else {
-			System.out.println(prettyPrintChildElement("", this));
-		}
 
-	}
+			int last = 0;
 
-	private String prettyPrintChildElement(String tab, IProgrammTree tree) {
+			for (int i = 0; i < this.size(); i++) {
 
-		String test = "";
+				Element element = this.get(i);
 
-		for (int i = 0; i < tree.size(); i++) {
+				String toPrint = call(element.getType());
 
-			Element element = tree.get(i);
+				toPrint = tabPrint(element.getDepth()) + toPrint;
 
-			test += call(element.getType());
+				System.out.println(toPrint);
 
-			if (element.hasChildren()) {
-				test += tab + prettyPrintChildElement(tab, element.getChildren());
 			}
+
 		}
 
-		return test;
 	}
 
+	/**
+	 * @param anz
+	 * @return
+	 */
+	private String tabPrint(int anz) {
+
+		String tabs = "";
+
+		for (int i = 0; i < anz; i++)
+			tabs += tabs + "  ";
+
+		return tabs;
+
+	}
+
+	/**
+	 * @param tab
+	 * @param tree
+	 * @return
+	 */
+//	private String prettyPrintChildElement(String tab, IProgrammTree tree) {
+//
+//		String test = "";
+//
+//		for (int i = 0; i < tree.size(); i++) {
+//
+//			Element element = tree.get(i);
+//
+//			test += call(element.getType());
+//
+//			if (element.hasChildren()) {
+//				test += tab + prettyPrintChildElement(tab, element.getChildren());
+//			}
+//		}
+//
+//		return test;
+//	}
+
+	/**
+	 * @param abstractType
+	 * @return
+	 */
 	private String call(AbstractType abstractType) {
 
 		switch (abstractType.getType()) {
 
 		case FUNCTION:
 			Function func = (Function) abstractType;
-			return "function " + func.getName() + func.getHeadString() + "{\n";
+			return "function " + func.getName() + "(" + func.getHeadString() + ") " + "{\n";
 		case CALL:
 			Call fc = (Call) abstractType;
 			return fc.getName() + "." + fc.getFunction() + "(" + fc.getValue() + ");\n";
@@ -227,6 +266,9 @@ public class ProgrammTree implements IProgrammTree {
 		return typeTree.get(index);
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#remove(int)
+	 */
 	public Element remove(int index) {
 		return typeTree.remove(index);
 	}
@@ -265,6 +307,9 @@ public class ProgrammTree implements IProgrammTree {
 		return typeTree.remove(type);
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#findGlobalScope()
+	 */
 	public Position findGlobalScope() {
 
 		Position globalScope = new Position(0, 0);
@@ -280,6 +325,9 @@ public class ProgrammTree implements IProgrammTree {
 		return globalScope;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#flatten()
+	 */
 	public IProgrammTree flatten() {
 
 		ProgrammTree list = new ProgrammTree();
@@ -289,6 +337,8 @@ public class ProgrammTree implements IProgrammTree {
 	}
 
 	/**
+	 * @param tree
+	 * @param flatList
 	 * @return
 	 */
 	private IProgrammTree walkThroughElement(IProgrammTree tree, IProgrammTree flatList) {
@@ -305,6 +355,9 @@ public class ProgrammTree implements IProgrammTree {
 		return flatList;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#reverseOrder()
+	 */
 	public IProgrammTree reverseOrder() {
 
 		List<Element> reverse = typeTree;
@@ -313,16 +366,50 @@ public class ProgrammTree implements IProgrammTree {
 
 		ProgrammTree reversedTree = new ProgrammTree(reverse);
 		reversedTree.isFlat = this.isFlat;
-		
+
 		return reversedTree;
 	}
+
 
 	/* (non-Javadoc)
 	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#isFlat()
 	 */
 	@Override
 	public boolean isFlat() {
+		
 		return isFlat;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#searchForNameOfElement(edu.hm.counterobfuscator.parser.tree.Element, edu.hm.counterobfuscator.helper.Position)
+	 */
+	public List<Element> searchForNameOfElement(Element elementToTest, Position scope) {
+
+		String name = elementToTest.getType().getName();
+		List<Element> elements = new ArrayList<Element>();
+		// TODO start at actual element
+		for (int i = 0; i < size(); i++) {
+			Element actualElement = get(i);
+			if (scope.isPosWithin(actualElement.getType().getPos())) {
+
+				if (actualElement.getType().hasNameInIt(name))
+					elements.add(actualElement);
+			}
+		}
+		return elements;
+	}
+	
+	public List<Element> searchForName(String oldName) {
+
+		List<Element> elements = new ArrayList<Element>();
+		// TODO start at actual element
+		for (int i = 0; i < size(); i++) {
+			Element actualElement = get(i);
+			
+				if (actualElement.getType().hasNameInIt(oldName))
+					elements.add(actualElement);
+		}
+		return elements;
 	}
 
 }

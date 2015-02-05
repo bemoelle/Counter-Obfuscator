@@ -16,15 +16,17 @@ public class Element {
 	private IProgrammTree children;
 	private AbstractType type;
 	private Element parent;
+	private int depth;
 
 	/**
 	 * @param parent
 	 * @param type
 	 */
-	public Element(Element parent, AbstractType type) {
+	public Element(Element parent, AbstractType type, int depth) {
 		this.parent = parent;
 		this.type = type;
 		this.children = new ProgrammTree();
+		this.depth = depth;
 	}
 
 	/**
@@ -107,12 +109,26 @@ public class Element {
 //		} else  {
 			Element otherTypeTreeElement = (Element)other;
 			
-			//if(this.getType() != otherTypeTreeElement.getType()) return false;
+			if(this.getType() != otherTypeTreeElement.getType()) return false;
 			if(!this.getType().getPos().equals(otherTypeTreeElement.getType().getPos())) return false;
-			//if(!this.getType().getName().equals(otherTypeTreeElement.getType().getName())) return false;
+			if(!this.getType().getName().equals(otherTypeTreeElement.getType().getName())) return false;
 			
 			return true;
 //		}
+	}
+
+	/**
+	 * @return
+	 */
+	public int getDepth() {
+		return depth;
+	}
+
+	/**
+	 * @param depth
+	 */
+	public void setDepth(int depth) {
+		this.depth = depth;
 	}
 
 }

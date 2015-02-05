@@ -23,5 +23,23 @@ public class While  extends AbstractType {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.types.AbstractType#hasSameName(java.lang.Object)
+	 */
+	@Override
+	public boolean hasSameName(Object other) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.types.AbstractType#hasNameInIt(java.lang.String)
+	 */
+	@Override
+	public boolean hasNameInIt(String name) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 }

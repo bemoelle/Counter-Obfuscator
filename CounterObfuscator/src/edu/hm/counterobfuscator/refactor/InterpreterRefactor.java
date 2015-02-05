@@ -11,7 +11,6 @@ import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.types.Call;
-import edu.hm.counterobfuscator.types.TYPE;
 import edu.hm.counterobfuscator.types.This;
 import edu.hm.counterobfuscator.types.Variable;
 
@@ -21,7 +20,7 @@ import edu.hm.counterobfuscator.types.Variable;
  * 
  *       class to rename obfuscated names, replace them with the assigned value
  */
-public class Refactor implements IRefactor {
+public class InterpreterRefactor implements IRefactor {
 
 	private IClient			client;
 	private static Logger	log;
@@ -29,10 +28,10 @@ public class Refactor implements IRefactor {
 	private IProgrammTree	flatProgrammTree;
 	private IProgrammTree	programmTree;
 
-	public Refactor(IProgrammTree programmTree, IClient client) {
+	public InterpreterRefactor(IProgrammTree programmTree, IClient client) {
 
 		this.programmTree = programmTree;
-		Refactor.log = Logger.getLogger(Function.class.getName());
+		InterpreterRefactor.log = Logger.getLogger(Function.class.getName());
 
 		this.client = client;
 
@@ -131,7 +130,8 @@ public class Refactor implements IRefactor {
 		if (resultValue.indexOf("NO_EXECUTION") < 0) {
 			var.setValue(resultValue);
 			jsScriptBuffer += "var " + var.getName() + "=" + resultValue + ";";
-		}  else {
+		}
+		else {
 			var.setExecutable(false);
 		}
 

@@ -1,6 +1,5 @@
 package edu.hm.counterobfuscator.types;
 
-import net.sourceforge.htmlunit.corejs.javascript.ast.Name;
 import edu.hm.counterobfuscator.helper.Position;
 
 /**
@@ -99,6 +98,20 @@ public class Variable extends AbstractType {
 				return true;
 			}
 		}
+		
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.types.AbstractType#hasNameInIt(java.lang.String)
+	 */
+	@Override
+	public boolean hasNameInIt(String nameToTest) {
+		
+		String toTest = name + value;
+		
+		if(toTest.indexOf(nameToTest) != -1)
+			return true;
 		
 		return false;
 	}

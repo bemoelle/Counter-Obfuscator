@@ -80,4 +80,13 @@ public class Function extends AbstractType {
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.types.AbstractType#hasNameInIt(java.lang.String)
+	 */
+	@Override
+	public boolean hasNameInIt(String name) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

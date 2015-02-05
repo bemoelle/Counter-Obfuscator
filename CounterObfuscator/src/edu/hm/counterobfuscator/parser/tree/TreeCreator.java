@@ -34,14 +34,15 @@ public final class TreeCreator {
 
 			int startPos = actualType.getPos().getStartPos();
 			int endPos = actualType.getPos().getEndPos();
+			int xxx = 0;
 			if (programmTree.isEmpty() || startPos > highestEndPos) {
 
-				Element tte = new Element(null, actualType);
+				Element tte = new Element(null, actualType, xxx);
 				programmTree.add(tte);
 				highestEndPos = endPos;
 				parent = tte;
 			} else {
-				findPositionForChild(parent, actualType);
+				findPositionForChild(parent, actualType, ++xxx);
 			}
 		}
 		return programmTree;
@@ -51,19 +52,19 @@ public final class TreeCreator {
 	 * @param parent
 	 * @param child
 	 */
-	private static void findPositionForChild(Element parent, AbstractType child) {
+	private static void findPositionForChild(Element parent, AbstractType child, int xxx) {
 
 		if (!parent.hasChildren()) {
-			parent.addChild(new Element(parent, child));
+			parent.addChild(new Element(parent, child, xxx));
 		} else {
 			int startPos = child.getPos().getStartPos();
 
 			Element latestChild = parent.getLatestChild();
 
 			if (startPos > latestChild.getType().getPos().getEndPos()) {
-				parent.addChild(new Element(parent, child));
+				parent.addChild(new Element(parent, child, xxx));
 			} else {
-				findPositionForChild(latestChild, child);
+				findPositionForChild(latestChild, child, ++xxx);
 			}
 		}
 	}

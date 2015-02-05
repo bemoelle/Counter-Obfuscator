@@ -6,7 +6,6 @@ import java.util.List;
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.Element;
-import edu.hm.counterobfuscator.parser.tree.ValueExtractor;
 import edu.hm.counterobfuscator.types.TYPE;
 
 /**

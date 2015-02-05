@@ -44,5 +44,9 @@ public abstract class AbstractType {
 
 	public abstract boolean hasSameName(Object other);
 
-	// public abstract boolean isSame(Object other);
+	/**
+	 * @param name
+	 * @return
+	 */
+	public abstract boolean hasNameInIt(String name);
 }

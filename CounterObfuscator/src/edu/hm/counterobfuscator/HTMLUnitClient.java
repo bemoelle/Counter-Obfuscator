@@ -69,23 +69,22 @@ public class HTMLUnitClient implements IClient {
 			return result;
 		}
 		else if (result.getClass() == net.sourceforge.htmlunit.corejs.javascript.NativeArray.class) {
-			
-			net.sourceforge.htmlunit.corejs.javascript.NativeArray array = (net.sourceforge.htmlunit.corejs.javascript.NativeArray)result;
-			
-			Object[] test = array.toArray();		
-			
+
+			net.sourceforge.htmlunit.corejs.javascript.NativeArray array = (net.sourceforge.htmlunit.corejs.javascript.NativeArray) result;
+
+			Object[] test = array.toArray();
+
 			Object test2 = "[";
-			
-			for(int i=0; i<test.length; i++) {
+
+			for (int i = 0; i < test.length; i++) {
 				String o = (String) test[i];
-				test2 += "'"+o+"'";
-				if(i < test.length-1)
+				test2 += "'" + o + "'";
+				if (i < test.length - 1)
 					test2 += ",";
 			}
-			
-			
+
 			test2 += "]";
-					
+
 			return test2;
 		}
 		else {

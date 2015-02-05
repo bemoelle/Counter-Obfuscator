@@ -82,10 +82,23 @@ public interface IProgrammTree extends Iterable<Element> {
 	/**
 	 * 
 	 */
-	public void prettyPrint();
+	public void prettyPrint(boolean isFlat);
 
 	/**
 	 * @return
 	 */
 	public boolean isFlat();
+	
+	/**
+	 * @param elementToTest
+	 * @param scope
+	 * @return
+	 */
+	public List<Element> searchForNameOfElement(Element elementToTest, Position scope);
+	
+	/**
+	 * @param oldName
+	 * @return
+	 */
+	public List<Element> searchForName(String oldName);
 }

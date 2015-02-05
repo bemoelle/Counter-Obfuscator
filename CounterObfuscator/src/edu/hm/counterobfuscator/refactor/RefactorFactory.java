@@ -4,6 +4,7 @@
 package edu.hm.counterobfuscator.refactor;
 
 import java.io.IOException;
+
 import javax.script.ScriptException;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
@@ -12,6 +13,9 @@ import edu.hm.counterobfuscator.HTMLUnitClient;
 import edu.hm.counterobfuscator.IClient;
 import edu.hm.counterobfuscator.parser.IJSParser;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
+import edu.hm.counterobfuscator.refactor.modul.VariableRemover;
+import edu.hm.counterobfuscator.refactor.modul.VariableRenamer;
+import edu.hm.counterobfuscator.refactor.modul.VariableReplacer;
 
 
 
@@ -35,23 +39,21 @@ public class RefactorFactory {
 		
 		IProgrammTree programmTree = jsParser.getProgrammTree();
 		
+		//TODO read settings
 			
-		IRefactor interpreter = new Refactor(programmTree, client);
+		IRefactor interpreter = new InterpreterRefactor(programmTree, client);
 		IProgrammTree tree = interpreter.process();
-					
-		IRefactor varReplacer = new VariableReplacer(tree, null);
-		tree = varReplacer.process();
 		
-//		IRefactor varRemover = new VariableRemover(tree, null);
-//		tree = varRemover.process();
-//		
-		IRefactor varRenamer = new VariableRenamer(tree, null);
-		tree = varRenamer.process();
+		IRefactor variableRefactor = new VariableRefactor(tree, null);
+		tree = variableRefactor.process();
 		
-		IRefactor jsFunctionRenamer = new FunctionRenamer(tree, null);
-		tree = jsFunctionRenamer.process();
+		IRefactor functionRefactor = new FunctionRefactor(tree, null);
+		tree = functionRefactor.process();
+		
+		IRefactor loopRefactor = new LoopRefactor(tree, client, null);
+		tree = loopRefactor.process();
 				
-		tree.print();
+		tree.prettyPrint(true);
 
 
 	}

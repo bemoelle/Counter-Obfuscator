@@ -1,35 +1,28 @@
-package edu.hm.counterobfuscator.refactor;
+package edu.hm.counterobfuscator.refactor.modul;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.script.ScriptException;
 
 import edu.hm.counterobfuscator.helper.Position;
-import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.mapper.Mapper;
 import edu.hm.counterobfuscator.mapper.MapperElement;
-import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.Element;
+import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.ValueExtractor;
 import edu.hm.counterobfuscator.types.AbstractType;
-import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.Call;
 import edu.hm.counterobfuscator.types.TYPE;
 import edu.hm.counterobfuscator.types.Variable;
 
-public class VariableReplacer implements IRefactor {
+public class VariableReplacer implements IModul {
 
 	private IProgrammTree			programmTree;
 	private List<MapperElement>	mappedElements;
-	private Setting					setting;
 
+	public VariableReplacer(IProgrammTree programmTree) {
 
-	public VariableReplacer(IProgrammTree programmTree, Setting setting) {
-		
 		this.programmTree = programmTree;
-		this.setting = setting;
 
 		// TODO refactor to Factory
 		Mapper mapper = new Mapper(programmTree, TYPE.VARIABLE);
@@ -38,29 +31,12 @@ public class VariableReplacer implements IRefactor {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.hm.counterobfuscator.interpreter.IInterpreter#process()
 	 */
-	public IProgrammTree process() throws ScriptException {
-
-		replaceVars();
-		return programmTree;
-	}
-
-	/**
-	 * @param actualScope
-	 * @param pos
-	 * @return
-	 */
-	private boolean isInScope(Position actualScope, Position pos) {
-
-		if (actualScope.getStartPos() <= pos.getStartPos()
-				&& pos.getStartPos() < actualScope.getEndPos())
-			return true;
-		return false;
-	}
-
-	private void replaceVars() {
+	public IProgrammTree process() {
 
 		for (int i = 0; i < mappedElements.size(); i++) {
 
@@ -89,6 +65,21 @@ public class VariableReplacer implements IRefactor {
 
 		}
 
+		return programmTree;
+
+	}
+
+	/**
+	 * @param actualScope
+	 * @param pos
+	 * @return
+	 */
+	private boolean isInScope(Position actualScope, Position pos) {
+
+		if (actualScope.getStartPos() <= pos.getStartPos()
+				&& pos.getStartPos() < actualScope.getEndPos())
+			return true;
+		return false;
 	}
 
 	// // TODO change operations to work on mapped elements instead of original

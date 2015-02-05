@@ -24,7 +24,7 @@ import edu.hm.counterobfuscator.parser.IJSParser;
 import edu.hm.counterobfuscator.parser.JSParserFactory;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.Element;
-import edu.hm.counterobfuscator.refactor.Refactor;
+import edu.hm.counterobfuscator.refactor.InterpreterRefactor;
 import edu.hm.counterobfuscator.refactor.RefactorFactory;
 import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
