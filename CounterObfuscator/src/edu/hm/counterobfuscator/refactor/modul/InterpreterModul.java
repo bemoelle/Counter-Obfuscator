@@ -1,11 +1,8 @@
-package edu.hm.counterobfuscator.refactor;
+package edu.hm.counterobfuscator.refactor.modul;
 
 import java.util.logging.Logger;
 
-import javax.script.ScriptException;
-
 import edu.hm.counterobfuscator.IClient;
-import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
@@ -20,44 +17,44 @@ import edu.hm.counterobfuscator.types.Variable;
  * 
  *       class to rename obfuscated names, replace them with the assigned value
  */
-public class InterpreterRefactor implements IRefactor {
+public class InterpreterModul {
 
 	private IClient			client;
 	private static Logger	log;
 	private String				jsScriptBuffer	= "";
-	private IProgrammTree	flatProgrammTree;
-	private IProgrammTree	programmTree;
+	private boolean			handleError;
 
-	public InterpreterRefactor(IProgrammTree programmTree, IClient client) {
+	public InterpreterModul(IClient client, boolean handleError) {
 
-		this.programmTree = programmTree;
-		InterpreterRefactor.log = Logger.getLogger(Function.class.getName());
+		this.handleError = handleError;
+		InterpreterModul.log = Logger.getLogger(InterpreterModul.class.getName());
 
 		this.client = client;
 
 		// create an flat structure of a programmtree
-		this.flatProgrammTree = this.programmTree.flatten();
+		// this.flatProgrammTree = this.programmTree.flatten();
 	}
 
-	public IProgrammTree process() throws ScriptException {
+	public Element process(Element element) throws Exception {
 
 		log.info("start javascript interpreter process...");
 
-		for (int i = 0; i < flatProgrammTree.size(); i++) {
+		// for (int i = 0; i < flatProgrammTree.size(); i++) {
 
-			callExecuteElement(flatProgrammTree.get(i));
-		}
+		callExecuteElement(element);
+		// }
 
 		log.info("finished javascript interpreter process");
 
-		return flatProgrammTree;
+		return element;
 
 	}
 
 	/**
 	 * @param element
+	 * @throws Exception
 	 */
-	private void callExecuteElement(Element element) {
+	private void callExecuteElement(Element element) throws Exception {
 
 		switch (element.getType().getType()) {
 		case FUNCTION:
@@ -96,50 +93,81 @@ public class InterpreterRefactor implements IRefactor {
 		if (func.isPacked()) {
 			log.info("packed function found!");
 
-			String script = "(function " + func.getName() + func.getHeadString()
-					+ func.getBodyAsString() + ";";
+			String script = func.getBodyAsString() + ";";
+
 			Object result = executeJS(script);
+			
+			String resultAsString = result.toString();
+			resultAsString = resultAsString.substring(1, resultAsString.length()-1);
+
 			element.removeAllChildren();
-			func.setBodyAsString(result.toString());
+			
+			func.setBodyAsString(resultAsString);
+			
 			log.info("result is " + result);
 		}
 
 	}
 
-	private void executeFunctionCall(Element element) {
+	private void executeFunctionCall(Element element) throws Exception {
 
-		Call func = ((Call) element.getType());
+		Call callStatement = ((Call) element.getType());
 
-		String resultValue = executeJS(func.getValue()).toString();
+		String resultValue = executeJS(callStatement.getValue()).toString();
 		if (resultValue.indexOf("NO_EXECUTION") < 0) {
-			func.setValue(resultValue);
-		}
 
-		String resultParameter = executeJS(func.getFunction()).toString();
-		if (resultParameter.indexOf("NO_EXECUTION") < 0) {
-			func.setFunction(resultParameter);
+			callStatement.setValue(resultValue);
 
 		}
+
+		resultValue = executeJS(callStatement.getFunction()).toString();
+		if (resultValue.indexOf("NO_EXECUTION") < 0) {
+
+			callStatement.setFunction(resultValue);
+
+		}
+
+		String toExecute = callStatement.getName() + "." + callStatement.getFunction() + "();";
+		resultValue = executeJS(toExecute).toString();
+		if (resultValue.indexOf("NO_EXECUTION") < 0) {
+
+		}
+		else {
+			if (!handleError)
+				throw new Exception("bla");
+		}
+
 	}
 
-	private void executeVariable(Element element) {
+	private void executeVariable(Element element) throws Exception {
 
 		Variable var = ((Variable) element.getType());
 
 		String resultValue = executeJS(var.getValue()).toString();
+		// statement is executable
 		if (resultValue.indexOf("NO_EXECUTION") < 0) {
+
 			var.setValue(resultValue);
 			jsScriptBuffer += "var " + var.getName() + "=" + resultValue + ";";
+
 		}
 		else {
-			var.setExecutable(false);
+			if (!handleError) {
+				throw new Exception("bla");
+			}
 		}
 
 		if (var.isObject()) {
 			String resultParameter = executeJS(var.getParameter()).toString();
 			if (resultParameter.indexOf("NO_EXECUTION") < 0) {
+
 				var.setParameter(resultParameter);
 				var.setExecutable(false);
+
+			}
+			else {
+				if (!handleError)
+					throw new Exception("bla");
 			}
 		}
 
@@ -174,10 +202,8 @@ public class InterpreterRefactor implements IRefactor {
 			result = client.getJSResult(jsScriptBuffer + script);
 		}
 		catch (Exception e) {
-			System.out.println("Exception: " + e);
 			result = "NO_EXECUTION";
 		}
-
 		return result;
 	}
 

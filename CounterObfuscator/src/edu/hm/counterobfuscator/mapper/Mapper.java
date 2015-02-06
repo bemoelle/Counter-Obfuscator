@@ -17,17 +17,15 @@ import edu.hm.counterobfuscator.types.TYPE;
  *       scope of each VAR in the programmTree
  * 
  */
-public class Mapper implements IMapper {
+public final class Mapper {
 
-	private List<MapperElement>	mappedElements;
-	private TYPE[]						typeSearchFor;
-	private IProgrammTree			programmTree;
+	private static TYPE[]					typeSearchFor;
+	private static List<MapperElement>	mappedElements;
 
-	public Mapper(IProgrammTree programmTree, TYPE... typeSearchFor) {
-
-		this.typeSearchFor = typeSearchFor;
-		this.programmTree = programmTree;
-		this.mappedElements = new ArrayList<MapperElement>();
+	/**
+	 * 
+	 */
+	private Mapper() {
 	}
 
 	/**
@@ -35,7 +33,10 @@ public class Mapper implements IMapper {
 	 * @param programmTree
 	 * @return a List of mapped Elements
 	 */
-	public void process() {
+	public static List<MapperElement> process(IProgrammTree programmTree, TYPE... typeSearchForX) {
+
+		typeSearchFor = typeSearchForX;
+		mappedElements = new ArrayList<MapperElement>();
 
 		if (programmTree.isFlat()) {
 			callElement(programmTree);
@@ -44,9 +45,11 @@ public class Mapper implements IMapper {
 			callElementRec(programmTree);
 		}
 		testOfReAssign();
+
+		return mappedElements;
 	}
 
-	private boolean isSearchedType(TYPE typeToTest) {
+	private static boolean isSearchedType(TYPE typeToTest) {
 
 		for (TYPE test : typeSearchFor) {
 
@@ -63,7 +66,7 @@ public class Mapper implements IMapper {
 	 *           elements which type we are searching for.
 	 * 
 	 */
-	private void callElement(IProgrammTree tree) {
+	private static void callElement(IProgrammTree tree) {
 
 		for (int i = 0, positionInList = 0; i < tree.size(); i++) {
 
@@ -94,7 +97,7 @@ public class Mapper implements IMapper {
 	 *           which type we are searching for.
 	 * 
 	 */
-	private void callElementRec(IProgrammTree tree) {
+	private static void callElementRec(IProgrammTree tree) {
 
 		for (int i = 0, positionInList = 0; i < tree.size(); i++) {
 
@@ -129,7 +132,7 @@ public class Mapper implements IMapper {
 	 * reassinged. in this case, the scope have to be changed of this element
 	 * 
 	 */
-	private void testOfReAssign() {
+	private static void testOfReAssign() {
 
 		for (int i = 0; i < mappedElements.size(); i++) {
 
@@ -138,8 +141,8 @@ public class Mapper implements IMapper {
 			for (int j = i + 1; j < mappedElements.size(); j++) {
 
 				MapperElement me2 = mappedElements.get(j);
-				if (me.getElement().getType().hasSameName(me2.getElement().getType())) {		
-					
+				if (me.getElement().getType().hasSameName(me2.getElement().getType())) {
+
 					me.setScope(new Position(me.getScope().getStartPos(),
 							me2.getScope().getStartPos() - 1));
 				}

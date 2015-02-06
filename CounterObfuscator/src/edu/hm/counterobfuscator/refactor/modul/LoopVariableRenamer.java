@@ -27,13 +27,7 @@ public class LoopVariableRenamer implements IModul {
 
 		this.programmTree = programmTree;
 
-		// TODO refactor to Factory
-		Mapper mapper = new Mapper(programmTree, TYPE.FOR);
-		mapper.process();
-
-		this.mappedElements = mapper.getMappedElements();
-
-		// ------------
+		this.mappedElements = Mapper.process(programmTree, TYPE.FOR);
 	}
 
 	/*

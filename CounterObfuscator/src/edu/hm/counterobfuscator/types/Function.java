@@ -16,14 +16,12 @@ public class Function extends AbstractType {
 
 	private List<Variable>	head;
 	private boolean			isPacked;
-	private String				headString;
 	private String				bodyAsString;
 
 	public Function(Position pos, String name, String headString, String bodyAsString,
 			boolean isPacked) {
 		super(TYPE.FUNCTION, pos, name);
 
-		this.headString = headString;
 		this.bodyAsString = bodyAsString;
 		this.isPacked = isPacked;
 		this.head = new ArrayList<Variable>();
@@ -61,11 +59,10 @@ public class Function extends AbstractType {
 			headString += var.getName() + ",";
 		}
 
-		return headString;
+		return "(" + headString + ")";
 	}
 
 	public void setHeadString(String headString) {
-		this.headString = headString;
 	}
 
 	/*

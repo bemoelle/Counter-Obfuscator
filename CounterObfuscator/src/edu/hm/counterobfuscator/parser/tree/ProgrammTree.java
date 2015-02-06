@@ -13,6 +13,7 @@ import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.types.Call;
 import edu.hm.counterobfuscator.types.Return;
 import edu.hm.counterobfuscator.types.This;
+import edu.hm.counterobfuscator.types.TryCatch;
 import edu.hm.counterobfuscator.types.Variable;
 
 /**
@@ -151,8 +152,6 @@ public class ProgrammTree implements IProgrammTree {
 		}
 		else {
 
-			int last = 0;
-
 			for (int i = 0; i < this.size(); i++) {
 
 				Element element = this.get(i);
@@ -239,6 +238,9 @@ public class ProgrammTree implements IProgrammTree {
 		case DEFAULT:
 			Default defaultStatement = (Default) abstractType;
 			return defaultStatement.getName() + ";\n";
+		case TRYCATCH:
+			TryCatch tryCatchStatement = (TryCatch) abstractType;
+			return tryCatchStatement.getName().equals("try") ? "try {\n" : "} catch(e) {\n";
 		default:
 			break;
 		}
@@ -304,6 +306,24 @@ public class ProgrammTree implements IProgrammTree {
 	@Override
 	public boolean removeElement(Element type) {
 
+		if(type.hasChildren()) {
+			
+			IProgrammTree children = type.getChildren();
+			Element parent = type.getParent();
+			
+			for(int i=0; i<children.size(); i++) {
+				
+				if(parent != null)
+					children.get(i).setDepth(parent.getDepth());
+				else 
+					children.get(i).setDepth(0);
+				children.get(i).setParent(parent);
+				
+			}
+			
+		}
+		
+		
 		return typeTree.remove(type);
 	}
 

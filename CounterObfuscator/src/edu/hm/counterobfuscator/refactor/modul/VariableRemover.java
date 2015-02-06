@@ -27,10 +27,7 @@ public class VariableRemover implements IModul {
 
 		this.programmTree = programmTree.reverseOrder();
 
-		Mapper mapper = new Mapper(programmTree, TYPE.VARIABLE);
-		mapper.process();
-		this.mappedElements = mapper.getMappedElements();
-		// ------------
+		this.mappedElements = Mapper.process(programmTree, TYPE.VARIABLE);
 	}
 
 	/*

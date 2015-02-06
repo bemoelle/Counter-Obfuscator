@@ -2,8 +2,6 @@ package edu.hm.counterobfuscator.refactor.modul;
 
 import java.util.List;
 
-import javax.script.ScriptException;
-
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.mapper.Mapper;
 import edu.hm.counterobfuscator.mapper.MapperElement;
@@ -24,11 +22,7 @@ public class VariableReplacer implements IModul {
 
 		this.programmTree = programmTree;
 
-		// TODO refactor to Factory
-		Mapper mapper = new Mapper(programmTree, TYPE.VARIABLE);
-		mapper.process();
-		this.mappedElements = mapper.getMappedElements();
-
+		this.mappedElements = Mapper.process(programmTree, TYPE.VARIABLE);
 	}
 
 	/*

@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.script.ScriptException;
-
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.mapper.Mapper;
@@ -38,13 +36,7 @@ public class VariableRenamer implements IModul {
 	public VariableRenamer(IProgrammTree programmTree) {
 
 		this.programmTree = programmTree;
-
-		// TODO refactor to Factory
-		Mapper mapper = new Mapper(programmTree, TYPE.VARIABLE);
-		mapper.process();
-		this.mappedElements = mapper.getMappedElements();
-		// ------------
-
+		this.mappedElements = Mapper.process(programmTree, TYPE.VARIABLE);
 		this.mappedNames = new HashMap<String, String>();
 	}
 

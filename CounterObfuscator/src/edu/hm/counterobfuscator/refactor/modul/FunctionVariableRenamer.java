@@ -27,13 +27,7 @@ public class FunctionVariableRenamer implements IModul {
 
 		this.programmTree = programmTree;
 
-		// TODO refactor to Factory
-		Mapper mapper = new Mapper(programmTree, TYPE.FUNCTION);
-		mapper.process();
-
-		this.mappedElements = mapper.getMappedElements();
-
-		// ------------
+		this.mappedElements = Mapper.process(programmTree, TYPE.FUNCTION);
 	}
 
 	/*

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.codec.EncoderException;
+
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.types.AbstractType;
@@ -14,6 +15,7 @@ import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.types.Call;
 import edu.hm.counterobfuscator.types.Return;
 import edu.hm.counterobfuscator.types.This;
+import edu.hm.counterobfuscator.types.TryCatch;
 import edu.hm.counterobfuscator.types.Variable;
 
 /**
@@ -124,6 +126,12 @@ class TokenAnalyser implements ITokenAnalyser {
 			break;
 		case STRING:
 			processString();
+			break;
+		case TRY:
+			processTry();
+			break;
+		case CATCH:
+			processCatch();
 			break;
 		default:
 			// processDefault();
@@ -329,12 +337,18 @@ class TokenAnalyser implements ITokenAnalyser {
 		if (startPos > 0 && allTokensOfJSCode.get(startPos - 1).getType() == TOKENTYPE.OPEN_BRACKET) {
 			startPos--;
 			endPos = getPositionOfNextToken(endPos + 2, TOKENTYPE.CLOSE_BRACKET);
+			name = "";
+			head = "()";
+			body = getNameOfType(startPos, endPos);
 			isPacked = true;
 		}
 
 		allTypes.add(new Function(new Position(startPos, endPos), name, head, body, isPacked));
 
-		setNextTokenTo(nextCurlyOpenBracket);
+		if(isPacked)
+			setNextTokenTo(endPos);
+		else
+			setNextTokenTo(nextCurlyOpenBracket);
 
 	}
 
@@ -393,6 +407,47 @@ class TokenAnalyser implements ITokenAnalyser {
 
 		allTypes.add(new ForWhile(new Position(startPos, endPos), "for", head, body));
 
+		setNextTokenTo(nextCurlyOpenBracket);
+	}
+	
+	/**
+	 * 
+	 */
+	private void processTry() {
+
+		Validate.isTrue(allTokensOfJSCode.size() > 0);
+		// Validate.notNull(loops);
+
+		log.info("start processTryCatch analyse process...");
+		
+		int startPos = getActualToken().getPos();
+		
+		int nextCurlyOpenBracket = getPositionOfNextToken(startPos,
+				TOKENTYPE.OPEN_CURLY_BRACKET);
+		
+		int endPos = getPositionOfNextToken(nextCurlyOpenBracket, TOKENTYPE.CLOSE_CURLY_BRACKET);
+		
+		allTypes.add(new TryCatch(new Position(startPos, endPos), "try", null));
+		
+		setNextTokenTo(nextCurlyOpenBracket);
+	}
+	
+	private void processCatch() {
+
+		Validate.isTrue(allTokensOfJSCode.size() > 0);
+		// Validate.notNull(loops);
+
+		log.info("start processTryCatch analyse process...");
+		
+		int startPos = getActualToken().getPos();
+		
+		int nextCurlyOpenBracket = getPositionOfNextToken(startPos,
+				TOKENTYPE.OPEN_CURLY_BRACKET);
+		
+		int endPos = getPositionOfNextToken(nextCurlyOpenBracket, TOKENTYPE.CLOSE_CURLY_BRACKET);
+		
+		allTypes.add(new TryCatch(new Position(startPos, endPos), "catch", null));
+		
 		setNextTokenTo(nextCurlyOpenBracket);
 	}
 

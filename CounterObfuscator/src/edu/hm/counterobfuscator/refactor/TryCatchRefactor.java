@@ -8,10 +8,8 @@ import javax.script.ScriptException;
 import edu.hm.counterobfuscator.IClient;
 import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
-import edu.hm.counterobfuscator.refactor.modul.FunctionInterpreter;
-import edu.hm.counterobfuscator.refactor.modul.FunctionRenamer;
-import edu.hm.counterobfuscator.refactor.modul.FunctionVariableRenamer;
 import edu.hm.counterobfuscator.refactor.modul.IModul;
+import edu.hm.counterobfuscator.refactor.modul.TryCatchChecker;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -19,13 +17,13 @@ import edu.hm.counterobfuscator.refactor.modul.IModul;
  * 
  * 
  */
-public class FunctionRefactor implements IRefactor {
+public class TryCatchRefactor implements IRefactor {
 
 	private IProgrammTree	programmTree;
 	private Setting			setting;
 	private IClient			client;
 
-	public FunctionRefactor(IProgrammTree programmTree, IClient client, Setting setting) {
+	public TryCatchRefactor(IProgrammTree programmTree, IClient client, Setting setting) {
 
 		this.programmTree = programmTree;
 		this.client = client;
@@ -40,15 +38,8 @@ public class FunctionRefactor implements IRefactor {
 	@Override
 	public IProgrammTree process() throws ScriptException {
 
-		IModul functionInterpreter = new FunctionInterpreter(programmTree, client);
-		IProgrammTree tree = functionInterpreter.process();
-
-		IModul renamer = new FunctionRenamer(tree);
-		tree = renamer.process();
-
-		FunctionVariableRenamer variableRenamer = new FunctionVariableRenamer(tree);
-		return variableRenamer.process();
-
+		IModul checker = new TryCatchChecker(programmTree, client);
+		return checker.process();
 	}
 
 }

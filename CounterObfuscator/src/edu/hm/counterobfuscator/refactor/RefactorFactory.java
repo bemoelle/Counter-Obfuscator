@@ -13,9 +13,6 @@ import edu.hm.counterobfuscator.HTMLUnitClient;
 import edu.hm.counterobfuscator.IClient;
 import edu.hm.counterobfuscator.parser.IJSParser;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
-import edu.hm.counterobfuscator.refactor.modul.VariableRemover;
-import edu.hm.counterobfuscator.refactor.modul.VariableRenamer;
-import edu.hm.counterobfuscator.refactor.modul.VariableReplacer;
 
 
 
@@ -33,29 +30,32 @@ public class RefactorFactory {
 	 * @throws IOException 
 	 * @throws ScriptException 
 	 */
-	public static void create(IJSParser jsParser) throws IOException, ScriptException {
+	public static IProgrammTree create(IJSParser jsParser) throws IOException, ScriptException {
 
 		IClient client = new HTMLUnitClient("http://www.google.com/", BrowserVersion.FIREFOX_24);
 		
-		IProgrammTree programmTree = jsParser.getProgrammTree();
+		IProgrammTree programmTree = jsParser.getProgrammTree().flatten();
 		
 		//TODO read settings
-			
-		IRefactor interpreter = new InterpreterRefactor(programmTree, client);
-		IProgrammTree tree = interpreter.process();
 		
-		IRefactor variableRefactor = new VariableRefactor(tree, null);
-		tree = variableRefactor.process();
+		IRefactor variableRefactor = new VariableRefactor(programmTree, client, null);
+		IProgrammTree tree = variableRefactor.process();
 		
-		IRefactor functionRefactor = new FunctionRefactor(tree, null);
+		IRefactor tryCatchRefactor = new TryCatchRefactor(tree, client, null);
+		tree = tryCatchRefactor.process();
+		
+		IRefactor functionRefactor = new FunctionRefactor(tree, client, null);
 		tree = functionRefactor.process();
 		
 		IRefactor loopRefactor = new LoopRefactor(tree, client, null);
 		tree = loopRefactor.process();
+		
+		
 				
 		tree.prettyPrint(true);
 
-
+		return tree;
+		
 	}
 
 }

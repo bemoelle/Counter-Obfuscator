@@ -28,7 +28,7 @@ public class CounterObfuscatorMain {
 	 */
 	public static void main(String[] args) throws IOException, ScriptException, IllegalArgumentException, EncoderException {
 
-		IJSParser jsParser = JSParserFactory.create("JScrambler");
+		IJSParser jsParser = JSParserFactory.create("packedTest");
 		
 		IProgrammTree tree = jsParser.getProgrammTree();
 		

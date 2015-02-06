@@ -22,13 +22,8 @@ public class FunctionRenamer implements IModul {
 
 		this.programmTree = programmTree;
 
-		// TODO refactor to Factory
-		Mapper mapper = new Mapper(programmTree, TYPE.FUNCTION);
-		mapper.process();
+		this.mappedElements = Mapper.process(programmTree, TYPE.FUNCTION);
 
-		this.mappedElements = mapper.getMappedElements();
-
-		// ------------
 	}
 
 	/*

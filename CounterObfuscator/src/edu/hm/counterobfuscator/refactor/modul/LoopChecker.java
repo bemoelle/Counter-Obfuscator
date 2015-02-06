@@ -5,12 +5,9 @@ import java.util.List;
 import edu.hm.counterobfuscator.IClient;
 import edu.hm.counterobfuscator.mapper.Mapper;
 import edu.hm.counterobfuscator.mapper.MapperElement;
-import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
-import edu.hm.counterobfuscator.parser.tree.ValueExtractor;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.TYPE;
-import edu.hm.counterobfuscator.types.Variable;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -22,7 +19,6 @@ public class LoopChecker implements IModul {
 
 	private IProgrammTree			programmTree;
 	private List<MapperElement>	mappedElements;
-	private int							number	= 1;
 	private IClient					client;
 
 	public LoopChecker(IProgrammTree programmTree, IClient client) {
@@ -30,13 +26,7 @@ public class LoopChecker implements IModul {
 		this.programmTree = programmTree;
 		this.client = client;
 
-		// TODO refactor to Factory
-		Mapper mapper = new Mapper(programmTree, TYPE.FOR);
-		mapper.process();
-
-		this.mappedElements = mapper.getMappedElements();
-
-		// ------------
+		this.mappedElements = Mapper.process(programmTree, TYPE.FOR);
 	}
 
 	/*
