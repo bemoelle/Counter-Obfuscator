@@ -54,8 +54,6 @@ public class VariableRenamer implements IModul {
 
 			MapperElement actualElement = mappedElements.get(i);
 
-			Position actualScope = actualElement.getScope();
-
 			String oldName = ValueExtractor.getName(actualElement.getElement());
 
 			// same variable
@@ -85,11 +83,8 @@ public class VariableRenamer implements IModul {
 			ValueExtractor.setName(element, entry.getValue());
 		}
 
-		String value = "";
-
 		switch (element.getType().getType()) {
 		case VARIABLE:
-			value = ValueExtractor.getValue(element);
 			break;
 		case FUNCTION:
 			break;

@@ -3,8 +3,6 @@
  */
 package edu.hm.counterobfuscator.types;
 
-import java.util.List;
-
 import edu.hm.counterobfuscator.helper.Position;
 
 /**
@@ -14,10 +12,6 @@ import edu.hm.counterobfuscator.helper.Position;
  * 
  */
 public class TryCatch extends AbstractType {
-
-	private List<Variable>	head;
-	private boolean			isPacked;
-	private String				bodyAsString;
 
 	public TryCatch(Position pos, String name, String headString) {
 		super(TYPE.TRYCATCH, pos, name);

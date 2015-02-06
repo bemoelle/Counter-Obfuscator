@@ -8,7 +8,6 @@ import org.apache.commons.codec.EncoderException;
 
 import edu.hm.counterobfuscator.parser.IJSParser;
 import edu.hm.counterobfuscator.parser.JSParserFactory;
-import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.refactor.RefactorFactory;
 
 /**
@@ -29,9 +28,7 @@ public class CounterObfuscatorMain {
 	public static void main(String[] args) throws IOException, ScriptException, IllegalArgumentException, EncoderException {
 
 		IJSParser jsParser = JSParserFactory.create("packedTest");
-		
-		IProgrammTree tree = jsParser.getProgrammTree();
-		
+				
 		RefactorFactory.create(jsParser);
 		
 	}

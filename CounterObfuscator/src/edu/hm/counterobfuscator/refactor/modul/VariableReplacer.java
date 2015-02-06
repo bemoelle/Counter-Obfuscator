@@ -8,10 +8,7 @@ import edu.hm.counterobfuscator.mapper.MapperElement;
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.ValueExtractor;
-import edu.hm.counterobfuscator.types.AbstractType;
-import edu.hm.counterobfuscator.types.Call;
 import edu.hm.counterobfuscator.types.TYPE;
-import edu.hm.counterobfuscator.types.Variable;
 
 public class VariableReplacer implements IModul {
 
@@ -248,33 +245,4 @@ public class VariableReplacer implements IModul {
 	//
 	// }
 
-	/**
-	 * @param type
-	 * 
-	 *           before each FunctionCall a variable with the same
-	 * @param oldName
-	 * @param newName
-	 */
-	private void renameFunctionCall(AbstractType type, String oldName, String newName) {
-
-		Call fc = (Call) type;
-
-		String nerere = fc.getName().replaceAll(oldName, newName);
-		fc.setName(nerere);
-
-	}
-
-	/**
-	 * @param type
-	 * @param newName
-	 * @param oldName2
-	 * 
-	 */
-	private void renameVar(AbstractType type, String oldName, String newName) {
-
-		Variable var = (Variable) type;
-
-		var.setValue(var.getValue().replaceAll(oldName, newName));
-
-	}
 }
