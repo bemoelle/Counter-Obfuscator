@@ -26,6 +26,7 @@ import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.refactor.RefactorFactory;
 import edu.hm.counterobfuscator.refactor.modul.InterpreterModul;
+import edu.hm.counterobfuscator.types.Ajax;
 import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
@@ -242,11 +243,30 @@ public class TestJSInterpreter {
 		assertEquals(returnStatement.getType(), TYPE.RETURN);
 		assertEquals(returnStatement.getName(), "var1");
 
-		
-		
-
+	}
 	
+	@Test
+	public void ajaxTest() throws IOException, IllegalArgumentException, EncoderException,
+			ScriptException {
+		IJSParser jsParser = JSParserFactory.create("JScrambler");
 
+		IProgrammTree tree = RefactorFactory.create(jsParser);
+		
+
+		assertNotNull(tree);
+		assertEquals(tree.size(), 1);
+		
+		Element t0 = tree.get(0);
+		
+		Ajax def = (Ajax)t0.getType();
+		
+		assertEquals(def.getType(), TYPE.AJAX);
+		assertEquals(def.getName(), "'getScript'");
+		assertEquals(def.getValue(), "'demo_ajax_script.js'");
+		
 	}
 
+	
+	
+	
 }

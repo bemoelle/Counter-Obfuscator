@@ -6,6 +6,7 @@ import edu.hm.counterobfuscator.IClient;
 import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
+import edu.hm.counterobfuscator.refactor.modul.AjaxCaller;
 import edu.hm.counterobfuscator.refactor.modul.IModul;
 import edu.hm.counterobfuscator.refactor.modul.VariableInterpreter;
 import edu.hm.counterobfuscator.refactor.modul.VariableRemover;
@@ -38,6 +39,9 @@ public class VariableRefactor implements IRefactor {
 
 		IModul varInterpreter = new VariableInterpreter(programmTree, client);
 		IProgrammTree tree = varInterpreter.process();
+		
+		IModul ajaxCaller = new AjaxCaller(tree, client);
+		tree = ajaxCaller.process();
 
 		IModul varReplacer = new VariableReplacer(tree);
 		tree = varReplacer.process();
@@ -46,7 +50,7 @@ public class VariableRefactor implements IRefactor {
 		tree = varRemover.process();
 
 		IModul varRenamer = new VariableRenamer(tree);
-		tree = varRenamer.process();
+		tree = varRenamer.process();		
 
 		return tree;
 	}

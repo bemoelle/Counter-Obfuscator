@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import edu.hm.counterobfuscator.IClient;
 import edu.hm.counterobfuscator.parser.tree.Element;
+import edu.hm.counterobfuscator.types.Ajax;
 import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
@@ -72,11 +73,41 @@ public class InterpreterModul {
 		case THIS:
 			executeThis(element);
 			break;
+		case AJAX:
+			executeAjax(element);
+			break;
 		case DEFAULT:
 			executeDefault(element);
 		default:
 
 		}
+	}
+
+	/**
+	 * @param element
+	 */
+	private void executeAjax(Element element) {
+
+		Ajax ajax = ((Ajax) element.getType());
+		
+		String result = executeJS(ajax.getName()+";").toString();
+		if (result.indexOf("NO_EXECUTION") < 0) {
+			ajax.setName(result);
+		}
+		
+		result = executeJS(ajax.getValue()).toString();
+		if (result.indexOf("NO_EXECUTION") < 0) {
+
+			ajax.setValue(result);
+
+		}
+		
+		String script = "$["+ajax.getName()+"]"+"("+ajax.getValue()+")";
+		
+		result = executeJS(script).toString();
+		
+		log.info("result is " + result);
+
 	}
 
 	/**
@@ -96,14 +127,14 @@ public class InterpreterModul {
 			String script = func.getBodyAsString() + ";";
 
 			Object result = executeJS(script);
-			
+
 			String resultAsString = result.toString();
-			resultAsString = resultAsString.substring(1, resultAsString.length()-1);
+			resultAsString = resultAsString.substring(1, resultAsString.length() - 1);
 
 			element.removeAllChildren();
-			
+
 			func.setBodyAsString(resultAsString);
-			
+
 			log.info("result is " + result);
 		}
 
@@ -143,7 +174,9 @@ public class InterpreterModul {
 
 		Variable var = ((Variable) element.getType());
 
-		String resultValue = executeJS(var.getValue()).toString();
+		String value = var.getValue();
+		value = value.replace("\"", "\'");
+		String resultValue = executeJS(var.getName()+"="+value).toString();
 		// statement is executable
 		if (resultValue.indexOf("NO_EXECUTION") < 0) {
 

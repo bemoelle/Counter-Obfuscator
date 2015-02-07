@@ -33,26 +33,38 @@ public class VariableReplacer implements IModul {
 
 			MapperElement actualElement = mappedElements.get(i);
 
-			Position actualScope = actualElement.getScope();
+			String name = ValueExtractor.getName(actualElement.getElement());
+			String value = ValueExtractor.getValue(actualElement.getElement());
 
-			String oldName = ValueExtractor.getName(actualElement.getElement());
+			List<Element> elementsWithOldName = programmTree.searchForNameOfElement(
+					actualElement.getElement(), actualElement.getScope());
 
-			// TODO begin at scope
-			for (int k = 0; k < programmTree.size(); k++) {
+			for (int j = 0; j < elementsWithOldName.size(); j++) {
 
-				Element element = programmTree.get(k);
-
-				if (isInScope(actualScope, element.getType().getPos())) {
-
-					String value = ValueExtractor.getValue(element);
-					if (value.indexOf(oldName) > -1) {
-						String toReplace = ValueExtractor.getValue(actualElement.getElement());
-						String test = value.replaceAll(oldName, toReplace);
-						ValueExtractor.setValue(element, test);
-					}
-				}
+				Element type = elementsWithOldName.get(j);
+				String toReplace = ValueExtractor.getValue(type);
+				toReplace = toReplace.replace(name, value);
+				ValueExtractor.setValue(type, toReplace);
 
 			}
+
+			// TODO begin at scope
+			// for (int k = 0; k < programmTree.size(); k++) {
+			//
+			// Element element = programmTree.get(k);
+			//
+			// if (isInScope(actualScope, element.getType().getPos())) {
+			//
+			// String value = ValueExtractor.getValue(element);
+			// if (value.indexOf(oldName) > -1) {
+			// String toReplace =
+			// ValueExtractor.getValue(actualElement.getElement());
+			// String test = value.replaceAll(oldName, toReplace);
+			// ValueExtractor.setValue(element, test);
+			// }
+			// }
+			//
+			// }
 
 		}
 

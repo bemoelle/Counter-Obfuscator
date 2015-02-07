@@ -7,6 +7,7 @@ import java.util.List;
 
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.types.AbstractType;
+import edu.hm.counterobfuscator.types.Ajax;
 import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
@@ -241,6 +242,9 @@ public class ProgrammTree implements IProgrammTree {
 		case TRYCATCH:
 			TryCatch tryCatchStatement = (TryCatch) abstractType;
 			return tryCatchStatement.getName().equals("try") ? "try {\n" : "} catch(e) {\n";
+		case AJAX:
+			Ajax ajax = (Ajax) abstractType;
+			return "$." + ajax.getName() + "(" + ajax.getValue() + ");\n";
 		default:
 			break;
 		}

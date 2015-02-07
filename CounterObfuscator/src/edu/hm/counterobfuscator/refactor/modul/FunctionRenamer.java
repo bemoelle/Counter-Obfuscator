@@ -49,15 +49,15 @@ public class FunctionRenamer implements IModul {
 				continue;
 			}
 
-			List<Element> elementsWithNewName = programmTree.searchForNameOfElement(
+			List<Element> elementsWithOldName = programmTree.searchForNameOfElement(
 					actualElement.getElement(), actualElement.getScope());
 
 			String newName = funcName + funcNumber++;
 			function.setName(newName);
 
-			for (int k = 0; k < elementsWithNewName.size(); k++) {
+			for (int k = 0; k < elementsWithOldName.size(); k++) {
 
-				Element type = elementsWithNewName.get(k);
+				Element type = elementsWithOldName.get(k);
 
 				ValueExtractor.setValue(type, newName);
 

@@ -9,6 +9,7 @@ import org.apache.commons.codec.EncoderException;
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.types.AbstractType;
+import edu.hm.counterobfuscator.types.Ajax;
 import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
@@ -133,11 +134,34 @@ class TokenAnalyser implements ITokenAnalyser {
 		case CATCH:
 			processCatch();
 			break;
+		case JQUERY:
+			processJQuery();
 		default:
 			// processDefault();
 			break;
 
 		}
+	}
+
+	/**
+	 * function to jquery.getScript calls
+	 * Get and run a JavaScript using an AJAX request:
+	 * 
+	 * e.g. $.getScript("demo_ajax_script.js");
+	 */
+	private void processJQuery() {
+		
+		int startPos = getActualToken().getPos();
+		int openBracket = getPositionOfNextToken(startPos, TOKENTYPE.OPEN_BRACKET);
+		int closedBracket = getPositionOfNextToken(openBracket, TOKENTYPE.CLOSE_BRACKET);
+		String name = getNameOfType(startPos+2, openBracket-2);
+		String value = getNameOfType(openBracket+1, closedBracket-1);
+		
+		int endPos = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
+		
+		allTypes.add(new Ajax(new Position(startPos, endPos), name, value));
+		
+		setNextTokenTo(endPos);
 	}
 
 	/**

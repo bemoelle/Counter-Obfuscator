@@ -107,6 +107,9 @@ class Tokenizer {
 	private TOKENTYPE mapStringToTokentype(String object) {
 
 		switch (object) {
+		case "$":
+		case "jquery":
+			return TOKENTYPE.JQUERY;
 		case "this":
 			return TOKENTYPE.THIS;
 		case "constructor":
