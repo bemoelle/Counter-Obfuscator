@@ -1,5 +1,6 @@
 package edu.hm.counterobfuscator.refactor.modul;
 
+import java.util.Iterator;
 import java.util.List;
 
 import edu.hm.counterobfuscator.IClient;
@@ -8,6 +9,9 @@ import edu.hm.counterobfuscator.mapper.Mapper;
 import edu.hm.counterobfuscator.mapper.MapperElement;
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
+import edu.hm.counterobfuscator.parser.tree.ProgrammTree;
+import edu.hm.counterobfuscator.types.AbstractType;
+import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.TYPE;
 import edu.hm.counterobfuscator.types.TryCatch;
 
@@ -39,7 +43,7 @@ public class TryCatchChecker implements IModul {
 	 */
 	public IProgrammTree process() {
 
-		Validate.isTrue(programmTree.isFlat());
+		Validate.notNull(programmTree);
 
 		for (int i = 0; i < mappedElements.size(); i++) {
 
@@ -51,7 +55,7 @@ public class TryCatchChecker implements IModul {
 			if ("catch".equals(tryCatch.getName()))
 				continue;
 
-			IProgrammTree children = actualElement.getElement().getChildren().flatten();
+			IProgrammTree children = actualElement.getElement().getChildren();
 
 			for (int j = 0; j < children.size(); j++) {
 
@@ -59,15 +63,21 @@ public class TryCatchChecker implements IModul {
 
 				try {
 					interpreter.process(element);
-				}
-				catch (Exception e) {
-					for (int k = j; k < children.size(); k++) {
-						Element child = children.get(k);
-						programmTree.removeElement(child);
-						children.remove(k);
-						programmTree.removeElement(actualElement.getElement());
-						programmTree.removeElement(mappedElements.get(i + 1).getElement());
+				} catch (Exception e) {
+
+					// for(int k=j; k<children.size(); k++) {
+					Element next = element;
+					while (next != null) {
+
+						children.removeElementAndAllChildren(next);
+						next = next.getNext();
 					}
+					
+				//	programmTree.add(new Element(null, new Default(null, "dfdfdfd"),2 ));
+										
+					programmTree.remove(actualElement.getElement());
+					programmTree.remove(mappedElements.get(i+1).getElement());
+
 				}
 
 			}

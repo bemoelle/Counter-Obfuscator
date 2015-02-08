@@ -40,7 +40,7 @@ public class LoopChecker implements IModul {
 
 			MapperElement actualElement = mappedElements.get(i);
 			ForWhile loop = (ForWhile) actualElement.getElement().getType();
-			IProgrammTree children = actualElement.getElement().getChildren().flatten();
+			IProgrammTree children = actualElement.getElement().getChildren();
 
 			String head = loop.getHeadString();
 			int indexFirstSemicolon = head.indexOf(";");
@@ -66,9 +66,9 @@ public class LoopChecker implements IModul {
 	 */
 	private void remove(MapperElement actualElement, IProgrammTree children) {
 		for (int j = 0; j < children.size(); j++) {
-			programmTree.removeElement(children.get(j));
+			programmTree.removeElementAndAllChildren(children.get(j));
 		}
 
-		programmTree.removeElement(actualElement.getElement());
+		programmTree.removeElementAndAllChildren(actualElement.getElement());
 	}
 }

@@ -1,6 +1,7 @@
 package edu.hm.counterobfuscator.refactor.modul;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -61,9 +62,11 @@ public class VariableRenamer implements IModul {
 				mappedNames.put(oldName, varName + number++);
 		}
 
-		for (int k = 0; k < programmTree.size(); k++) {
+		Iterator<Element> it = programmTree.iterator();
 
-			Element element = programmTree.get(k);
+		while (it.hasNext()) {
+
+			Element element = it.next();
 
 			for (Map.Entry<String, String> entry : mappedNames.entrySet()) {
 
@@ -81,23 +84,6 @@ public class VariableRenamer implements IModul {
 		String name = ValueExtractor.getName(element);
 		if (name.contains(entry.getKey())) {
 			ValueExtractor.setName(element, entry.getValue());
-		}
-
-		switch (element.getType().getType()) {
-		case VARIABLE:
-			break;
-		case FUNCTION:
-			break;
-		case CALL:
-			break;
-		case DEFAULT:
-			break;
-		case FOR:
-			break;
-		case RETURN:
-
-			break;
-		default:
 		}
 
 	}

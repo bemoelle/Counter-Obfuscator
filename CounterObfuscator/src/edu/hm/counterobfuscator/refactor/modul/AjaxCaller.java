@@ -6,7 +6,6 @@ import edu.hm.counterobfuscator.IClient;
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.mapper.Mapper;
 import edu.hm.counterobfuscator.mapper.MapperElement;
-import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.types.TYPE;
 import edu.hm.counterobfuscator.types.Ajax;
@@ -39,7 +38,7 @@ public class AjaxCaller implements IModul {
 	 */
 	public IProgrammTree process() {
 
-		Validate.isTrue(programmTree.isFlat());
+		Validate.notNull(mappedElements);
 
 		for (int i = 0; i < mappedElements.size(); i++) {
 
@@ -47,17 +46,13 @@ public class AjaxCaller implements IModul {
 
 			Ajax tryCatch = (Ajax) actualElement.getElement().getType();
 
-
-				try {
-					interpreter.process(actualElement.getElement());
-				}
-				catch (Exception e) {
-					
-				}
+			try {
+				interpreter.process(actualElement.getElement());
+			} catch (Exception e) {
 
 			}
 
-		
+		}
 
 		return programmTree;
 	}

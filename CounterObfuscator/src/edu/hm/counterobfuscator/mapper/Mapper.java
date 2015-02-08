@@ -1,6 +1,7 @@
 package edu.hm.counterobfuscator.mapper;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import edu.hm.counterobfuscator.helper.Position;
@@ -26,6 +27,7 @@ public final class Mapper {
 	 * 
 	 */
 	private Mapper() {
+
 	}
 
 	/**
@@ -38,11 +40,26 @@ public final class Mapper {
 		typeSearchFor = typeSearchForX;
 		mappedElements = new ArrayList<MapperElement>();
 
-		if (programmTree.isFlat()) {
-			callElement(programmTree);
-		}
-		else {
-			callElementRec(programmTree);
+		Iterator<Element> it = programmTree.iterator();
+
+		while (it.hasNext()) {
+
+			Element element = it.next();
+			if (isSearchedType(element.getType().getType())) {
+
+				Position scope = null;
+
+				Element parent = element.getParent();
+				if (parent != null) {
+					scope = new Position(element.getType().getPos().getStartPos(), parent.getType()
+							.getPos().getEndPos());
+				} else {
+					// -1 element has scope until EOF
+					scope = new Position(element.getType().getPos().getStartPos(), 100000);
+				}
+
+				mappedElements.add(new MapperElement(scope, element));
+			}
 		}
 		testOfReAssign();
 
@@ -68,26 +85,28 @@ public final class Mapper {
 	 */
 	private static void callElement(IProgrammTree tree) {
 
-		for (int i = 0, positionInList = 0; i < tree.size(); i++) {
-
-			Element element = tree.get(i);
-			if (isSearchedType(element.getType().getType())) {
-
-				Position scope = null;
-
-				Element parent = element.getParent();
-				if (parent != null) {
-					scope = new Position(element.getType().getPos().getStartPos(), parent.getType()
-							.getPos().getEndPos());
-				}
-				else {
-					// -1 element has scope until EOF
-					scope = new Position(element.getType().getPos().getStartPos(), 100000);
-				}
-
-				mappedElements.add(new MapperElement(positionInList++, scope, element));
-			}
-		}
+		// for (int i = 0, positionInList = 0; i < tree.size(); i++) {
+		//
+		// Element element = tree.get(i);
+		// if (isSearchedType(element.getType().getType())) {
+		//
+		// Position scope = null;
+		//
+		// Element parent = element.getParent();
+		// if (parent != null) {
+		// scope = new Position(element.getType().getPos().getStartPos(),
+		// parent.getType()
+		// .getPos().getEndPos());
+		// }
+		// else {
+		// // -1 element has scope until EOF
+		// scope = new Position(element.getType().getPos().getStartPos(), 100000);
+		// }
+		//
+		// mappedElements.add(new MapperElement(positionInList++, scope,
+		// element));
+		// }
+		// }
 	}
 
 	/**
@@ -99,30 +118,32 @@ public final class Mapper {
 	 */
 	private static void callElementRec(IProgrammTree tree) {
 
-		for (int i = 0, positionInList = 0; i < tree.size(); i++) {
-
-			Element element = tree.get(i);
-			if (isSearchedType(element.getType().getType())) {
-
-				Position scope = null;
-
-				Element parent = element.getParent();
-				if (parent != null) {
-					scope = new Position(element.getType().getPos().getStartPos(), parent.getType()
-							.getPos().getEndPos());
-				}
-				else {
-					// -1 element has scope until EOF
-					scope = new Position(element.getType().getPos().getStartPos(), 100000);
-				}
-
-				mappedElements.add(new MapperElement(positionInList++, scope, element));
-			}
-
-			if (element.hasChildren()) {
-				callElementRec(element.getChildren());
-			}
-		}
+		// for (int i = 0, positionInList = 0; i < tree.size(); i++) {
+		//
+		// Element element = tree.get(i);
+		// if (isSearchedType(element.getType().getType())) {
+		//
+		// Position scope = null;
+		//
+		// Element parent = element.getParent();
+		// if (parent != null) {
+		// scope = new Position(element.getType().getPos().getStartPos(),
+		// parent.getType()
+		// .getPos().getEndPos());
+		// }
+		// else {
+		// // -1 element has scope until EOF
+		// scope = new Position(element.getType().getPos().getStartPos(), 100000);
+		// }
+		//
+		// mappedElements.add(new MapperElement(positionInList++, scope,
+		// element));
+		// }
+		//
+		// if (element.hasChildren()) {
+		// callElementRec(element.getChildren());
+		// }
+		// }
 	}
 
 	/**

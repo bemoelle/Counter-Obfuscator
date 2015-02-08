@@ -34,7 +34,7 @@ public class RefactorFactory {
 
 		IClient client = new HTMLUnitClient("http://www.google.com/", BrowserVersion.FIREFOX_24);
 		
-		IProgrammTree tree = jsParser.getProgrammTree().flatten();
+		IProgrammTree tree = jsParser.getProgrammTree();
 		
 		//TODO read settings
 		
@@ -50,7 +50,7 @@ public class RefactorFactory {
 		IRefactor loopRefactor = new LoopRefactor(tree, client, null);
 		tree = loopRefactor.process();
 						
-		tree.prettyPrint(true);
+		tree.prettyPrint();
 
 		return tree;
 		

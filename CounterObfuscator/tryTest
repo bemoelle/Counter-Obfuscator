@@ -1,1 +1,1 @@
-try{var test1=1;var test2=2;Math.lol();var test3=3;}catch(e){var test4=test1+test2;}return test4;}
+try{var test1=1;var test2=2;Math.lol();var test3=3;}catch(e){var test4=test1+test2;}return test4;

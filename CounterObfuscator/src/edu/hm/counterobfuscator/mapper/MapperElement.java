@@ -13,24 +13,14 @@ public class MapperElement {
 
 	private Position	scope;
 	private Element	element;
-	private int			positionInList;
 
 	/**
-	 * @param positionInList
 	 * @param scope
 	 * @param element
 	 */
-	public MapperElement(int positionInList, Position scope, Element element) {
-		this.positionInList = positionInList;
+	public MapperElement(Position scope, Element element) {
 		this.scope = scope;
 		this.element = element;
-	}
-
-	/**
-	 * @return
-	 */
-	public int getPositionInList() {
-		return positionInList;
 	}
 
 	/**

@@ -25,9 +25,6 @@ public class VariableRefactor implements IRefactor {
 		this.programmTree = programmTree;
 		this.client = client;
 		this.setting = setting;
-
-		Mapper.process(programmTree, TYPE.VARIABLE);
-
 	}
 
 	/*

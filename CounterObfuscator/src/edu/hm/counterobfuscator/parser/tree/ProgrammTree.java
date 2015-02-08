@@ -1,9 +1,12 @@
 package edu.hm.counterobfuscator.parser.tree;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.logging.Logger;
+
+import org.jboss.netty.channel.ChildChannelStateEvent;
 
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.types.AbstractType;
@@ -23,24 +26,63 @@ import edu.hm.counterobfuscator.types.Variable;
  * 
  * 
  */
-public class ProgrammTree implements IProgrammTree {
+public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
-	private List<Element>	typeTree;
-	private boolean			isFlat;
+	private List<Element>	tree;
+	private AbstractType		actualType;
+	private static Logger	log;
 
-	/**
-	 * 
-	 */
 	public ProgrammTree() {
-		this.typeTree = new ArrayList<Element>();
-		this.isFlat = false;
+
+		this.tree = new ArrayList<Element>();
+		ProgrammTree.log = Logger.getLogger(ProgrammTree.class.getName());
 	}
 
 	/**
 	 * 
 	 */
-	public ProgrammTree(List<Element> typeTree) {
-		this.typeTree = typeTree;
+	public ProgrammTree(List<AbstractType> types) {
+
+		this.tree = new ArrayList<Element>();
+
+		for (AbstractType type : types) {
+
+			actualType = type;
+			findPositionInTree(this, null, 0);
+		}
+	}
+
+	/**
+	 * @param tree
+	 * @param parent
+	 * @param tiefe
+	 */
+	private void findPositionInTree(IProgrammTree tree, Element parent, int tiefe) {
+
+		// tree is empty add element and leave
+		if (tree.size() < 1) {
+			tree.add(new Element(parent, actualType, tiefe));
+		} else { // tree is not empty
+
+			// get last insert element, it maybe the parent of the actual element
+			Element last = tree.getLast();
+
+			// new element is within parent
+			if (last != null && last.getType().getPos().isPosWithin(actualType.getPos())) {
+
+				// recursive step
+				findPositionInTree(last.getChildren(), last, ++tiefe);
+
+			} else { // is not within
+				Element element = new Element(parent, actualType, tiefe);
+				// verkettung wird bei der iteration durch den baum benötigt
+				element.setBefore(last);
+				last.setNext(element);
+				// -----------------------------
+				tree.add(element);
+
+			}
+		}
 	}
 
 	/*
@@ -49,7 +91,8 @@ public class ProgrammTree implements IProgrammTree {
 	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#isEmpty()
 	 */
 	public boolean isEmpty() {
-		return typeTree.isEmpty();
+
+		return tree.isEmpty();
 	}
 
 	/*
@@ -60,12 +103,19 @@ public class ProgrammTree implements IProgrammTree {
 	 */
 	public void add(Element element) {
 
-		typeTree.add(element);
+		if (size() > 0) {
+			Element last = getLast();
+
+			last.setNext(element);
+			element.setBefore(last);
+		}
+
+		tree.add(element);
 	}
 
 	public void addAll(ProgrammTree other) {
 
-		typeTree.addAll(other.typeTree);
+		tree.addAll(other.tree);
 	}
 
 	/*
@@ -73,97 +123,95 @@ public class ProgrammTree implements IProgrammTree {
 	 * 
 	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#print()
 	 */
-	public void print() {
+	// public void print() {
+	//
+	// if (!isFlat)
+	// printChildElement("", this);
+	// else {
+	//
+	// for (int i = 0; i < typeTree.size(); i++) {
+	//
+	// Element element = typeTree.get(i);
+	//
+	// String test = "";
+	// if (element.getType() instanceof Variable) {
+	// test += ((Variable) element.getType()).getName() + " = ";
+	// test += ((Variable) element.getType()).getValue();
+	// }
+	// if (element.getType() instanceof Default) {
+	// test += ((Default) element.getType()).getName();
+	// }
+	//
+	// if (element.getType() instanceof Return) {
+	// test += ((Return) element.getType()).getName();
+	// }
+	//
+	// if (element.getType() instanceof Call) {
+	// test += ((Call) element.getType()).getName();
+	// test += ((Call) element.getType()).getFunction();
+	// test += ((Call) element.getType()).getValue();
+	// }
+	//
+	// if (element.getType() instanceof Function) {
+	// test += ((Function) element.getType()).getName();
+	// test += ((Function) element.getType()).getHeadString();
+	// }
+	//
+	// System.out.println("|__" + element.getDepth() + ":"
+	// + element.getType().getType().toString() + " -- " + test);
+	// }
+	// }
+	//
+	// }
 
-		if (!isFlat)
-			printChildElement("", this);
-		else {
+	// /**
+	// * @param tab
+	// * @param tree
+	// */
+	// private void printChildElement(String tab, IProgrammTree tree) {
+	//
+	// for (int i = 0; i < tree.size(); i++) {
+	//
+	// Element element = tree.get(i);
+	//
+	// String test = "";
+	// if (element.getType() instanceof Variable) {
+	// test += ((Variable) element.getType()).getName() + " = ";
+	// test += ((Variable) element.getType()).getValue();
+	// }
+	// if (element.getType() instanceof Default) {
+	// test += ((Default) element.getType()).getName();
+	// }
+	//
+	// System.out.println("|" + tab + element.getType().getType().toString() +
+	// " -- " + test);
+	//
+	// if (element.hasChildren()) {
+	//
+	// printChildElement(tab + "__", element.getChildren());
+	// }
+	// }
+	// }
 
-			for (int i = 0; i < typeTree.size(); i++) {
-
-				Element element = typeTree.get(i);
-
-				String test = "";
-				if (element.getType() instanceof Variable) {
-					test += ((Variable) element.getType()).getName() + " = ";
-					test += ((Variable) element.getType()).getValue();
-				}
-				if (element.getType() instanceof Default) {
-					test += ((Default) element.getType()).getName();
-				}
-
-				if (element.getType() instanceof Return) {
-					test += ((Return) element.getType()).getName();
-				}
-
-				if (element.getType() instanceof Call) {
-					test += ((Call) element.getType()).getName();
-					test += ((Call) element.getType()).getFunction();
-					test += ((Call) element.getType()).getValue();
-				}
-
-				if (element.getType() instanceof Function) {
-					test += ((Function) element.getType()).getName();
-					test += ((Function) element.getType()).getHeadString();
-				}
-
-				System.out.println("|__" + element.getDepth() + ":"
-						+ element.getType().getType().toString() + " -- " + test);
-			}
-		}
-
-	}
-
-	/**
-	 * @param tab
-	 * @param tree
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.parser.tree.IProgrammTree#prettyPrint(boolean)
 	 */
-	private void printChildElement(String tab, IProgrammTree tree) {
+	public void prettyPrint() {
 
-		for (int i = 0; i < tree.size(); i++) {
+		Iterator<Element> it = this.iterator();
 
-			Element element = tree.get(i);
+		while (it.hasNext()) {
 
-			String test = "";
-			if (element.getType() instanceof Variable) {
-				test += ((Variable) element.getType()).getName() + " = ";
-				test += ((Variable) element.getType()).getValue();
-			}
-			if (element.getType() instanceof Default) {
-				test += ((Default) element.getType()).getName();
-			}
+			Element element = it.next();
 
-			System.out.println("|" + tab + element.getType().getType().toString() + " -- " + test);
+			String toPrint = call(element.getType());
 
-			if (element.hasChildren()) {
+			toPrint = tabPrint(element.getDepth()) + toPrint;
 
-				printChildElement(tab + "__", element.getChildren());
-			}
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#prettyPrint(boolean)
-	 */
-	public void prettyPrint(boolean flat) {
-
-		if (!isFlat) {
-			System.out.println("prettyPrint() is not possible when tree is flat");
-			return;
-		}
-		else {
-
-			for (int i = 0; i < this.size(); i++) {
-
-				Element element = this.get(i);
-
-				String toPrint = call(element.getType());
-
-				toPrint = tabPrint(element.getDepth()) + toPrint;
-
-				System.out.println(toPrint);
-
-			}
+			System.out.println(toPrint);
 
 		}
 
@@ -189,23 +237,23 @@ public class ProgrammTree implements IProgrammTree {
 	 * @param tree
 	 * @return
 	 */
-//	private String prettyPrintChildElement(String tab, IProgrammTree tree) {
-//
-//		String test = "";
-//
-//		for (int i = 0; i < tree.size(); i++) {
-//
-//			Element element = tree.get(i);
-//
-//			test += call(element.getType());
-//
-//			if (element.hasChildren()) {
-//				test += tab + prettyPrintChildElement(tab, element.getChildren());
-//			}
-//		}
-//
-//		return test;
-//	}
+	// private String prettyPrintChildElement(String tab, IProgrammTree tree) {
+	//
+	// String test = "";
+	//
+	// for (int i = 0; i < tree.size(); i++) {
+	//
+	// Element element = tree.get(i);
+	//
+	// test += call(element.getType());
+	//
+	// if (element.hasChildren()) {
+	// test += tab + prettyPrintChildElement(tab, element.getChildren());
+	// }
+	// }
+	//
+	// return test;
+	// }
 
 	/**
 	 * @param abstractType
@@ -259,7 +307,7 @@ public class ProgrammTree implements IProgrammTree {
 	 */
 	public int size() {
 
-		return typeTree.size();
+		return tree.size();
 	}
 
 	/*
@@ -269,14 +317,17 @@ public class ProgrammTree implements IProgrammTree {
 	 */
 	public Element get(int index) {
 
-		return typeTree.get(index);
+		return tree.get(index);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#remove(int)
 	 */
 	public Element remove(int index) {
-		return typeTree.remove(index);
+
+		return tree.remove(index);
 	}
 
 	/*
@@ -285,61 +336,226 @@ public class ProgrammTree implements IProgrammTree {
 	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#clear()
 	 */
 	public void clear() {
-		typeTree.clear();
 
+		tree.clear();
 	}
 
-	// -----------------------------------------------------
 	// Iterator
 	public Element getLast() {
-		return typeTree.get(typeTree.size() - 1);
+
+		return tree.get(tree.size() - 1);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#iterator()
+	 */
+	@Override
+	public Iterator<Element> iterator() {
+
+		Iterator<Element> it = new Iterator<Element>() {
+
+			private Element	next			= get(0);
+			private Element	lastElement	= null;
+
+			@Override
+			public boolean hasNext() {
+
+				return next != null;
+			}
+
+			@Override
+			public Element next() {
+
+				if (!hasNext())
+					throw new NoSuchElementException();
+
+				Element r = next;
+				lastElement = r;
+
+				if (next != null && next.hasChildren()) {
+					next = next.getChildren().get(0);
+				} else {
+
+					if (next.getNext() == null) {
+
+						while (next.getParent() != null) {
+							next = next.getParent();
+							if (next.getNext() != null)
+								break;
+						}
+
+						next = next.getNext();
+
+					} else {
+						next = next.getNext();
+					}
+				}
+
+				return r;
+			}
+
+			@Override
+			public void remove() {
+
+				Element parent = lastElement.getParent();
+				if (parent == null) {
+					removeElementAndAllChildren(lastElement);
+				} else {
+					parent.getChildren().removeElementAndAllChildren(lastElement);
+				}
+
+			}
+		};
+		return it;
 	}
 
 	@Override
-	public Iterator<Element> iterator() {
-		return null;
+	public Iterator<Element> reverseIterator() {
+
+		Iterator<Element> it = new Iterator<Element>() {
+
+			private Element	before		= getLastElement();
+			private Element	lastElement	= null;
+
+			private Element getLastElement() {
+
+				before = getLast();
+				while (before.hasChildren()) {
+					before = before.getLatestChild();
+				}
+				return before;
+
+			}
+
+			@Override
+			public boolean hasNext() {
+
+				return before != null;
+			}
+
+			@Override
+			public Element next() {
+
+				if (!hasNext())
+					throw new NoSuchElementException();
+
+				Element r = before;
+				lastElement = r;
+
+				if (before != null && before.getBefore() != null) {
+
+					before = before.getBefore();
+
+					if (before.hasChildren()) {
+						while (before.hasChildren()) {
+							before = before.getLatestChild();
+						}
+					}
+
+					// before
+				} else {
+
+					if (before.getParent() != null) {
+						before = before.getParent();
+					} else if (before.getParent() == null && before.getBefore() == null) {
+						before = null;
+					}
+				}
+
+				return r;
+			}
+
+			@Override
+			public void remove() {
+
+				Element parent = lastElement.getParent();
+				if (parent == null) {
+					removeElementAndAllChildren(lastElement);
+				} else {
+					parent.getChildren().removeElementAndAllChildren(lastElement);
+				}
+
+			}
+		};
+		return it;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * edu.hm.counterobfuscator.parser.tree.ITypeTree#removeElementOfType(edu
-	 * .hm.counterobfuscator.types.AbstractType)
+	 * edu.hm.counterobfuscator.parser.tree.IProgrammTree#removeElement(edu.hm
+	 * .counterobfuscator.parser.tree.Element)
 	 */
-	@Override
-	public boolean removeElement(Element type) {
+	public boolean removeElementAndAllChildren(Element element) {
 
-		if(type.hasChildren()) {
-			
-			IProgrammTree children = type.getChildren();
-			Element parent = type.getParent();
-			
-			for(int i=0; i<children.size(); i++) {
-				
-				if(parent != null)
-					children.get(i).setDepth(parent.getDepth());
-				else 
-					children.get(i).setDepth(0);
-				children.get(i).setParent(parent);
-				
-			}
-			
-		}
-		
-		
-		return typeTree.remove(type);
+		Element beforeEle = element.getBefore();
+		Element nextEle = element.getNext();
+
+		if (beforeEle != null)
+			beforeEle.setNext(nextEle);
+
+		if (nextEle != null)
+			nextEle.setBefore(beforeEle);
+
+		return tree.remove(element);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.parser.tree.IProgrammTree#removeElement(edu.hm
+	 * .counterobfuscator.parser.tree.Element)
+	 */
+	public boolean remove(Element element) {
+
+		if (element.hasChildren()) {
+
+			Element beforeEle = element.getBefore();
+			Element nextEle = element.getNext();
+			Element parent = element.getParent();
+
+			int index = tree.indexOf(element);
+
+			for (int i = 0; i < element.getChildren().size(); i++) {
+
+				Element child = element.getChild(i);
+				child.setParent(parent);
+				child.setDepth(element.getDepth());
+
+				tree.add(index++, child);
+			}
+
+			if (beforeEle != null) {
+				element.getChild(0).setBefore(beforeEle);
+				beforeEle.setNext(element.getChild(0));
+			}
+
+			if (nextEle != null) {
+				element.getLatestChild().setNext(nextEle);
+				nextEle.setBefore(element.getLatestChild());
+			}
+
+		}
+		element.setBefore(null);
+		element.setNext(null);
+		return removeElementAndAllChildren(element);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#findGlobalScope()
 	 */
 	public Position findGlobalScope() {
 
 		Position globalScope = new Position(0, 0);
 
-		for (int i = 0; i < typeTree.size(); i++) {
-			AbstractType element = typeTree.get(i).getType();
+		for (int i = 0; i < tree.size(); i++) {
+			AbstractType element = tree.get(i).getType();
 
 			if (element.getPos().getEndPos() > globalScope.getEndPos()) {
 				globalScope.setEndPos(element.getPos().getEndPos());
@@ -349,16 +565,18 @@ public class ProgrammTree implements IProgrammTree {
 		return globalScope;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#flatten()
 	 */
-	public IProgrammTree flatten() {
-
-		ProgrammTree list = new ProgrammTree();
-		this.isFlat = true;
-		list.isFlat = true;
-		return walkThroughElement(this, list);
-	}
+	// public IProgrammTree flatten2() {
+	//
+	// ProgrammTree list = new ProgrammTree();
+	// this.isFlat = true;
+	// list.isFlat = true;
+	// return walkThroughElement(this, list);
+	// }
 
 	/**
 	 * @param tree
@@ -379,41 +597,42 @@ public class ProgrammTree implements IProgrammTree {
 		return flatList;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#reverseOrder()
 	 */
 	public IProgrammTree reverseOrder() {
 
-		List<Element> reverse = typeTree;
+		// List<Element> reverse = typeTree;
+		//
+		// Collections.reverse(reverse);
+		//
+		// ProgrammTree reversedTree = new ProgrammTree(reverse);
+		// reversedTree.isFlat = this.isFlat;
 
-		Collections.reverse(reverse);
-
-		ProgrammTree reversedTree = new ProgrammTree(reverse);
-		reversedTree.isFlat = this.isFlat;
-
-		return reversedTree;
+		return null;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#isFlat()
-	 */
-	@Override
-	public boolean isFlat() {
-		
-		return isFlat;
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#searchForNameOfElement(edu.hm.counterobfuscator.parser.tree.Element, edu.hm.counterobfuscator.helper.Position)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.parser.tree.IProgrammTree#searchForNameOfElement
+	 * (edu.hm.counterobfuscator.parser.tree.Element,
+	 * edu.hm.counterobfuscator.helper.Position)
 	 */
 	public List<Element> searchForNameOfElement(Element elementToTest, Position scope) {
 
 		String name = elementToTest.getType().getName();
 		List<Element> elements = new ArrayList<Element>();
-		// TODO start at actual element
-		for (int i = 0; i < size(); i++) {
-			Element actualElement = get(i);
+
+		Iterator<Element> it = this.iterator();
+
+		while (it.hasNext()) {
+
+			Element actualElement = it.next();
+
 			if (scope.isPosWithin(actualElement.getType().getPos())) {
 
 				if (actualElement.getType().hasNameInIt(name))
@@ -422,18 +641,37 @@ public class ProgrammTree implements IProgrammTree {
 		}
 		return elements;
 	}
-	
+
 	public List<Element> searchForName(String oldName) {
 
 		List<Element> elements = new ArrayList<Element>();
 		// TODO start at actual element
-		for (int i = 0; i < size(); i++) {
-			Element actualElement = get(i);
-			
-				if (actualElement.getType().hasNameInIt(oldName))
-					elements.add(actualElement);
+
+		Iterator<Element> it = this.iterator();
+
+		while (it.hasNext()) {
+
+			Element actualElement = it.next();
+
+			if (actualElement.getType().hasNameInIt(oldName))
+				elements.add(actualElement);
 		}
 		return elements;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#copy()
+	 */
+	@Override
+	public IProgrammTree copy() {
+
+		IProgrammTree newTree = new ProgrammTree();
+
+		newTree.addAll(this);
+
+		return newTree;
 	}
 
 }

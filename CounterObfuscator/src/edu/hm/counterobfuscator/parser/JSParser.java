@@ -9,14 +9,14 @@ import java.util.logging.Logger;
 
 import org.apache.commons.codec.EncoderException;
 
-import edu.hm.counterobfuscator.IClient;
-import edu.hm.counterobfuscator.parser.token.TokenAnalyserFactory;
-import edu.hm.counterobfuscator.types.AbstractType;
-import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.parser.token.ITokenAnalyser;
 import edu.hm.counterobfuscator.parser.token.Token;
+import edu.hm.counterobfuscator.parser.token.TokenAnalyserFactory;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
+import edu.hm.counterobfuscator.parser.tree.ProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.TreeCreator;
+import edu.hm.counterobfuscator.types.AbstractType;
+import edu.hm.counterobfuscator.types.Function;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -70,7 +70,7 @@ public class JSParser implements IJSParser {
 
 		tokenanalyser = TokenAnalyserFactory.create(parsed);
 
-		programmTree = TreeCreator.createTypeTree(tokenanalyser.getAllTypes());
+		programmTree = new ProgrammTree(tokenanalyser.getAllTypes());
 
 		log.info("parsing jscode finished");
 	}

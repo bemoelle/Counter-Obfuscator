@@ -41,7 +41,7 @@ public class FunctionVariableRenamer implements IModul {
 
 			MapperElement actualElement = mappedElements.get(i);
 			Function function = (Function) actualElement.getElement().getType();
-			IProgrammTree children = actualElement.getElement().getChildren().flatten();
+			IProgrammTree children = actualElement.getElement().getChildren();
 
 			List<Variable> vars = function.getHead();
 

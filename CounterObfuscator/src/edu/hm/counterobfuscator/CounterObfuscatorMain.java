@@ -1,14 +1,22 @@
 package edu.hm.counterobfuscator;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.script.ScriptException;
 
 import org.apache.commons.codec.EncoderException;
 
+import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.parser.IJSParser;
 import edu.hm.counterobfuscator.parser.JSParserFactory;
+import edu.hm.counterobfuscator.parser.tree.Element;
+import edu.hm.counterobfuscator.parser.tree.ProgrammTree;
 import edu.hm.counterobfuscator.refactor.RefactorFactory;
+import edu.hm.counterobfuscator.types.AbstractType;
+import edu.hm.counterobfuscator.types.Default;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -27,9 +35,13 @@ public class CounterObfuscatorMain {
 	 */
 	public static void main(String[] args) throws IOException, ScriptException, IllegalArgumentException, EncoderException {
 
-		IJSParser jsParser = JSParserFactory.create("JScrambler");
-				
-		RefactorFactory.create(jsParser);
+//		IJSParser jsParser = JSParserFactory.create("JScrambler");
+//				
+//		RefactorFactory.create(jsParser);
+		
+		
+		
+
 		
 	}
 

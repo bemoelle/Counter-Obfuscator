@@ -13,16 +13,19 @@ import edu.hm.counterobfuscator.types.AbstractType;
  */
 public class Element {
 
-	private IProgrammTree children;
-	private AbstractType type;
-	private Element parent;
-	private int depth;
+	private IProgrammTree	children;
+	private AbstractType		type;
+	private Element			parent;
+	private Element			next;
+	private Element			before;
+	private int					depth;
 
 	/**
 	 * @param parent
 	 * @param type
 	 */
 	public Element(Element parent, AbstractType type, int depth) {
+
 		this.parent = parent;
 		this.type = type;
 		this.children = new ProgrammTree();
@@ -33,6 +36,7 @@ public class Element {
 	 * @return
 	 */
 	public Element getParent() {
+
 		return parent;
 	}
 
@@ -40,6 +44,7 @@ public class Element {
 	 * @param parent
 	 */
 	public void setParent(Element parent) {
+
 		this.parent = parent;
 	}
 
@@ -47,6 +52,7 @@ public class Element {
 	 * @return
 	 */
 	public IProgrammTree getChildren() {
+
 		return children;
 	}
 
@@ -54,6 +60,7 @@ public class Element {
 	 * @param child
 	 */
 	public void addChild(Element child) {
+
 		children.add(child);
 	}
 
@@ -61,6 +68,7 @@ public class Element {
 	 * @return
 	 */
 	public Element getLatestChild() {
+
 		return children.getLast();
 	}
 
@@ -68,6 +76,7 @@ public class Element {
 	 * @return
 	 */
 	public boolean hasChildren() {
+
 		return !children.isEmpty();
 	}
 
@@ -75,6 +84,7 @@ public class Element {
 	 * @return
 	 */
 	public AbstractType getType() {
+
 		return type;
 	}
 
@@ -82,6 +92,7 @@ public class Element {
 	 * @param type
 	 */
 	public void setType(AbstractType type) {
+
 		this.type = type;
 	}
 
@@ -89,6 +100,7 @@ public class Element {
 	 * 
 	 */
 	public void removeAllChildren() {
+
 		children.clear();
 
 	}
@@ -98,29 +110,34 @@ public class Element {
 	 * @return
 	 */
 	public Element getChild(int index) {
+
 		return children.get(index);
 	}
-	
+
 	@Override
-	public boolean equals(Object other){
-		
-//		if (!(other instanceof TypeTreeElement)) {
-//			return false;
-//		} else  {
-			Element otherTypeTreeElement = (Element)other;
-			
-			if(this.getType() != otherTypeTreeElement.getType()) return false;
-			if(!this.getType().getPos().equals(otherTypeTreeElement.getType().getPos())) return false;
-			if(!this.getType().getName().equals(otherTypeTreeElement.getType().getName())) return false;
-			
-			return true;
-//		}
+	public boolean equals(Object other) {
+
+		// if (!(other instanceof TypeTreeElement)) {
+		// return false;
+		// } else {
+		Element otherTypeTreeElement = (Element) other;
+
+		if (this.getType() != otherTypeTreeElement.getType())
+			return false;
+		if (!this.getType().getPos().equals(otherTypeTreeElement.getType().getPos()))
+			return false;
+		if (!this.getType().getName().equals(otherTypeTreeElement.getType().getName()))
+			return false;
+
+		return true;
+		// }
 	}
 
 	/**
 	 * @return
 	 */
 	public int getDepth() {
+
 		return depth;
 	}
 
@@ -128,7 +145,28 @@ public class Element {
 	 * @param depth
 	 */
 	public void setDepth(int depth) {
+
 		this.depth = depth;
+	}
+
+	public Element getNext() {
+
+		return next;
+	}
+
+	public void setNext(Element next) {
+
+		this.next = next;
+	}
+
+	public Element getBefore() {
+
+		return before;
+	}
+
+	public void setBefore(Element before) {
+
+		this.before = before;
 	}
 
 }

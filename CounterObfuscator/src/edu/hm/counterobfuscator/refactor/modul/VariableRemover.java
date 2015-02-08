@@ -1,5 +1,6 @@
 package edu.hm.counterobfuscator.refactor.modul;
 
+import java.util.Iterator;
 import java.util.List;
 
 import edu.hm.counterobfuscator.mapper.Mapper;
@@ -23,7 +24,7 @@ public class VariableRemover implements IModul {
 
 	public VariableRemover(IProgrammTree programmTree) {
 
-		this.programmTree = programmTree.reverseOrder();
+		this.programmTree = programmTree;
 
 		this.mappedElements = Mapper.process(programmTree, TYPE.VARIABLE);
 	}
@@ -41,9 +42,19 @@ public class VariableRemover implements IModul {
 			String nameLookingFor = me.getElement().getType().getName();
 
 			int refCounter = 0;
-			for (int j = 0; j < programmTree.size(); j++) {
 
-				Element actualElement = programmTree.get(j);
+			Iterator<Element> it = programmTree.reverseIterator();
+
+			while (it.hasNext()) {
+
+				Element actualElement = it.next();
+
+				if (me.getElement() == actualElement) {
+					if (refCounter == 0) {
+						it.remove();
+					}
+					continue;
+				}
 
 				String value = ValueExtractor.getValue(actualElement);
 				if (value.indexOf(nameLookingFor) > -1) {
@@ -57,28 +68,17 @@ public class VariableRemover implements IModul {
 
 						Variable var = (Variable) actualElement.getType();
 
-						if (refCounter == 0) {
-
-							programmTree.removeElement(actualElement);
-
-							Element parent = actualElement.getParent();
-							if (parent != null) {
-								parent.getChildren().removeElement(actualElement);
-							}
-						}
-
 						if (!var.isExecutable()) {
 							refCounter++;
 						}
-					}
-					else {
+					} else {
 						refCounter++;
 					}
 				}
 			}
 		}
 
-		return programmTree.reverseOrder();
+		return programmTree;
 
 	}
 

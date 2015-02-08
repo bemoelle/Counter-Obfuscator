@@ -47,33 +47,17 @@ public class TestJSInterpreter {
 	@Test
 	public void VariableTest() throws IOException, IllegalArgumentException, EncoderException,
 			ScriptException {
+
 		IJSParser jsParser = JSParserFactory.create("functionTest");
 
-		RefactorFactory.create(jsParser);
-
-		IProgrammTree tree = jsParser.getProgrammTree();
+		IProgrammTree tree = RefactorFactory.create(jsParser);
 
 		assertNotNull(tree);
-		assertEquals(4, tree.size());
+		assertEquals(3, tree.size());
 
-		Element t0 = tree.get(0);
-		Element t1 = tree.get(1);
-		Element t2 = tree.get(2);
-		Element t3 = tree.get(3);
-
-		// t0 ---------------------------------------------------------
-		assertEquals(t0.getChildren().size(), 0);
-		assertNull(t0.getParent());
-		assertEquals(t0.getType().getType(), TYPE.VARIABLE);
-
-		Variable v0 = (Variable) t0.getType();
-
-		//assertEquals(v0.getName(), "var1");
-		assertEquals(v0.getValue(), "['SayHello','GetCount','Message : ','You are welcome.']");
-		assertEquals(v0.getPos(), new Position(0, 12));
-		// assertEquals(v0.getNoExe(), false);
-		// assertEquals(v0.isArray(), true);
-		// -------------------------------------------------------------
+		Element t1 = tree.get(0);
+		Element t2 = tree.get(1);
+		Element t3 = tree.get(2);
 
 		// t1 ---------------------------------------------------------
 		assertEquals(t1.getChildren().size(), 3);
@@ -88,35 +72,34 @@ public class TestJSInterpreter {
 		Variable f1HeadVar1 = f1.getHead().get(0);
 
 		assertEquals(f1HeadVar1.getName(), "functionVar1");
-		
-		
+
 		Variable f1v1 = (Variable) t1.getChild(0).getType();
 		This f1t1 = (This) t1.getChild(1).getType();
 		This f1t2 = (This) t1.getChild(2).getType();
-		
+
 		assertEquals(f1v1.getName(), "var1");
 		assertEquals(f1v1.getValue(), "0.0");
-		
+
 		assertEquals(f1t1.getName(), "['SayHello']");
-		//TODO
+		// TODO
 		assertEquals(f1t1.getValue(), "function(_0x4ebex4){_0x4ebex3++;alert(_0x4ebex2+_0x4ebex4);}");
 		assertEquals(t1.getChild(1).getChildren().size(), 1);
 		assertEquals(t1.getChild(1).getChildren().get(0).getChildren().size(), 2);
-		
-		Default def1 = (Default)t1.getChild(1).getChildren().get(0).getChildren().get(0).getType();
-		Default def2 = (Default)t1.getChild(1).getChildren().get(0).getChildren().get(1).getType();
-		
-		//TODO
-	//	assertEquals(def1.getName(), "var2++");
+
+		Default def1 = (Default) t1.getChild(1).getChildren().get(0).getChildren().get(0).getType();
+		Default def2 = (Default) t1.getChild(1).getChildren().get(0).getChildren().get(1).getType();
+
+		// TODO
+		// assertEquals(def1.getName(), "var2++");
 		assertEquals(def2.getName(), "alert(functionVar1+functionVar2)");
-		
+
 		assertEquals(f1t2.getName(), "['GetCount']");
-		//TODO
+		// TODO
 		assertEquals(f1t2.getValue(), "function(){return _0x4ebex3;}");
 		assertEquals(t1.getChild(2).getChildren().size(), 1);
 		assertEquals(t1.getChild(2).getChildren().get(0).getChildren().size(), 1);
-		
-		Return return1 = (Return)t1.getChild(2).getChildren().get(0).getChildren().get(0).getType();
+
+		Return return1 = (Return) t1.getChild(2).getChildren().get(0).getChildren().get(0).getType();
 		assertEquals(return1.getName(), "var1");
 		// -------------------------------------------------------------
 
@@ -148,10 +131,11 @@ public class TestJSInterpreter {
 		// -------------------------------------------------------------
 
 	}
-	
+
 	@Test
 	public void VariableTest2() throws IOException, IllegalArgumentException, EncoderException,
 			ScriptException {
+
 		IJSParser jsParser = JSParserFactory.create("functionTest2");
 
 		RefactorFactory.create(jsParser);
@@ -162,41 +146,41 @@ public class TestJSInterpreter {
 		assertEquals(1, tree.size());
 
 		Element t0 = tree.get(0);
-		
 
 		// t0 ---------------------------------------------------------
 		assertEquals(t0.getChildren().size(), 3);
 		assertNull(t0.getParent());
-		
-		Function func = (Function)t0.getType();
-		
+
+		Function func = (Function) t0.getType();
+
 		assertEquals(func.getType(), TYPE.FUNCTION);
 		assertEquals(func.getName(), "");
 		assertEquals(func.getHeadString(), "()");
-		
-		Variable v1 = (Variable)t0.getChild(0).getType();
+
+		Variable v1 = (Variable) t0.getChild(0).getType();
 		assertEquals(v1.getType(), TYPE.VARIABLE);
 		assertEquals(v1.getName(), "var1");
 		assertEquals(v1.getValue(), "''");
-				
-		ForWhile for1 = (ForWhile)t0.getChild(1).getType();
+
+		ForWhile for1 = (ForWhile) t0.getChild(1).getType();
 		assertEquals(for1.getType(), TYPE.FOR);
 		assertEquals(t0.getChild(1).getChildren().size(), 1);
-		
-		Variable for1v1 = (Variable)t0.getChild(1).getChild(0).getType();
+
+		Variable for1v1 = (Variable) t0.getChild(1).getChild(0).getType();
 		assertEquals(for1v1.getType(), TYPE.VARIABLE);
 		assertEquals(for1v1.getName(), "var1");
-		assertEquals(for1v1.getValue(), "String['fromCharCode'](window['parseInt']('test'['slice'](forVar1,forVar1+2),16)-77)");
-		
-				
-		Return v3 = (Return)t0.getChild(2).getType();
+		assertEquals(for1v1.getValue(),
+				"String['fromCharCode'](window['parseInt']('test'['slice'](forVar1,forVar1+2),16)-77)");
+
+		Return v3 = (Return) t0.getChild(2).getType();
 		assertEquals(v3.getType(), TYPE.RETURN);
 		assertEquals(v3.getName(), "var1");
 	}
-	
+
 	@Test
 	public void packedTest() throws IOException, IllegalArgumentException, EncoderException,
 			ScriptException {
+
 		IJSParser jsParser = JSParserFactory.create("packedTest");
 
 		IProgrammTree tree = RefactorFactory.create(jsParser);
@@ -205,68 +189,64 @@ public class TestJSInterpreter {
 		assertEquals(1, tree.size());
 
 		Element t0 = tree.get(0);
-		
 
 		// t0 ---------------------------------------------------------
 		assertEquals(t0.getChildren().size(), 0);
 		assertNull(t0.getParent());
-		
-		Function def = (Function)t0.getType();
-		
-		
+
+		Function def = (Function) t0.getType();
+
 		assertEquals(def.isPacked(), true);
-		assertEquals(def.getBodyAsString(), "$.ajax({url:\"test.html\",context:document.body}).done(function(){$(this).addClass(\"done\")});");
+		assertEquals(def.getBodyAsString(),
+				"$.ajax({url:\"test.html\",context:document.body}).done(function(){$(this).addClass(\"done\")});");
 
 	}
-	
+
 	@Test
 	public void tryCatchTest() throws IOException, IllegalArgumentException, EncoderException,
 			ScriptException {
+
 		IJSParser jsParser = JSParserFactory.create("tryTest");
 
 		IProgrammTree tree = RefactorFactory.create(jsParser);
-		
 
 		assertNotNull(tree);
 		assertEquals(tree.size(), 2);
-		
+
 		Element t0 = tree.get(0);
-		Variable func = (Variable)t0.getType();
-		
+		Variable func = (Variable) t0.getType();
+
 		assertEquals(func.getType(), TYPE.VARIABLE);
 		assertEquals(func.getName(), "var1");
 		assertEquals(func.getValue(), "3.0");
-		
+
 		Element t1 = tree.get(1);
-		Return returnStatement = (Return)t1.getType();
-		
+		Return returnStatement = (Return) t1.getType();
+
 		assertEquals(returnStatement.getType(), TYPE.RETURN);
 		assertEquals(returnStatement.getName(), "var1");
 
 	}
-	
+
 	@Test
 	public void ajaxTest() throws IOException, IllegalArgumentException, EncoderException,
 			ScriptException {
+
 		IJSParser jsParser = JSParserFactory.create("JScrambler");
 
 		IProgrammTree tree = RefactorFactory.create(jsParser);
-		
 
 		assertNotNull(tree);
 		assertEquals(tree.size(), 1);
-		
+
 		Element t0 = tree.get(0);
-		
-		Ajax def = (Ajax)t0.getType();
-		
+
+		Ajax def = (Ajax) t0.getType();
+
 		assertEquals(def.getType(), TYPE.AJAX);
 		assertEquals(def.getName(), "'getScript'");
 		assertEquals(def.getValue(), "'demo_ajax_script.js'");
-		
+
 	}
 
-	
-	
-	
 }

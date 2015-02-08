@@ -1,5 +1,6 @@
 package edu.hm.counterobfuscator.parser.tree;
 
+import java.util.Iterator;
 import java.util.List;
 
 import edu.hm.counterobfuscator.helper.Position;
@@ -24,7 +25,7 @@ public interface IProgrammTree extends Iterable<Element> {
 	/**
 	 * 
 	 */
-	public void print();
+	// public void print();
 
 	/**
 	 * @return
@@ -49,25 +50,22 @@ public interface IProgrammTree extends Iterable<Element> {
 
 	/**
 	 * @param index
-	 * @return 
+	 * @return
 	 */
 	public Element remove(int index);
-	
+
 	/**
 	 * @param type
 	 * @return
 	 */
-	public boolean removeElement(Element type);
+	public boolean removeElementAndAllChildren(Element type);
 	
-	/**
-	 * @return
-	 */
-	public Position findGlobalScope();
+	public boolean remove(Element element);
 
 	/**
 	 * @return
 	 */
-	public IProgrammTree flatten();
+	public Position findGlobalScope();
 
 	/**
 	 * @param reverse
@@ -79,26 +77,36 @@ public interface IProgrammTree extends Iterable<Element> {
 	 */
 	public IProgrammTree reverseOrder();
 
-	/**
-	 * 
+	/* (non-Javadoc)
+	 * @see java.lang.Iterable#iterator()
 	 */
-	public void prettyPrint(boolean isFlat);
+	public Iterator<Element> iterator();
 
 	/**
 	 * @return
 	 */
-	public boolean isFlat();
-	
+	public Iterator<Element> reverseIterator();
+
+	/**
+	 * 
+	 */
+	public void prettyPrint();
+
 	/**
 	 * @param elementToTest
 	 * @param scope
 	 * @return
 	 */
 	public List<Element> searchForNameOfElement(Element elementToTest, Position scope);
-	
+
 	/**
 	 * @param oldName
 	 * @return
 	 */
 	public List<Element> searchForName(String oldName);
+
+	/**
+	 * @return
+	 */
+	public IProgrammTree copy();
 }

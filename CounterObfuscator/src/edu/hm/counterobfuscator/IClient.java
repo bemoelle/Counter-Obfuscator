@@ -15,7 +15,4 @@ public interface IClient {
 	
 	boolean isFalse(String script);
 	
-	//TODO delete this
-	public Object executeJS(String string);
-
 }
