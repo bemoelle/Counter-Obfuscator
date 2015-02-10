@@ -1,4 +1,4 @@
-package edu.hm.counterobfuscator.mapper;
+package edu.hm.counterobfuscator.parser.tree.mapper;
 
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.parser.tree.Element;

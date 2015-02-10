@@ -1,4 +1,4 @@
-package edu.hm.counterobfuscator.mapper;
+package edu.hm.counterobfuscator.parser.tree.mapper;
 
 
 public interface IMapper {

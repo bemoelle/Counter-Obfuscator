@@ -14,7 +14,6 @@ import edu.hm.counterobfuscator.parser.token.Token;
 import edu.hm.counterobfuscator.parser.token.TokenAnalyserFactory;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.ProgrammTree;
-import edu.hm.counterobfuscator.parser.tree.TreeCreator;
 import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Function;
 

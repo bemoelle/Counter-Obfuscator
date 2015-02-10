@@ -3,11 +3,11 @@ package edu.hm.counterobfuscator.refactor.modul;
 import java.util.List;
 
 import edu.hm.counterobfuscator.helper.Position;
-import edu.hm.counterobfuscator.mapper.Mapper;
-import edu.hm.counterobfuscator.mapper.MapperElement;
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.ValueExtractor;
+import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
+import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
 import edu.hm.counterobfuscator.types.TYPE;
 
 public class VariableReplacer implements IModul {

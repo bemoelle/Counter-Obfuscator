@@ -4,8 +4,8 @@ import javax.script.ScriptException;
 
 import edu.hm.counterobfuscator.IClient;
 import edu.hm.counterobfuscator.helper.Setting;
-import edu.hm.counterobfuscator.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
+import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.refactor.modul.AjaxCaller;
 import edu.hm.counterobfuscator.refactor.modul.IModul;
 import edu.hm.counterobfuscator.refactor.modul.VariableInterpreter;

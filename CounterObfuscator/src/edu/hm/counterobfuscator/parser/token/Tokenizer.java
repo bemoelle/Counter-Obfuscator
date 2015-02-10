@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.parser.matcher.IMatch;
 import edu.hm.counterobfuscator.parser.matcher.TokenMatcher;
-import edu.hm.counterobfuscator.types.Function;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -29,7 +28,7 @@ class Tokenizer {
 		this.input = input;
 		tokens = new ArrayList<Token>();
 
-		Tokenizer.log = Logger.getLogger(Function.class.getName());
+		Tokenizer.log = Logger.getLogger(Tokenizer.class.getName());
 	}
 
 	void process() {

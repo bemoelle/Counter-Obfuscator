@@ -6,15 +6,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
-import org.jboss.netty.channel.ChildChannelStateEvent;
-
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Ajax;
+import edu.hm.counterobfuscator.types.Call;
 import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
-import edu.hm.counterobfuscator.types.Call;
 import edu.hm.counterobfuscator.types.Return;
 import edu.hm.counterobfuscator.types.This;
 import edu.hm.counterobfuscator.types.TryCatch;
