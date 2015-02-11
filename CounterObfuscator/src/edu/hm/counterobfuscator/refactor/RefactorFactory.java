@@ -50,7 +50,7 @@ public class RefactorFactory {
 		IRefactor loopRefactor = new LoopRefactor(tree, client, null);
 		tree = loopRefactor.process();
 						
-		tree.prettyPrint();
+		tree.print();
 
 		return tree;
 		

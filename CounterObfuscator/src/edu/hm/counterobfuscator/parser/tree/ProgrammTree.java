@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.Validate;
+
 import edu.hm.counterobfuscator.helper.Position;
 import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Ajax;
@@ -33,7 +35,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	public ProgrammTree() {
 
 		this.tree = new ArrayList<Element>();
-		ProgrammTree.log = Logger.getLogger(ProgrammTree.class.getName());
+		log = Logger.getLogger(ProgrammTree.class.getName());
 	}
 
 	/**
@@ -48,6 +50,8 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 			actualType = type;
 			findPositionInTree(this, null, 0);
 		}
+
+		log.info("programm tree creation is finished");
 	}
 
 	/**
@@ -73,12 +77,13 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 			} else { // is not within
 				Element element = new Element(parent, actualType, tiefe);
+
 				// verkettung wird bei der iteration durch den baum benötigt
 				element.setBefore(last);
 				last.setNext(element);
 				// -----------------------------
-				tree.add(element);
 
+				tree.add(element);
 			}
 		}
 	}
@@ -100,6 +105,8 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	 * counterobfuscator.parser.token.trees.TypeTreeElement)
 	 */
 	public void add(Element element) {
+
+		log.info("element with name: " + element.getType().getName() + " is added to programm tree");
 
 		if (size() > 0) {
 			Element last = getLast();
@@ -197,7 +204,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	 * @see
 	 * edu.hm.counterobfuscator.parser.tree.IProgrammTree#prettyPrint(boolean)
 	 */
-	public void prettyPrint() {
+	public void print() {
 
 		Iterator<Element> it = this.iterator();
 
@@ -315,6 +322,9 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	 */
 	public Element get(int index) {
 
+		Validate.isTrue(index > -1);
+		Validate.isTrue(index < size());
+
 		return tree.get(index);
 	}
 
@@ -325,6 +335,11 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	 */
 	public Element remove(int index) {
 
+		Validate.isTrue(index > -1);
+		Validate.isTrue(index < size());
+
+		log.info("remove index: " + index + " in programmtree");
+
 		return tree.remove(index);
 	}
 
@@ -334,6 +349,8 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	 * @see edu.hm.counterobfuscator.parser.token.trees.ITypeTree#clear()
 	 */
 	public void clear() {
+
+		log.info("programmtree is clearing...");
 
 		tree.clear();
 	}
@@ -576,41 +593,42 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	// return walkThroughElement(this, list);
 	// }
 
-	/**
-	 * @param tree
-	 * @param flatList
-	 * @return
-	 */
-	private IProgrammTree walkThroughElement(IProgrammTree tree, IProgrammTree flatList) {
-
-		for (int i = 0; i < tree.size(); i++) {
-
-			flatList.add(tree.get(i));
-
-			if (tree.get(i).hasChildren()) {
-
-				walkThroughElement(tree.get(i).getChildren(), flatList);
-			}
-		}
-		return flatList;
-	}
+	// /**
+	// * @param tree
+	// * @param flatList
+	// * @return
+	// */
+	// private IProgrammTree walkThroughElement(IProgrammTree tree, IProgrammTree
+	// flatList) {
+	//
+	// for (int i = 0; i < tree.size(); i++) {
+	//
+	// flatList.add(tree.get(i));
+	//
+	// if (tree.get(i).hasChildren()) {
+	//
+	// walkThroughElement(tree.get(i).getChildren(), flatList);
+	// }
+	// }
+	// return flatList;
+	// }
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#reverseOrder()
 	 */
-	public IProgrammTree reverseOrder() {
-
-		// List<Element> reverse = typeTree;
-		//
-		// Collections.reverse(reverse);
-		//
-		// ProgrammTree reversedTree = new ProgrammTree(reverse);
-		// reversedTree.isFlat = this.isFlat;
-
-		return null;
-	}
+	// public IProgrammTree reverseOrder() {
+	//
+	// // List<Element> reverse = typeTree;
+	// //
+	// // Collections.reverse(reverse);
+	// //
+	// // ProgrammTree reversedTree = new ProgrammTree(reverse);
+	// // reversedTree.isFlat = this.isFlat;
+	//
+	// return null;
+	// }
 
 	/*
 	 * (non-Javadoc)
@@ -643,7 +661,6 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	public List<Element> searchForName(String oldName) {
 
 		List<Element> elements = new ArrayList<Element>();
-		// TODO start at actual element
 
 		Iterator<Element> it = this.iterator();
 

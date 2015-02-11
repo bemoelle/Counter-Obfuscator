@@ -21,27 +21,46 @@ public abstract class AbstractType {
 		this.name = name;
 	}
 
+	/**
+	 * @return
+	 */
 	public TYPE getType() {
 		return type;
 	}
 
+	/**
+	 * @return
+	 */
 	public Position getPos() {
 		return pos;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @param name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * 
+	 */
 	public void print() {
 		System.out.println("startPos: " + pos.getStartPos() + " -- " + "endPos: " + pos.getEndPos());
 
 	}
 
+	/**
+	 * @param other
+	 * @return
+	 */
 	public abstract boolean hasSameName(Object other);
 
 	/**

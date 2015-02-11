@@ -23,11 +23,6 @@ public interface IProgrammTree extends Iterable<Element> {
 	public void add(Element typeTreeElement);
 
 	/**
-	 * 
-	 */
-	// public void print();
-
-	/**
 	 * @return
 	 */
 	public int size();
@@ -59,7 +54,11 @@ public interface IProgrammTree extends Iterable<Element> {
 	 * @return
 	 */
 	public boolean removeElementAndAllChildren(Element type);
-	
+
+	/**
+	 * @param element
+	 * @return
+	 */
 	public boolean remove(Element element);
 
 	/**
@@ -75,11 +74,6 @@ public interface IProgrammTree extends Iterable<Element> {
 	/**
 	 * @return
 	 */
-	public IProgrammTree reverseOrder();
-
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
 	public Iterator<Element> iterator();
 
 	/**
@@ -90,7 +84,7 @@ public interface IProgrammTree extends Iterable<Element> {
 	/**
 	 * 
 	 */
-	public void prettyPrint();
+	public void print();
 
 	/**
 	 * @param elementToTest

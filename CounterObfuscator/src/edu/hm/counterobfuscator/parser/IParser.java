@@ -11,11 +11,6 @@ import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 public interface IParser {
 	
 	/**
-	 * print all tokens to system.out
-	 */
-	public void printAllTokens();
-
-	/**
 	 * @return actual programm tree
 	 */
 	public IProgrammTree getProgrammTree();

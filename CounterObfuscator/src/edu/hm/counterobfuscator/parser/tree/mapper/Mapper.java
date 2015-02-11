@@ -167,31 +167,7 @@ public final class Mapper {
 					me.setScope(new Position(me.getScope().getStartPos(),
 							me2.getScope().getStartPos() - 1));
 				}
-
 			}
-
-		}
-
-	}
-
-	/**
-	 * methode to print all mapped Elements on System.out.
-	 */
-	public void print() {
-
-		for (MapperElement me : mappedElements) {
-			System.out.println(me.getElement().getType().getName() + "-->"
-					+ me.getScope().getStartPos() + ":" + me.getScope().getEndPos());
 		}
 	}
-
-	/**
-	 * @return a List of mapped Elements in the programm Tree which have the type
-	 *         we are looking for
-	 */
-	public List<MapperElement> getMappedElements() {
-
-		return mappedElements;
-	}
-
 }

@@ -24,10 +24,5 @@ public interface ITokenAnalyser {
 	/**
 	 * @return
 	 */
-	public List<Token> getTokens();
-
-	/**
-	 * @return
-	 */
 	public List<AbstractType> getAllTypes();
 }

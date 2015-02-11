@@ -74,19 +74,19 @@ public class Parser implements IParser {
 		log.info("parsing jscode finished");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.hm.webscraper.parser.IJSParser#printAllTokens()
-	 */
-	public void printAllTokens() {
-
-		for (Token token : tokenanalyser.getTokens()) {
-
-			System.out.println(token.getPos() + " : " + token.getValue());
-
-		}
-	}
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see edu.hm.webscraper.parser.IJSParser#printAllTokens()
+//	 */
+//	public void printAllTokens() {
+//
+//		for (Token token : tokenanalyser.getTokens()) {
+//
+//			System.out.println(token.getPos() + " : " + token.getValue());
+//
+//		}
+//	}
 
 	/*
 	 * (non-Javadoc)

@@ -77,15 +77,6 @@ public class TokenAnalyser implements ITokenAnalyser {
 		return allTypes;
 	}
 	
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.parser.token.ITokenAnalyser#getTokens()
-	 */
-	public List<Token> getTokens() {
-
-		return allTokensOfJSCode;
-	}
-
-
 	private Token getActualToken() {
 
 		return actualToken;

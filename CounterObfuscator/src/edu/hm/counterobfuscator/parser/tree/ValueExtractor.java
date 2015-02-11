@@ -16,14 +16,23 @@ import edu.hm.counterobfuscator.types.Variable;
 public final class ValueExtractor {
 
 	private ValueExtractor() {
+
 	}
 
+	/**
+	 * @param element
+	 * @return
+	 */
 	static public String getName(Element element) {
 
 		return element.getType().getName();
 
 	}
 
+	/**
+	 * @param element
+	 * @return
+	 */
 	static public String getValue(Element element) {
 
 		AbstractType type = element.getType();
@@ -38,6 +47,10 @@ public final class ValueExtractor {
 		}
 	}
 
+	/**
+	 * @param element
+	 * @param value
+	 */
 	static public void setValue(Element element, String value) {
 
 		AbstractType type = element.getType();
@@ -50,7 +63,6 @@ public final class ValueExtractor {
 			((Call) type).setValue(value);
 			break;
 		default:
-
 		}
 	}
 
@@ -59,9 +71,7 @@ public final class ValueExtractor {
 	 * @param newName
 	 */
 	public static void setName(Element element, String newName) {
-		
-		element.getType().setName(newName);
-		
-	}
 
+		element.getType().setName(newName);
+	}
 }
