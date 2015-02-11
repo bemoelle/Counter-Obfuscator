@@ -16,7 +16,7 @@ import edu.hm.counterobfuscator.parser.matcher.TokenMatcher;
  *       tokens
  * 
  */
-class Tokenizer {
+public class Tokenizer implements ITokenizer {
 
 	private static Logger	log;
 	private String				input;
@@ -31,7 +31,7 @@ class Tokenizer {
 		Tokenizer.log = Logger.getLogger(Tokenizer.class.getName());
 	}
 
-	void process() {
+	public void process() {
 
 		// TODO reduce cyclo complex actual is 5
 
@@ -86,7 +86,7 @@ class Tokenizer {
 		
 	}
 
-	List<Token> getTokens() {
+	public List<Token> getTokens() {
 
 		return tokens;
 	}

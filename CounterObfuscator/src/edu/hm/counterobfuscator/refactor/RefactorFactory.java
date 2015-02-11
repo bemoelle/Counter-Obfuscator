@@ -11,7 +11,7 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 import edu.hm.counterobfuscator.HTMLUnitClient;
 import edu.hm.counterobfuscator.IClient;
-import edu.hm.counterobfuscator.parser.IJSParser;
+import edu.hm.counterobfuscator.parser.IParser;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 
 
@@ -30,7 +30,7 @@ public class RefactorFactory {
 	 * @throws IOException 
 	 * @throws ScriptException 
 	 */
-	public static IProgrammTree create(IJSParser jsParser) throws IOException, ScriptException {
+	public static IProgrammTree create(IParser jsParser) throws IOException, ScriptException {
 
 		IClient client = new HTMLUnitClient("http://www.google.com/", BrowserVersion.FIREFOX_24);
 		

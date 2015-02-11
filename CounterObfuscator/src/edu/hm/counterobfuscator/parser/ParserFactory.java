@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.apache.commons.codec.EncoderException;
 
-public class JSParserFactory {
+public class ParserFactory {
 
 	/**
 	 * @param String
@@ -14,10 +14,10 @@ public class JSParserFactory {
 	 * @throws EncoderException 
 	 * @throws IllegalArgumentException 
 	 */
-	public static IJSParser create(String file) throws IOException, IllegalArgumentException, EncoderException {
+	public static IParser create(String file) throws IOException, IllegalArgumentException, EncoderException {
 
 		// TODO settings ?!?
-		JSParser jsParser = new JSParser(file, null);
+		Parser jsParser = new Parser(file, null);
 		jsParser.process();
 		
 		return jsParser;

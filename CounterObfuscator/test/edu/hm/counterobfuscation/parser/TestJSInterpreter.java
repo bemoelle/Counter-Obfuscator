@@ -20,8 +20,8 @@ import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import edu.hm.counterobfuscator.HTMLUnitClient;
 import edu.hm.counterobfuscator.IClient;
 import edu.hm.counterobfuscator.helper.Position;
-import edu.hm.counterobfuscator.parser.IJSParser;
-import edu.hm.counterobfuscator.parser.JSParserFactory;
+import edu.hm.counterobfuscator.parser.IParser;
+import edu.hm.counterobfuscator.parser.ParserFactory;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.refactor.RefactorFactory;
@@ -48,7 +48,7 @@ public class TestJSInterpreter {
 	public void VariableTest() throws IOException, IllegalArgumentException, EncoderException,
 			ScriptException {
 
-		IJSParser jsParser = JSParserFactory.create("functionTest");
+		IParser jsParser = ParserFactory.create("functionTest");
 
 		IProgrammTree tree = RefactorFactory.create(jsParser);
 
@@ -136,7 +136,7 @@ public class TestJSInterpreter {
 	public void VariableTest2() throws IOException, IllegalArgumentException, EncoderException,
 			ScriptException {
 
-		IJSParser jsParser = JSParserFactory.create("functionTest2");
+		IParser jsParser = ParserFactory.create("functionTest2");
 
 		RefactorFactory.create(jsParser);
 
@@ -181,7 +181,7 @@ public class TestJSInterpreter {
 	public void packedTest() throws IOException, IllegalArgumentException, EncoderException,
 			ScriptException {
 
-		IJSParser jsParser = JSParserFactory.create("packedTest");
+		IParser jsParser = ParserFactory.create("packedTest");
 
 		IProgrammTree tree = RefactorFactory.create(jsParser);
 
@@ -206,7 +206,7 @@ public class TestJSInterpreter {
 	public void tryCatchTest() throws IOException, IllegalArgumentException, EncoderException,
 			ScriptException {
 
-		IJSParser jsParser = JSParserFactory.create("tryTest");
+		IParser jsParser = ParserFactory.create("tryTest");
 
 		IProgrammTree tree = RefactorFactory.create(jsParser);
 
@@ -232,7 +232,7 @@ public class TestJSInterpreter {
 	public void ajaxTest() throws IOException, IllegalArgumentException, EncoderException,
 			ScriptException {
 
-		IJSParser jsParser = JSParserFactory.create("JScrambler");
+		IParser jsParser = ParserFactory.create("JScrambler");
 
 		IProgrammTree tree = RefactorFactory.create(jsParser);
 

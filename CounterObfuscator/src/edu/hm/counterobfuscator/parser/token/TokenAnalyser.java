@@ -26,18 +26,17 @@ import edu.hm.counterobfuscator.types.Variable;
  *       after tokenising it is necessary analyze each token, to find JavaScript
  *       keywords like VAR, FUNCTION, etc.
  * 
- *       class is package private
+ *       class is public
  * 
  */
-// TODO clean!
-class TokenAnalyser implements ITokenAnalyser {
+public class TokenAnalyser implements ITokenAnalyser {
 
 	private static Logger		log;
 	private List<Token>			allTokensOfJSCode;
 	private Token					actualToken;
 	private List<AbstractType>	allTypes;
 
-	public TokenAnalyser(Tokenizer tokenizer) {
+	public TokenAnalyser(ITokenizer tokenizer) {
 
 		Validate.notNull(tokenizer);
 
@@ -52,24 +51,40 @@ class TokenAnalyser implements ITokenAnalyser {
 	}
 
 	/**
+	 * @throws IllegalArgumentException
 	 * @throws EncoderException
-	 * @throws Exception
-	 * 
 	 */
-	protected void process() throws IllegalArgumentException, EncoderException {
+	public void process() throws IllegalArgumentException, EncoderException {
 
+		log.info("start token analyse process...");
+		
 		while (hasNextToken()) {
 
 			call(actualToken.getType());
 
 			setToNextToken();
 		}
+		
+		log.info("token analyse finished.");
 
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.token.ITokenAnalyser#getAllTypes()
+	 */
 	public List<AbstractType> getAllTypes() {
+
 		return allTypes;
 	}
+	
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.token.ITokenAnalyser#getTokens()
+	 */
+	public List<Token> getTokens() {
+
+		return allTokensOfJSCode;
+	}
+
 
 	private Token getActualToken() {
 
@@ -144,23 +159,23 @@ class TokenAnalyser implements ITokenAnalyser {
 	}
 
 	/**
-	 * function to jquery.getScript calls
-	 * Get and run a JavaScript using an AJAX request:
+	 * function to jquery.getScript calls Get and run a JavaScript using an AJAX
+	 * request:
 	 * 
 	 * e.g. $.getScript("demo_ajax_script.js");
 	 */
 	private void processJQuery() {
-		
+
 		int startPos = getActualToken().getPos();
 		int openBracket = getPositionOfNextToken(startPos, TOKENTYPE.OPEN_BRACKET);
 		int closedBracket = getPositionOfNextToken(openBracket, TOKENTYPE.CLOSE_BRACKET);
-		String name = getNameOfType(startPos+2, openBracket-2);
-		String value = getNameOfType(openBracket+1, closedBracket-1);
-		
+		String name = getNameOfType(startPos + 2, openBracket - 2);
+		String value = getNameOfType(openBracket + 1, closedBracket - 1);
+
 		int endPos = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
-		
+
 		allTypes.add(new Ajax(new Position(startPos, endPos), name, value));
-		
+
 		setNextTokenTo(endPos);
 	}
 
@@ -194,9 +209,9 @@ class TokenAnalyser implements ITokenAnalyser {
 			break;
 		case PLUS:
 		case MINUS:
-		
+
 			int assign1 = -100;
-			
+
 			if (getNextTokenOf(nextToken).getType() == TOKENTYPE.PLUS) {
 				allTypes.add(new Default(new Position(startPos, endPos), getNameOfType(startPos,
 						endPos - 1)));
@@ -369,10 +384,9 @@ class TokenAnalyser implements ITokenAnalyser {
 
 		allTypes.add(new Function(new Position(startPos, endPos), name, head, body, isPacked));
 
-		if(isPacked)
+		if (isPacked)
 			setNextTokenTo(endPos);
-		else
-			setNextTokenTo(nextCurlyOpenBracket);
+		else setNextTokenTo(nextCurlyOpenBracket);
 
 	}
 
@@ -433,7 +447,7 @@ class TokenAnalyser implements ITokenAnalyser {
 
 		setNextTokenTo(nextCurlyOpenBracket);
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -443,70 +457,62 @@ class TokenAnalyser implements ITokenAnalyser {
 		// Validate.notNull(loops);
 
 		log.info("start processTryCatch analyse process...");
-		
+
 		int startPos = getActualToken().getPos();
-		
-		int nextCurlyOpenBracket = getPositionOfNextToken(startPos,
-				TOKENTYPE.OPEN_CURLY_BRACKET);
-		
+
+		int nextCurlyOpenBracket = getPositionOfNextToken(startPos, TOKENTYPE.OPEN_CURLY_BRACKET);
+
 		int endPos = getPositionOfNextToken(nextCurlyOpenBracket, TOKENTYPE.CLOSE_CURLY_BRACKET);
-		
+
 		allTypes.add(new TryCatch(new Position(startPos, endPos), "try", null));
-		
+
 		setNextTokenTo(nextCurlyOpenBracket);
 	}
-	
+
 	private void processCatch() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
 		// Validate.notNull(loops);
 
 		log.info("start processTryCatch analyse process...");
-		
+
 		int startPos = getActualToken().getPos();
-		
-		int nextCurlyOpenBracket = getPositionOfNextToken(startPos,
-				TOKENTYPE.OPEN_CURLY_BRACKET);
-		
+
+		int nextCurlyOpenBracket = getPositionOfNextToken(startPos, TOKENTYPE.OPEN_CURLY_BRACKET);
+
 		int endPos = getPositionOfNextToken(nextCurlyOpenBracket, TOKENTYPE.CLOSE_CURLY_BRACKET);
-		
+
 		allTypes.add(new TryCatch(new Position(startPos, endPos), "catch", null));
-		
+
 		setNextTokenTo(nextCurlyOpenBracket);
 	}
 
-	/**
-	 * @return all tokens
-	 */
-	public List<Token> getTokens() {
-		return allTokensOfJSCode;
-	}
 
-	/**
-	 * @param value
-	 * @return a List of position in tokenlist, which have the same value
-	 */
-	public List<Integer> getAllPosOfTokensByValue(String value) {
-
-		Validate.notNull(value);
-
-		List<Integer> posOfTokens = new ArrayList<Integer>();
-
-		for (Token actualToken : allTokensOfJSCode) {
-
-			if (actualToken.getValue().equals(value)) {
-				posOfTokens.add(actualToken.getPos());
-			}
-		}
-
-		return posOfTokens;
-	}
+//	/**
+//	 * @param value
+//	 * @return a List of position in tokenlist, which have the same value
+//	 */
+//	private List<Integer> getAllPosOfTokensByValue(String value) {
+//
+//		Validate.notNull(value);
+//
+//		List<Integer> posOfTokens = new ArrayList<Integer>();
+//
+//		for (Token actualToken : allTokensOfJSCode) {
+//
+//			if (actualToken.getValue().equals(value)) {
+//				posOfTokens.add(actualToken.getPos());
+//			}
+//		}
+//
+//		return posOfTokens;
+//	}
 
 	/**
 	 * @param type
 	 * @return String name of type
 	 */
-	public String getNameOfType(int startPos, int endPos) {
+	private String getNameOfType(int startPos, int endPos) {
 
 		if (startPos > endPos) {
 			return "";
@@ -515,60 +521,60 @@ class TokenAnalyser implements ITokenAnalyser {
 		return getStringOfTokens(getAllTokensUntilEndPos(startPos, endPos));
 	}
 
-	/**
-	 * @param type
-	 * @return
-	 */
-	public List<Token> getAllTokensOfSameType(TOKENTYPE type) {
+//	/**
+//	 * @param type
+//	 * @return
+//	 */
+//	private List<Token> getAllTokensOfSameType(TOKENTYPE type) {
+//
+//		Validate.isTrue(allTokensOfJSCode.size() > 0);
+//		Validate.notNull(type);
+//
+//		List<Token> allTokensOfType = new ArrayList<Token>();
+//
+//		for (Token token : allTokensOfJSCode) {
+//
+//			if (token.getType() == type) {
+//				allTokensOfType.add(token);
+//			}
+//		}
+//
+//		return allTokensOfType;
+//	}
 
-		Validate.isTrue(allTokensOfJSCode.size() > 0);
-		Validate.notNull(type);
-
-		List<Token> allTokensOfType = new ArrayList<Token>();
-
-		for (Token token : allTokensOfJSCode) {
-
-			if (token.getType() == type) {
-				allTokensOfType.add(token);
-			}
-		}
-
-		return allTokensOfType;
-	}
-
-	/**
-	 * @param startPos
-	 * @param type
-	 * @return
-	 */
-	public List<Token> getAllTokensUntilType(int startPos, TOKENTYPE type) {
-
-		Validate.isTrue(allTokensOfJSCode.size() > 0);
-		Validate.isTrue(startPos > 0 && startPos < allTokensOfJSCode.size());
-		Validate.notNull(type);
-
-		List<Token> allTokensUntilType = new ArrayList<Token>();
-
-		for (int i = startPos; i < allTokensOfJSCode.size(); i++) {
-
-			Token actualToken = allTokensOfJSCode.get(i);
-
-			allTokensUntilType.add(actualToken);
-
-			if (actualToken.getType() == type) {
-				break;
-			}
-		}
-
-		return allTokensUntilType;
-	}
+//	/**
+//	 * @param startPos
+//	 * @param type
+//	 * @return
+//	 */
+//	private List<Token> getAllTokensUntilType(int startPos, TOKENTYPE type) {
+//
+//		Validate.isTrue(allTokensOfJSCode.size() > 0);
+//		Validate.isTrue(startPos > 0 && startPos < allTokensOfJSCode.size());
+//		Validate.notNull(type);
+//
+//		List<Token> allTokensUntilType = new ArrayList<Token>();
+//
+//		for (int i = startPos; i < allTokensOfJSCode.size(); i++) {
+//
+//			Token actualToken = allTokensOfJSCode.get(i);
+//
+//			allTokensUntilType.add(actualToken);
+//
+//			if (actualToken.getType() == type) {
+//				break;
+//			}
+//		}
+//
+//		return allTokensUntilType;
+//	}
 
 	/**
 	 * @param startPos
 	 * @param endPos
 	 * @return al list of tokens until a endPos from a startPos
 	 */
-	public List<Token> getAllTokensUntilEndPos(int startPos, int endPos) {
+	private List<Token> getAllTokensUntilEndPos(int startPos, int endPos) {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
 		Validate.isTrue(startPos <= endPos);
@@ -592,7 +598,7 @@ class TokenAnalyser implements ITokenAnalyser {
 	 * @return position of next tokentype at a given startPos, return -1 if
 	 *         tokentype doesn't exist
 	 */
-	public int getPositionOfNextToken(int startPos, TOKENTYPE... type) {
+	private int getPositionOfNextToken(int startPos, TOKENTYPE... type) {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
 		Validate.isTrue(startPos > -1);
@@ -613,7 +619,7 @@ class TokenAnalyser implements ITokenAnalyser {
 		return 0;
 	}
 
-	public boolean isIn(TOKENTYPE type, TOKENTYPE... tokentypes) {
+	private boolean isIn(TOKENTYPE type, TOKENTYPE... tokentypes) {
 
 		for (TOKENTYPE xxx : tokentypes) {
 
@@ -625,27 +631,27 @@ class TokenAnalyser implements ITokenAnalyser {
 
 	}
 
-	public int getPositionOfPreviousToken(int startPos, TOKENTYPE type) {
-
-		Validate.isTrue(allTokensOfJSCode.size() > 0);
-		Validate.isTrue(startPos > -1);
-		Validate.notNull(type);
-
-		for (int i = startPos; i > -1; i--) {
-
-			if (allTokensOfJSCode.get(i).getType() == type) {
-				return allTokensOfJSCode.get(i).getPos();
-			}
-		}
-
-		return -1;
-	}
+//	private int getPositionOfPreviousToken(int startPos, TOKENTYPE type) {
+//
+//		Validate.isTrue(allTokensOfJSCode.size() > 0);
+//		Validate.isTrue(startPos > -1);
+//		Validate.notNull(type);
+//
+//		for (int i = startPos; i > -1; i--) {
+//
+//			if (allTokensOfJSCode.get(i).getType() == type) {
+//				return allTokensOfJSCode.get(i).getPos();
+//			}
+//		}
+//
+//		return -1;
+//	}
 
 	/**
 	 * @param tokensToString
 	 * @return create a string from a given list of tokens
 	 */
-	public String getStringOfTokens(List<Token> tokensToString) {
+	private String getStringOfTokens(List<Token> tokensToString) {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
 		Validate.notNull(tokensToString);
@@ -670,7 +676,7 @@ class TokenAnalyser implements ITokenAnalyser {
 	 * @param type
 	 * @return true if a tokentype is in a given startPos and endPos
 	 */
-	public boolean isTokenWithinStartAndEndPos(int startPos, int endPos, TOKENTYPE type) {
+	private boolean isTokenWithinStartAndEndPos(int startPos, int endPos, TOKENTYPE type) {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
 		Validate.isTrue(startPos <= endPos);
@@ -693,35 +699,34 @@ class TokenAnalyser implements ITokenAnalyser {
 	 * @return a list of tokens at a given startpos and starttoken type to a
 	 *         endtoken type
 	 */
-	public List<Token> getAllTokensBetweenBrackets(int startPos, TOKENTYPE startToken,
-			TOKENTYPE endToken) {
-
-		Validate.isTrue(allTokensOfJSCode.get(startPos).getType() == startToken);
-
-		List<Token> allTokensBetweenTwoBrackets = new ArrayList<Token>();
-
-		int openBracketsCounter = 0;
-
-		for (int i = startPos; i < allTokensOfJSCode.size(); i++) {
-
-			Token actualToken = allTokensOfJSCode.get(i);
-
-			allTokensBetweenTwoBrackets.add(actualToken);
-
-			if (actualToken.getType() == startToken) {
-				openBracketsCounter++;
-			}
-			else if (actualToken.getType() == endToken) {
-				openBracketsCounter--;
-			}
-
-			if (openBracketsCounter == 0) {
-				break;
-			}
-		}
-
-		return allTokensBetweenTwoBrackets;
-	}
+//	private List<Token> getAllTokensBetweenBrackets(int startPos, TOKENTYPE startToken,
+//			TOKENTYPE endToken) {
+//
+//		Validate.isTrue(allTokensOfJSCode.get(startPos).getType() == startToken);
+//
+//		List<Token> allTokensBetweenTwoBrackets = new ArrayList<Token>();
+//
+//		int openBracketsCounter = 0;
+//
+//		for (int i = startPos; i < allTokensOfJSCode.size(); i++) {
+//
+//			Token actualToken = allTokensOfJSCode.get(i);
+//
+//			allTokensBetweenTwoBrackets.add(actualToken);
+//
+//			if (actualToken.getType() == startToken) {
+//				openBracketsCounter++;
+//			} else if (actualToken.getType() == endToken) {
+//				openBracketsCounter--;
+//			}
+//
+//			if (openBracketsCounter == 0) {
+//				break;
+//			}
+//		}
+//
+//		return allTokensBetweenTwoBrackets;
+//	}
 
 	/**
 	 * @param tokenToTest
@@ -731,7 +736,7 @@ class TokenAnalyser implements ITokenAnalyser {
 	 *         that, e.g. var test = (function (a,b) {return a+b;}); ignore first
 	 *         and last round bracket
 	 */
-	public boolean isTokenWithinBrackets(int startPos, Token tokenToTest) {
+	private boolean isTokenWithinBrackets(int startPos, Token tokenToTest) {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
 		Validate.notNull(tokenToTest);
@@ -746,43 +751,23 @@ class TokenAnalyser implements ITokenAnalyser {
 
 			if (tokenType == TOKENTYPE.OPEN_BRACKET) {
 				openBrackets++;
-			}
-			else if (tokenType == TOKENTYPE.CLOSE_BRACKET) {
+			} else if (tokenType == TOKENTYPE.CLOSE_BRACKET) {
 				openBrackets--;
-			}
-			else if (tokenType == TOKENTYPE.OPEN_CURLY_BRACKET) {
+			} else if (tokenType == TOKENTYPE.OPEN_CURLY_BRACKET) {
 				openCurlyBrackets++;
-			}
-			else if (tokenType == TOKENTYPE.CLOSE_CURLY_BRACKET) {
+			} else if (tokenType == TOKENTYPE.CLOSE_CURLY_BRACKET) {
 				openCurlyBrackets--;
-			}
-			else if (tokenType == TOKENTYPE.OPEN_SQUARE_BRACKET) {
+			} else if (tokenType == TOKENTYPE.OPEN_SQUARE_BRACKET) {
 				openSquareBrackets++;
-			}
-			else if (tokenType == TOKENTYPE.CLOSE_SQUARE_BRACKET) {
+			} else if (tokenType == TOKENTYPE.CLOSE_SQUARE_BRACKET) {
 				openSquareBrackets--;
 			}
 		}
 
 		if (openBrackets > 0 || openCurlyBrackets > 0 || openSquareBrackets > 0) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * edu.hm.counterobfuscator.parser.token.ITokenAnalyser#getTypesOfTokenTypes
-	 * (edu.hm.counterobfuscator.parser.token.TOKENTYPE)
-	 */
-	@Override
-	public List<AbstractType> getTypesOfTokenTypes(TOKENTYPE type) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

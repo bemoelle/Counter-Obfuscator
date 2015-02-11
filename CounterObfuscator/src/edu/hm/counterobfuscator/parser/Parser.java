@@ -24,7 +24,7 @@ import edu.hm.counterobfuscator.types.Function;
  *       JSParser to tokenise and analyse an input file (JSCode)
  * 
  */
-public class JSParser implements IJSParser {
+public class Parser implements IParser {
 
 	private BufferedReader	br;
 	private String				unparsedJSCode;
@@ -38,9 +38,9 @@ public class JSParser implements IJSParser {
 	 * @param settings
 	 * @throws IOException
 	 */
-	public JSParser(String file, Map<String, String> settings) throws IOException {
+	public Parser(String file, Map<String, String> settings) throws IOException {
 
-		JSParser.log = Logger.getLogger(Function.class.getName());
+		Parser.log = Logger.getLogger(Function.class.getName());
 
 		this.unparsedJSCode = "";
 
@@ -97,17 +97,7 @@ public class JSParser implements IJSParser {
 		return tokenanalyser.getAllTypes();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * edu.hm.counterobfuscator.parser.IJSParser#getAllPosOfTokensByValue(java
-	 * .lang.String)
-	 */
-	public List<Integer> getAllPosOfTokensByValue(String value) {
-		return tokenanalyser.getAllPosOfTokensByValue(value);
-	}
-
+	
 	public IProgrammTree getProgrammTree() {
 
 		return programmTree;

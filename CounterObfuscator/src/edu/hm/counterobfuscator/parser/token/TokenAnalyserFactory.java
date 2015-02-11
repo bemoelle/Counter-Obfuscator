@@ -21,13 +21,12 @@ public class TokenAnalyserFactory {
 	 * @throws EncoderException 
 	 * @throws IllegalArgumentException 
 	 */
-	public static TokenAnalyser create(String input) throws IOException, IllegalArgumentException, EncoderException {
+	public static ITokenAnalyser create(String input) throws IllegalArgumentException, EncoderException {
 
-		Tokenizer tokenizer = new Tokenizer(input);
+		ITokenizer tokenizer = new Tokenizer(input);
 		tokenizer.process();
-		
 
-		TokenAnalyser analyser = new TokenAnalyser(tokenizer);
+		ITokenAnalyser analyser = new TokenAnalyser(tokenizer);
 		analyser.process();
 
 		return analyser;

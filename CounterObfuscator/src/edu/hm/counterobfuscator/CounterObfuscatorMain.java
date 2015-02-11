@@ -10,8 +10,8 @@ import javax.script.ScriptException;
 import org.apache.commons.codec.EncoderException;
 
 import edu.hm.counterobfuscator.helper.Position;
-import edu.hm.counterobfuscator.parser.IJSParser;
-import edu.hm.counterobfuscator.parser.JSParserFactory;
+import edu.hm.counterobfuscator.parser.IParser;
+import edu.hm.counterobfuscator.parser.ParserFactory;
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.ProgrammTree;
 import edu.hm.counterobfuscator.refactor.RefactorFactory;
