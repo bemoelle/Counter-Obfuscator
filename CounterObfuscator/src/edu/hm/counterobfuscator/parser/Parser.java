@@ -3,18 +3,15 @@ package edu.hm.counterobfuscator.parser;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import org.apache.commons.codec.EncoderException;
 
 import edu.hm.counterobfuscator.parser.token.ITokenAnalyser;
-import edu.hm.counterobfuscator.parser.token.Token;
 import edu.hm.counterobfuscator.parser.token.TokenAnalyserFactory;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.ProgrammTree;
-import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Function;
 
 /**
@@ -26,11 +23,11 @@ import edu.hm.counterobfuscator.types.Function;
  */
 public class Parser implements IParser {
 
-	private BufferedReader	br;
-	private String				unparsedJSCode;
-	private static Logger	log;
-	private ITokenAnalyser	tokenanalyser;
-	private IProgrammTree	programmTree;
+	private BufferedReader br;
+	private String unparsedJSCode;
+	private static Logger log;
+	private ITokenAnalyser tokenanalyser;
+	private IProgrammTree programmTree;
 
 	/**
 	 * @param client
@@ -40,7 +37,7 @@ public class Parser implements IParser {
 	 */
 	public Parser(String file, Map<String, String> settings) throws IOException {
 
-		Parser.log = Logger.getLogger(Function.class.getName());
+		Parser.log = Logger.getLogger(Parser.class.getName());
 
 		this.unparsedJSCode = "";
 
@@ -61,7 +58,8 @@ public class Parser implements IParser {
 	 * @throws IllegalArgumentException
 	 * 
 	 */
-	public void process() throws IOException, IllegalArgumentException, EncoderException {
+	public void process() throws IOException, IllegalArgumentException,
+			EncoderException {
 
 		log.info("start parsing jscode...");
 
@@ -74,30 +72,9 @@ public class Parser implements IParser {
 		log.info("parsing jscode finished");
 	}
 
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see edu.hm.webscraper.parser.IJSParser#printAllTokens()
-//	 */
-//	public void printAllTokens() {
-//
-//		for (Token token : tokenanalyser.getTokens()) {
-//
-//			System.out.println(token.getPos() + " : " + token.getValue());
-//
-//		}
-//	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.hm.webscraper.parser.IJSParser#getTokens()
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.IParser#getProgrammTree()
 	 */
-	public List<AbstractType> getAlltypes() {
-		return tokenanalyser.getAllTypes();
-	}
-
-	
 	public IProgrammTree getProgrammTree() {
 
 		return programmTree;

@@ -31,14 +31,18 @@ public class Tokenizer implements ITokenizer {
 		Tokenizer.log = Logger.getLogger(Tokenizer.class.getName());
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.token.ITokenizer#process()
+	 */
 	public void process() {
 
-		// TODO reduce cyclo complex actual is 5
+		// Validation
+		Validate.notNull(tokens);
+		Validate.notNull(input);
 
 		log.info("start tokinizing process...");
 		
-		Validate.notNull(tokens);
-
+		
 		String matches = "(|)|[|]|;|=|{|}|,|.";
 
 		IMatch matcher = new TokenMatcher(matches);
@@ -52,7 +56,7 @@ public class Tokenizer implements ITokenizer {
 		for (int pos = 0, element = 0; pos < inputArray.length; pos++) {
 
 			char actualChar = inputArray[pos];
-
+			
 			// TODO refactor!
 			if (matcher.matchAll(actualChar + "") || actualChar == ' ') {
 
@@ -82,15 +86,22 @@ public class Tokenizer implements ITokenizer {
 		for(Token t: tokens) {
 			
 			System.out.println(i++ + "--" + t.getValue());
-		}
-		
+		}	
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.token.ITokenizer#getTokens()
+	 */
 	public List<Token> getTokens() {
 
 		return tokens;
 	}
 
+	/**
+	 * @param posStarteines
+	 * @param posEnd
+	 * @return
+	 */
 	private TOKENTYPE mapPosInInputArrayToTokentype(int posStart, int posEnd) {
 
 		String extractedString = "";
@@ -103,6 +114,10 @@ public class Tokenizer implements ITokenizer {
 		return mapStringToTokentype(extractedString);
 	}
 
+	/**
+	 * @param object
+	 * @return
+	 */
 	private TOKENTYPE mapStringToTokentype(String object) {
 
 		switch (object) {
