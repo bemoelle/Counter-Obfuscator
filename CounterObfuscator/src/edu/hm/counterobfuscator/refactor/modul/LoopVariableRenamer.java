@@ -27,7 +27,8 @@ public class LoopVariableRenamer implements IModul {
 
 		this.programmTree = programmTree;
 
-		this.mappedElements = Mapper.process(programmTree, TYPE.FOR);
+		Mapper mapper = new Mapper(programmTree);
+		this.mappedElements = mapper.process(TYPE.FOR);
 	}
 
 	/*
@@ -45,15 +46,15 @@ public class LoopVariableRenamer implements IModul {
 
 			Variable var = loop.getHead();
 
-
 			// only look in the children
-			List<Element> elementsWithNewName = children.searchForName(var.getName());
+			Mapper childrenMapper = new Mapper(children);
+			List<MapperElement> elementsWithNewName = childrenMapper.searchForName(var.getName());
 
 			String newName = "forVar" + number++;
 
 			for (int k = 0; k < elementsWithNewName.size(); k++) {
 
-				Element type = elementsWithNewName.get(k);
+				Element type = elementsWithNewName.get(k).getElement();
 
 				ValueExtractor.setName(type,
 						ValueExtractor.getName(type).replaceAll(var.getName(), newName));

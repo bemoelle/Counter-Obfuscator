@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.codec.EncoderException;
 
+import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.parser.token.ITokenAnalyser;
 import edu.hm.counterobfuscator.parser.token.TokenAnalyserFactory;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
@@ -37,6 +38,8 @@ public class Parser implements IParser {
 	 */
 	public Parser(String file, Map<String, String> settings) throws IOException {
 
+		Validate.notNull(file);
+		
 		Parser.log = Logger.getLogger(Parser.class.getName());
 
 		this.unparsedJSCode = "";

@@ -1,22 +1,11 @@
 package edu.hm.counterobfuscator;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import javax.script.ScriptException;
 
 import org.apache.commons.codec.EncoderException;
 
-import edu.hm.counterobfuscator.helper.Position;
-import edu.hm.counterobfuscator.parser.IParser;
-import edu.hm.counterobfuscator.parser.ParserFactory;
-import edu.hm.counterobfuscator.parser.tree.Element;
-import edu.hm.counterobfuscator.parser.tree.ProgrammTree;
-import edu.hm.counterobfuscator.refactor.RefactorFactory;
-import edu.hm.counterobfuscator.types.AbstractType;
-import edu.hm.counterobfuscator.types.Default;
+import edu.hm.counterobfuscator.helper.Setting;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -39,10 +28,8 @@ public class CounterObfuscatorMain {
 //				
 //		RefactorFactory.create(jsParser);
 		
-		
-		
-
-		
+		Setting settings = new Setting();
+				
 	}
 
 }

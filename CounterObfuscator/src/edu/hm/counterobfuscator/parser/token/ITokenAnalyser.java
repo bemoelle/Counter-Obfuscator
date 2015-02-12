@@ -15,14 +15,17 @@ import edu.hm.counterobfuscator.types.AbstractType;
 public interface ITokenAnalyser {
 
 	/**
-	 * @throws EncoderException 
-	 * @throws IllegalArgumentException 
+	 * @throws EncoderException
+	 * @throws IllegalArgumentException
+	 * 
+	 *             analyse tokens which are collected by the tokenizer and
+	 *             transform them to javascript types
 	 * 
 	 */
 	public void process() throws IllegalArgumentException, EncoderException;
 
 	/**
-	 * @return
+	 * @return all types
 	 */
 	public List<AbstractType> getAllTypes();
 }

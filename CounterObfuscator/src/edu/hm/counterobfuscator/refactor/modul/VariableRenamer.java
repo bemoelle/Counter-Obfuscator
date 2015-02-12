@@ -37,11 +37,12 @@ public class VariableRenamer implements IModul {
 	public VariableRenamer(IProgrammTree programmTree) {
 
 		this.programmTree = programmTree;
-		this.mappedElements = Mapper.process(programmTree, TYPE.VARIABLE);
+		Mapper mapper = new Mapper(programmTree);
+		this.mappedElements = mapper.process( TYPE.VARIABLE);
 		this.mappedNames = new HashMap<String, String>();
 	}
 
-	/*
+	/* TYPE.THIS, TYPE.CALL
 	 * (non-Javadoc)
 	 * 
 	 * @see edu.hm.counterobfuscator.refactor.IRefactor#process()

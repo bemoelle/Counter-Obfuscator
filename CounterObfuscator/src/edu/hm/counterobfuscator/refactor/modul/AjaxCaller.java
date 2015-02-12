@@ -27,8 +27,8 @@ public class AjaxCaller implements IModul {
 		this.programmTree = programmTree;
 
 		interpreter = new InterpreterModul(client, false);
-
-		this.mappedElements = Mapper.process(programmTree, TYPE.AJAX);
+		Mapper mapper = new Mapper(programmTree);
+		this.mappedElements = mapper.process(TYPE.AJAX);
 	}
 
 	/*
@@ -44,16 +44,12 @@ public class AjaxCaller implements IModul {
 
 			MapperElement actualElement = mappedElements.get(i);
 
-			Ajax tryCatch = (Ajax) actualElement.getElement().getType();
-
 			try {
 				interpreter.process(actualElement.getElement());
 			} catch (Exception e) {
 
 			}
-
 		}
-
 		return programmTree;
 	}
 }

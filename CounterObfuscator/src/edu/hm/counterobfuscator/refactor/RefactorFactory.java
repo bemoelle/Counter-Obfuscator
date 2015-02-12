@@ -11,6 +11,7 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 import edu.hm.counterobfuscator.HTMLUnitClient;
 import edu.hm.counterobfuscator.IClient;
+import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.parser.IParser;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 
@@ -36,18 +37,18 @@ public class RefactorFactory {
 		
 		IProgrammTree tree = jsParser.getProgrammTree();
 		
-		//TODO read settings
+		Setting settings = new Setting();
 		
-		IRefactor variableRefactor = new VariableRefactor(tree, client, null);
+		IRefactor variableRefactor = new VariableRefactor(tree, client, settings);
 		tree = variableRefactor.process();
 		
-		IRefactor tryCatchRefactor = new TryCatchRefactor(tree, client, null);
+		IRefactor tryCatchRefactor = new TryCatchRefactor(tree, client, settings);
 		tree = tryCatchRefactor.process();
 		
-		IRefactor functionRefactor = new FunctionRefactor(tree, client, null);
+		IRefactor functionRefactor = new FunctionRefactor(tree, client, settings);
 		tree = functionRefactor.process();
 		
-		IRefactor loopRefactor = new LoopRefactor(tree, client, null);
+		IRefactor loopRefactor = new LoopRefactor(tree, client, settings);
 		tree = loopRefactor.process();
 						
 		tree.print();

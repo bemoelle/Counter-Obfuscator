@@ -20,7 +20,8 @@ public class VariableInterpreter implements IModul {
 
 		interpreter = new InterpreterModul(client, true);
 
-		this.mappedElements = Mapper.process(programmTree, TYPE.VARIABLE, TYPE.THIS, TYPE.CALL);
+		Mapper mapper = new Mapper(programmTree);
+		this.mappedElements = mapper.process( TYPE.VARIABLE, TYPE.THIS, TYPE.CALL);
 	}
 
 	/*

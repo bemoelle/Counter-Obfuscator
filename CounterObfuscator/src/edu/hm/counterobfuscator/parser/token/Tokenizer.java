@@ -28,7 +28,7 @@ public class Tokenizer implements ITokenizer {
 		this.input = input;
 		tokens = new ArrayList<Token>();
 
-		Tokenizer.log = Logger.getLogger(Tokenizer.class.getName());
+		log = Logger.getLogger(Tokenizer.class.getName());
 	}
 
 	/* (non-Javadoc)

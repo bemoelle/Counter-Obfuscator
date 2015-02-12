@@ -4,7 +4,7 @@ package edu.hm.counterobfuscator.parser.token;
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 25.12.2014
  * 
- *       ENUM to represent important JavaScript Keywords
+ *       ENUM to represent JavaScript Keywords and others
  * 
  */
 public enum TOKENTYPE {

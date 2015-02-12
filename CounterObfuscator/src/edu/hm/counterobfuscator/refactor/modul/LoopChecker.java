@@ -26,7 +26,8 @@ public class LoopChecker implements IModul {
 		this.programmTree = programmTree;
 		this.client = client;
 
-		this.mappedElements = Mapper.process(programmTree, TYPE.FOR);
+		Mapper mapper = new Mapper(programmTree);
+		this.mappedElements = mapper.process(TYPE.FOR);
 	}
 
 	/*

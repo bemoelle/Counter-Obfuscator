@@ -40,11 +40,13 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 		Validate.notNull(tokenizer);
 
-		TokenAnalyser.log = Logger.getLogger(Function.class.getName());
+		log = Logger.getLogger(TokenAnalyser.class.getName());
 
 		this.allTokensOfJSCode = tokenizer.getTokens();
 
 		allTypes = new ArrayList<AbstractType>();
+		
+		Validate.notNull(allTokensOfJSCode);
 
 		actualToken = allTokensOfJSCode.get(0);
 
@@ -89,6 +91,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 	private void setToNextToken() {
 
+		// end is near
 		if (actualToken.getPos() == allTokensOfJSCode.size() - 1) {
 			return;
 		}
@@ -156,6 +159,11 @@ public class TokenAnalyser implements ITokenAnalyser {
 	 * e.g. $.getScript("demo_ajax_script.js");
 	 */
 	private void processJQuery() {
+		
+		Validate.isTrue(allTokensOfJSCode.size() > 0);
+		Validate.notNull(allTypes);
+		
+		log.info("process jquery statement...");
 
 		int startPos = getActualToken().getPos();
 		int openBracket = getPositionOfNextToken(startPos, TOKENTYPE.OPEN_BRACKET);
@@ -174,6 +182,11 @@ public class TokenAnalyser implements ITokenAnalyser {
 	 * 
 	 */
 	private void processString() {
+		
+		Validate.isTrue(allTokensOfJSCode.size() > 0);
+		Validate.notNull(allTypes);
+		
+		log.info("process string statement...");
 
 		int startPos = getActualToken().getPos();
 		int endPos = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
@@ -259,6 +272,11 @@ public class TokenAnalyser implements ITokenAnalyser {
 	}
 
 	private void processReturn() {
+		
+		Validate.isTrue(allTokensOfJSCode.size() > 0);
+		Validate.notNull(allTypes);
+		
+		log.info("process return statement...");
 
 		int startPos = getActualToken().getPos();
 		int endPos = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
@@ -276,6 +294,11 @@ public class TokenAnalyser implements ITokenAnalyser {
 	 * @throws EncoderException
 	 */
 	private void processVar() throws EncoderException {
+		
+		Validate.isTrue(allTokensOfJSCode.size() > 0);
+		Validate.notNull(allTypes);
+		
+		log.info("process var statement...");
 
 		// functioncall wird noch nicht behandelt
 		// var test = obj.Func(Parameter) -> processDefault();
@@ -348,7 +371,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
 		Validate.notNull(allTypes);
 
-		log.info("start processFunction analyse process...");
+		log.info("process function statement...");
 
 		int startPos = getActualToken().getPos();
 
@@ -386,7 +409,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
 		Validate.notNull(allTypes);
 
-		log.info("start processThis analyse process...");
+		log.info("process this statement...");
 
 		int startPos = getActualToken().getPos();
 
@@ -407,9 +430,9 @@ public class TokenAnalyser implements ITokenAnalyser {
 	private void processWhile() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
-		// Validate.notNull(loops);
+		Validate.notNull(allTypes);
 
-		log.info("start processLoops analyse process...");
+		log.info("process while statement...");
 
 	}
 
@@ -421,7 +444,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
 		Validate.notNull(allTypes);
 
-		log.info("start processFor analyse process...");
+		log.info("process for statement...");
 
 		int startPos = getActualToken().getPos();
 
@@ -445,9 +468,9 @@ public class TokenAnalyser implements ITokenAnalyser {
 	private void processTry() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
-		// Validate.notNull(loops);
+		Validate.notNull(allTypes);
 
-		log.info("start processTryCatch analyse process...");
+		log.info("process try statement...");
 
 		int startPos = getActualToken().getPos();
 
@@ -463,9 +486,9 @@ public class TokenAnalyser implements ITokenAnalyser {
 	private void processCatch() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
-		// Validate.notNull(loops);
-
-		log.info("start processTryCatch analyse process...");
+		Validate.notNull(allTypes);
+		
+		log.info("process catch statement...");
 
 		int startPos = getActualToken().getPos();
 
@@ -477,27 +500,6 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 		setNextTokenTo(nextCurlyOpenBracket);
 	}
-
-
-//	/**
-//	 * @param value
-//	 * @return a List of position in tokenlist, which have the same value
-//	 */
-//	private List<Integer> getAllPosOfTokensByValue(String value) {
-//
-//		Validate.notNull(value);
-//
-//		List<Integer> posOfTokens = new ArrayList<Integer>();
-//
-//		for (Token actualToken : allTokensOfJSCode) {
-//
-//			if (actualToken.getValue().equals(value)) {
-//				posOfTokens.add(actualToken.getPos());
-//			}
-//		}
-//
-//		return posOfTokens;
-//	}
 
 	/**
 	 * @param type
@@ -511,54 +513,6 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 		return getStringOfTokens(getAllTokensUntilEndPos(startPos, endPos));
 	}
-
-//	/**
-//	 * @param type
-//	 * @return
-//	 */
-//	private List<Token> getAllTokensOfSameType(TOKENTYPE type) {
-//
-//		Validate.isTrue(allTokensOfJSCode.size() > 0);
-//		Validate.notNull(type);
-//
-//		List<Token> allTokensOfType = new ArrayList<Token>();
-//
-//		for (Token token : allTokensOfJSCode) {
-//
-//			if (token.getType() == type) {
-//				allTokensOfType.add(token);
-//			}
-//		}
-//
-//		return allTokensOfType;
-//	}
-
-//	/**
-//	 * @param startPos
-//	 * @param type
-//	 * @return
-//	 */
-//	private List<Token> getAllTokensUntilType(int startPos, TOKENTYPE type) {
-//
-//		Validate.isTrue(allTokensOfJSCode.size() > 0);
-//		Validate.isTrue(startPos > 0 && startPos < allTokensOfJSCode.size());
-//		Validate.notNull(type);
-//
-//		List<Token> allTokensUntilType = new ArrayList<Token>();
-//
-//		for (int i = startPos; i < allTokensOfJSCode.size(); i++) {
-//
-//			Token actualToken = allTokensOfJSCode.get(i);
-//
-//			allTokensUntilType.add(actualToken);
-//
-//			if (actualToken.getType() == type) {
-//				break;
-//			}
-//		}
-//
-//		return allTokensUntilType;
-//	}
 
 	/**
 	 * @param startPos
@@ -622,22 +576,6 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 	}
 
-//	private int getPositionOfPreviousToken(int startPos, TOKENTYPE type) {
-//
-//		Validate.isTrue(allTokensOfJSCode.size() > 0);
-//		Validate.isTrue(startPos > -1);
-//		Validate.notNull(type);
-//
-//		for (int i = startPos; i > -1; i--) {
-//
-//			if (allTokensOfJSCode.get(i).getType() == type) {
-//				return allTokensOfJSCode.get(i).getPos();
-//			}
-//		}
-//
-//		return -1;
-//	}
-
 	/**
 	 * @param tokensToString
 	 * @return create a string from a given list of tokens
@@ -682,42 +620,6 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 		return false;
 	}
-
-	/**
-	 * @param startPos
-	 * @param startToken
-	 * @param endToken
-	 * @return a list of tokens at a given startpos and starttoken type to a
-	 *         endtoken type
-	 */
-//	private List<Token> getAllTokensBetweenBrackets(int startPos, TOKENTYPE startToken,
-//			TOKENTYPE endToken) {
-//
-//		Validate.isTrue(allTokensOfJSCode.get(startPos).getType() == startToken);
-//
-//		List<Token> allTokensBetweenTwoBrackets = new ArrayList<Token>();
-//
-//		int openBracketsCounter = 0;
-//
-//		for (int i = startPos; i < allTokensOfJSCode.size(); i++) {
-//
-//			Token actualToken = allTokensOfJSCode.get(i);
-//
-//			allTokensBetweenTwoBrackets.add(actualToken);
-//
-//			if (actualToken.getType() == startToken) {
-//				openBracketsCounter++;
-//			} else if (actualToken.getType() == endToken) {
-//				openBracketsCounter--;
-//			}
-//
-//			if (openBracketsCounter == 0) {
-//				break;
-//			}
-//		}
-//
-//		return allTokensBetweenTwoBrackets;
-//	}
 
 	/**
 	 * @param tokenToTest

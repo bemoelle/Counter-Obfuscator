@@ -8,99 +8,101 @@ import edu.hm.counterobfuscator.helper.Position;
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 09.01.2015
- *
+ * 
  */
 public interface IProgrammTree extends Iterable<Element> {
 
 	/**
-	 * @return
+	 * @return true if programm tree is empty
 	 */
 	public boolean isEmpty();
 
 	/**
 	 * @param typeTreeElement
+	 *            add element to programmtree
 	 */
-	public void add(Element typeTreeElement);
+	public void add(Element element);
 
 	/**
-	 * @return
+	 * @return size of programmtree
 	 */
 	public int size();
 
 	/**
 	 * @param index
-	 * @return
+	 * @return element
+	 * 
+	 *         return element at index
 	 */
 	public Element get(int index);
 
 	/**
-	 * 
+	 * wipe out programmtree
 	 */
 	public void clear();
 
 	/**
-	 * @return
+	 * @return last element in programmtree
 	 */
 	public Element getLast();
 
 	/**
 	 * @param index
-	 * @return
+	 * @return element
+	 * 
+	 *         remove element at index and return this element
+	 * 
 	 */
 	public Element remove(int index);
 
 	/**
-	 * @param type
-	 * @return
+	 * @param element
+	 * @return true if removing was successfully
+	 * 
+	 *         remove element and all of its children
 	 */
-	public boolean removeElementAndAllChildren(Element type);
+	public boolean removeElementAndAllChildren(Element element);
 
 	/**
 	 * @param element
-	 * @return
+	 * @return true if removing was successfully
+	 * 
+	 *         remove element in programmtree and keep its children. childeren
+	 *         will get the parent of element as new parent
 	 */
 	public boolean remove(Element element);
 
 	/**
-	 * @return
+	 * @return position
+	 * 
+	 *         find global scope of programmtree
 	 */
 	public Position findGlobalScope();
 
 	/**
-	 * @param reverse
+	 * @param ProgrammTree
+	 * 
+	 *            add whole programmtree to actual programmtree
 	 */
 	public void addAll(ProgrammTree ProgrammTree);
 
 	/**
-	 * @return
+	 * @return Iterator to iterate throw programmtree
 	 */
 	public Iterator<Element> iterator();
 
 	/**
-	 * @return
+	 * @return reverseIterator to interate throw programmtree in reverse order
 	 */
 	public Iterator<Element> reverseIterator();
 
 	/**
-	 * 
+	 * print actual programmtree to System.out.
 	 */
 	public void print();
 
 	/**
-	 * @param elementToTest
-	 * @param scope
-	 * @return
-	 */
-	public List<Element> searchForNameOfElement(Element elementToTest, Position scope);
-
-	/**
-	 * @param oldName
-	 * @return
-	 */
-	public List<Element> searchForName(String oldName);
-
-	/**
-	 * @return
+	 * @return a deep copy od actual programmtree
 	 */
 	public IProgrammTree copy();
 }

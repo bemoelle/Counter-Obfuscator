@@ -14,12 +14,12 @@ import java.util.List;
 public interface ITokenizer {
 
 	/**
-	 * 
+	 * transform input string in a representation of tokens
 	 */
 	void process();
 
 	/**
-	 * @return
+	 * @return tokens
 	 */
 	List<Token> getTokens();
 

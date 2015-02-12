@@ -1,17 +1,13 @@
 package edu.hm.counterobfuscator.refactor.modul;
 
-import java.util.Iterator;
 import java.util.List;
 
 import edu.hm.counterobfuscator.IClient;
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
-import edu.hm.counterobfuscator.parser.tree.ProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
-import edu.hm.counterobfuscator.types.AbstractType;
-import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.TYPE;
 import edu.hm.counterobfuscator.types.TryCatch;
 
@@ -33,7 +29,8 @@ public class TryCatchChecker implements IModul {
 
 		interpreter = new InterpreterModul(client, false);
 
-		this.mappedElements = Mapper.process(programmTree, TYPE.TRYCATCH);
+		Mapper mapper = new Mapper(programmTree);
+		this.mappedElements = mapper.process(TYPE.TRYCATCH);
 	}
 
 	/*

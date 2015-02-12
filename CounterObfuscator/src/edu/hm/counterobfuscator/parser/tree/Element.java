@@ -3,26 +3,30 @@
  */
 package edu.hm.counterobfuscator.parser.tree;
 
+import org.apache.commons.lang3.Validate;
+
 import edu.hm.counterobfuscator.types.AbstractType;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 06.01.2015
  * 
- * 
+ *       element represent an node in a programmtree a element can also be a
+ *       parent of programmtree of childrens
  */
 public class Element {
 
-	private IProgrammTree	children;
-	private AbstractType		type;
-	private Element			parent;
-	private Element			next;
-	private Element			before;
-	private int					depth;
+	private IProgrammTree children;
+	private AbstractType type;
+	private Element parent;
+	private Element next;
+	private Element before;
+	private int depth;
 
 	/**
 	 * @param parent
 	 * @param type
+	 * @param depth
 	 */
 	public Element(Element parent, AbstractType type, int depth) {
 
@@ -33,7 +37,7 @@ public class Element {
 	}
 
 	/**
-	 * @return
+	 * @return parent of actual element
 	 */
 	public Element getParent() {
 
@@ -41,7 +45,7 @@ public class Element {
 	}
 
 	/**
-	 * @param parent
+	 * @param parent set parent of actual element 
 	 */
 	public void setParent(Element parent) {
 
@@ -49,7 +53,7 @@ public class Element {
 	}
 
 	/**
-	 * @return
+	 * @return all childrens of element
 	 */
 	public IProgrammTree getChildren() {
 
@@ -57,7 +61,7 @@ public class Element {
 	}
 
 	/**
-	 * @param child
+	 * @param child set child of actual element
 	 */
 	public void addChild(Element child) {
 
@@ -65,7 +69,7 @@ public class Element {
 	}
 
 	/**
-	 * @return
+	 * @return last child of children
 	 */
 	public Element getLatestChild() {
 
@@ -73,7 +77,7 @@ public class Element {
 	}
 
 	/**
-	 * @return
+	 * @return true if element has children
 	 */
 	public boolean hasChildren() {
 
@@ -81,7 +85,7 @@ public class Element {
 	}
 
 	/**
-	 * @return
+	 * @return return type of actual element
 	 */
 	public AbstractType getType() {
 
@@ -89,7 +93,7 @@ public class Element {
 	}
 
 	/**
-	 * @param type
+	 * @param type set type of actual element
 	 */
 	public void setType(AbstractType type) {
 
@@ -97,7 +101,7 @@ public class Element {
 	}
 
 	/**
-	 * 
+	 * removed all children of actual element
 	 */
 	public void removeAllChildren() {
 
@@ -107,10 +111,14 @@ public class Element {
 
 	/**
 	 * @param index
-	 * @return
+	 * @return element
+	 * 
+	 * return 
 	 */
 	public Element getChild(int index) {
 
+		Validate.isTrue(index > -1);
+		Validate.isTrue(index < children.size()-1);
 		return children.get(index);
 	}
 
@@ -124,9 +132,11 @@ public class Element {
 
 		if (this.getType() != otherTypeTreeElement.getType())
 			return false;
-		if (!this.getType().getPos().equals(otherTypeTreeElement.getType().getPos()))
+		if (!this.getType().getPos()
+				.equals(otherTypeTreeElement.getType().getPos()))
 			return false;
-		if (!this.getType().getName().equals(otherTypeTreeElement.getType().getName()))
+		if (!this.getType().getName()
+				.equals(otherTypeTreeElement.getType().getName()))
 			return false;
 
 		return true;
@@ -134,7 +144,7 @@ public class Element {
 	}
 
 	/**
-	 * @return
+	 * @return depth in whole programmtree
 	 */
 	public int getDepth() {
 
@@ -142,31 +152,42 @@ public class Element {
 	}
 
 	/**
-	 * @param depth
+	 * @param depth set depth
 	 */
 	public void setDepth(int depth) {
 
 		this.depth = depth;
 	}
 
+	/**
+	 * @return get element after actual element
+	 */
 	public Element getNext() {
 
 		return next;
 	}
 
+	/**
+	 * @param next set next element
+	 */
 	public void setNext(Element next) {
 
 		this.next = next;
 	}
 
+	/**
+	 * @return get element before actual element
+	 */
 	public Element getBefore() {
 
 		return before;
 	}
 
+	/**
+	 * @param before set before element
+	 */
 	public void setBefore(Element before) {
 
 		this.before = before;
 	}
-
 }

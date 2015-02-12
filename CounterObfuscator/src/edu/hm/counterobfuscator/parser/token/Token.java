@@ -9,19 +9,19 @@ package edu.hm.counterobfuscator.parser.token;
  */
 public class Token {
 
-	private int			pos;
-	private TOKENTYPE	type;
-	private String		value;
-	private boolean	hasWhitespace;
+	private int pos;
+	private TOKENTYPE type;
+	private String value;
+	private boolean hasWhitespace;
 
 	/**
 	 * @param int pos
 	 * @param TOKENTYPE
-	 *           tokentype
+	 *            tokentype
 	 * @param String
-	 *           value
+	 *            value
 	 * 
-	 *           Constructor
+	 *            Constructor
 	 * 
 	 */
 	public Token(int pos, TOKENTYPE tokentype, String value) {
@@ -29,7 +29,22 @@ public class Token {
 		this.pos = pos;
 		this.type = tokentype;
 		this.value = value;
-		this.hasWhitespace = (tokentype == TOKENTYPE.RETURN || tokentype == TOKENTYPE.NEW) ? true : false;
+		this.hasWhitespace = isWhitespaceNecessary() ? true : false;
+	}
+
+	/**
+	 * @return
+	 */
+	private boolean isWhitespaceNecessary() {
+
+		switch (type) {
+		case RETURN:
+		case NEW:
+			return true;
+		default:
+			return false;
+		}
+
 	}
 
 	/**
@@ -55,12 +70,15 @@ public class Token {
 
 	/**
 	 * @param Value
-	 *           of Token
+	 *            of Token
 	 */
 	public void setValue(String value) {
 		this.value = value;
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean hasWhitespace() {
 		return hasWhitespace;
 	}

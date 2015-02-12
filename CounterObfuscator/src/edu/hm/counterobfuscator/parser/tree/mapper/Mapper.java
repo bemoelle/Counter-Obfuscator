@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import edu.hm.counterobfuscator.helper.Position;
+import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.types.TYPE;
@@ -18,16 +19,18 @@ import edu.hm.counterobfuscator.types.TYPE;
  *       scope of each VAR in the programmTree
  * 
  */
-public final class Mapper {
+public class Mapper {
 
-	private static TYPE[]					typeSearchFor;
-	private static List<MapperElement>	mappedElements;
+	private IProgrammTree programmTree;
 
 	/**
 	 * 
 	 */
-	private Mapper() {
-
+	public Mapper(IProgrammTree programmTree) {
+		
+		Validate.notNull(programmTree);
+		
+		this.programmTree = programmTree;
 	}
 
 	/**
@@ -35,17 +38,19 @@ public final class Mapper {
 	 * @param programmTree
 	 * @return a List of mapped Elements
 	 */
-	public static List<MapperElement> process(IProgrammTree programmTree, TYPE... typeSearchForX) {
+	public List<MapperElement> process(TYPE... typeSearchFor) {
+		
+		Validate.notNull(programmTree);
+		Validate.notNull(typeSearchFor);
 
-		typeSearchFor = typeSearchForX;
-		mappedElements = new ArrayList<MapperElement>();
+		List<MapperElement> mappedElements = new ArrayList<MapperElement>();
 
 		Iterator<Element> it = programmTree.iterator();
 
 		while (it.hasNext()) {
 
 			Element element = it.next();
-			if (isSearchedType(element.getType().getType())) {
+			if (isSearchedType(typeSearchFor, element.getType().getType())) {
 
 				Position scope = null;
 
@@ -61,13 +66,11 @@ public final class Mapper {
 				mappedElements.add(new MapperElement(scope, element));
 			}
 		}
-		testOfReAssign();
-
-		return mappedElements;
+		return testOfReAssign(mappedElements);
 	}
 
-	private static boolean isSearchedType(TYPE typeToTest) {
-
+	private boolean isSearchedType(TYPE[] typeSearchFor, TYPE typeToTest) {
+		
 		for (TYPE test : typeSearchFor) {
 
 			if (test == typeToTest)
@@ -77,13 +80,14 @@ public final class Mapper {
 	}
 
 	/**
-	 * TODO REFACTOR
 	 * 
 	 * to test the scope of each element, it is possible an element has to be
 	 * reassinged. in this case, the scope have to be changed of this element
 	 * 
 	 */
-	private static void testOfReAssign() {
+	private List<MapperElement> testOfReAssign(List<MapperElement> mappedElements) {
+		
+		Validate.notNull(mappedElements);
 
 		for (int i = 0; i < mappedElements.size(); i++) {
 
@@ -99,5 +103,60 @@ public final class Mapper {
 				}
 			}
 		}
+		
+		return mappedElements;
+	}
+	
+	/**
+	 * @param elementToTest
+	 * @param scope
+	 * @return
+	 */
+	public List<MapperElement> searchForNameOfElement(Element elementToTest,
+			Position scope) {
+		
+		Validate.notNull(programmTree);
+		Validate.notNull(elementToTest);
+		Validate.notNull(scope);
+
+		String name = elementToTest.getType().getName();
+		List<MapperElement> elements = new ArrayList<MapperElement>();
+
+		Iterator<Element> it = programmTree.iterator();
+
+		while (it.hasNext()) {
+
+			Element actualElement = it.next();
+
+			if (scope.isPosWithin(actualElement.getType().getPos())) {
+
+				if (actualElement.getType().hasNameInIt(name))
+					elements.add(new MapperElement(null, actualElement));
+			}
+		}
+		return elements;
+	}
+
+	/**
+	 * @param oldName
+	 * @return
+	 */
+	public List<MapperElement> searchForName(String oldName) {
+		
+		Validate.notNull(programmTree);
+		Validate.notNull(oldName);
+
+		List<MapperElement> elements = new ArrayList<MapperElement>();
+
+		Iterator<Element> it = programmTree.iterator();
+
+		while (it.hasNext()) {
+
+			Element actualElement = it.next();
+
+			if (actualElement.getType().hasNameInIt(oldName))
+				elements.add(new MapperElement(null, actualElement));
+		}
+		return elements;
 	}
 }

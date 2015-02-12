@@ -1,62 +1,110 @@
 package edu.hm.counterobfuscator.helper;
 
-
+/**
+ * @author Benjamin Moellerke <bemoelle@gmail.com>
+ * @date 12.02.2015
+ * 
+ *       class is final static
+ *       Validate.notNull(...);
+ * 
+ */
 public final class Validate {
-   
-   private Validate() {}
 
-   public static void notNull(Object obj) {
-       if (obj == null)
-           throw new IllegalArgumentException("Object must not be null");
-   }
+	/**
+	 * construktor is empty
+	 */
+	private Validate() {
+	}
 
-   public static void notNull(Object obj, String msg) {
-       if (obj == null)
-           throw new IllegalArgumentException(msg);
-   }
+	/**
+	 * @param obj
+	 */
+	public static void notNull(Object obj) {
+		if (obj == null)
+			throw new IllegalArgumentException("Object must not be null");
+	}
 
-   public static void isTrue(boolean val) {
-       if (!val)
-           throw new IllegalArgumentException("Must be true");
-   }
+	/**
+	 * @param obj
+	 * @param msg
+	 */
+	public static void notNull(Object obj, String msg) {
+		if (obj == null)
+			throw new IllegalArgumentException(msg);
+	}
 
-   public static void isTrue(boolean val, String msg) {
-       if (!val)
-           throw new IllegalArgumentException(msg);
-   }
+	/**
+	 * @param val
+	 */
+	public static void isTrue(boolean val) {
+		if (!val)
+			throw new IllegalArgumentException("Must be true");
+	}
 
-   public static void isFalse(boolean val) {
-       if (val)
-           throw new IllegalArgumentException("Must be false");
-   }
+	/**
+	 * @param val
+	 * @param msg
+	 */
+	public static void isTrue(boolean val, String msg) {
+		if (!val)
+			throw new IllegalArgumentException(msg);
+	}
 
-   public static void isFalse(boolean val, String msg) {
-       if (val)
-           throw new IllegalArgumentException(msg);
-   }
+	/**
+	 * @param val
+	 */
+	public static void isFalse(boolean val) {
+		if (val)
+			throw new IllegalArgumentException("Must be false");
+	}
 
-   public static void noNullElements(Object[] objects) {
-       noNullElements(objects, "Array must not contain any null objects");
-   }
+	/**
+	 * @param val
+	 * @param msg
+	 */
+	public static void isFalse(boolean val, String msg) {
+		if (val)
+			throw new IllegalArgumentException(msg);
+	}
 
-   public static void noNullElements(Object[] objects, String msg) {
-       for (Object obj : objects)
-           if (obj == null)
-               throw new IllegalArgumentException(msg);
-   }
+	/**
+	 * @param objects
+	 */
+	public static void noNullElements(Object[] objects) {
+		noNullElements(objects, "Array must not contain any null objects");
+	}
 
-   public static void notEmpty(String string) {
-       if (string == null || string.length() == 0)
-           throw new IllegalArgumentException("String must not be empty");
-   }
+	/**
+	 * @param objects
+	 * @param msg
+	 */
+	public static void noNullElements(Object[] objects, String msg) {
+		for (Object obj : objects)
+			if (obj == null)
+				throw new IllegalArgumentException(msg);
+	}
 
-   public static void notEmpty(String string, String msg) {
-       if (string == null || string.length() == 0)
-           throw new IllegalArgumentException(msg);
-   }
+	/**
+	 * @param string
+	 */
+	public static void notEmpty(String string) {
+		if (string == null || string.length() == 0)
+			throw new IllegalArgumentException("String must not be empty");
+	}
 
+	/**
+	 * @param string
+	 * @param msg
+	 */
+	public static void notEmpty(String string, String msg) {
+		if (string == null || string.length() == 0)
+			throw new IllegalArgumentException(msg);
+	}
 
-   public static void fail(String msg) {
-       throw new IllegalArgumentException(msg);
-   }
+	/**
+	 * @param msg
+	 */
+	public static void fail(String msg) {
+		throw new IllegalArgumentException(msg);
+	}
 }

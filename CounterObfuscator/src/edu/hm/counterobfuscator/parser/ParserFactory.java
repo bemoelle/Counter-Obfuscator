@@ -16,7 +16,6 @@ public class ParserFactory {
 	 */
 	public static IParser create(String file) throws IOException, IllegalArgumentException, EncoderException {
 
-		// TODO settings ?!?
 		Parser jsParser = new Parser(file, null);
 		jsParser.process();
 		

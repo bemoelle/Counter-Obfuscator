@@ -27,7 +27,8 @@ public class FunctionVariableRenamer implements IModul {
 
 		this.programmTree = programmTree;
 
-		this.mappedElements = Mapper.process(programmTree, TYPE.FUNCTION);
+		Mapper mapper = new Mapper(programmTree);
+		this.mappedElements = mapper.process(TYPE.FUNCTION);
 	}
 
 	/*
@@ -53,13 +54,15 @@ public class FunctionVariableRenamer implements IModul {
 			for (int j = 0; j < vars.size(); j++) {
 
 				// only look in the children
-				List<Element> elementsWithNewName = children.searchForName(vars.get(j).getName());
+				// only look in the children
+				Mapper childrenMapper = new Mapper(children);
+				List<MapperElement> elementsWithNewName = childrenMapper.searchForName(vars.get(j).getName());
 
 				String newName = "functionVar" + number++;
 
 				for (int k = 0; k < elementsWithNewName.size(); k++) {
 
-					Element type = elementsWithNewName.get(k);
+					Element type = elementsWithNewName.get(k).getElement();
 
 					ValueExtractor.setName(type,
 							ValueExtractor.getName(type).replaceAll(vars.get(j).getName(), newName));

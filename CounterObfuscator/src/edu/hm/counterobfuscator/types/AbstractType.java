@@ -10,9 +10,9 @@ import edu.hm.counterobfuscator.helper.Position;
  */
 public abstract class AbstractType {
 
-	protected String		name;
-	protected Position	pos;
-	protected TYPE			type;
+	protected String name;
+	protected Position pos;
+	protected TYPE type;
 
 	public AbstractType(TYPE type, Position pos, String name) {
 
@@ -22,50 +22,55 @@ public abstract class AbstractType {
 	}
 
 	/**
-	 * @return
+	 * @return type
 	 */
 	public TYPE getType() {
 		return type;
 	}
 
 	/**
-	 * @return
+	 * @return position
 	 */
 	public Position getPos() {
 		return pos;
 	}
 
 	/**
-	 * @return
+	 * @return name
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @param name
+	 * @param name set name
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * 
+	 * print type to System.out.
 	 */
 	public void print() {
-		System.out.println("startPos: " + pos.getStartPos() + " -- " + "endPos: " + pos.getEndPos());
+		System.out.println("startPos: " + pos.getStartPos() + " -- "
+				+ "endPos: " + pos.getEndPos());
 
 	}
 
 	/**
 	 * @param other
-	 * @return
+	 * @return true if other has same name as this
+	 * 
+	 * abstract methode to be define in subclass
 	 */
 	public abstract boolean hasSameName(Object other);
 
 	/**
 	 * @param name
-	 * @return
+	 * @return true if type has name in it
+	 * 
+	 * abstract type to be define in subclass
 	 */
 	public abstract boolean hasNameInIt(String name);
 }

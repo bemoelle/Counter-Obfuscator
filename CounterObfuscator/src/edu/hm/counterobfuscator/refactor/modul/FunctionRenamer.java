@@ -16,12 +16,14 @@ public class FunctionRenamer implements IModul {
 	private List<MapperElement>	mappedElements;
 	private String						funcName		= "function";
 	private int							funcNumber	= 1;
+	private Mapper mapper;
 
 	public FunctionRenamer(IProgrammTree programmTree) {
 
 		this.programmTree = programmTree;
+		this.mapper = new Mapper(programmTree);
 
-		this.mappedElements = Mapper.process(programmTree, TYPE.FUNCTION);
+		this.mappedElements = mapper.process(TYPE.FUNCTION);
 
 	}
 
@@ -49,7 +51,7 @@ public class FunctionRenamer implements IModul {
 				continue;
 			}
 
-			List<Element> elementsWithOldName = programmTree.searchForNameOfElement(
+			List<MapperElement> elementsWithOldName = mapper.searchForNameOfElement(
 					actualElement.getElement(), actualElement.getScope());
 
 			String newName = funcName + funcNumber++;
@@ -57,7 +59,7 @@ public class FunctionRenamer implements IModul {
 
 			for (int k = 0; k < elementsWithOldName.size(); k++) {
 
-				Element type = elementsWithOldName.get(k);
+				Element type = elementsWithOldName.get(k).getElement();
 
 				ValueExtractor.setValue(type, newName);
 
