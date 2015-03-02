@@ -24,34 +24,40 @@ import edu.hm.counterobfuscator.types.Function;
  */
 public class Parser implements IParser {
 
-	private BufferedReader br;
-	private String unparsedJSCode;
-	private static Logger log;
-	private ITokenAnalyser tokenanalyser;
-	private IProgrammTree programmTree;
+	private BufferedReader	br;
+	private String				unparsedJSCode;
+	private static Logger	log;
+	private ITokenAnalyser	tokenanalyser;
+	private IProgrammTree	programmTree;
 
 	/**
 	 * @param client
-	 * @param file
+	 * @param input
+	 * @param isFile
 	 * @param settings
 	 * @throws IOException
 	 */
-	public Parser(String file, Map<String, String> settings) throws IOException {
+	public Parser(String input, boolean isFile, Map<String, String> settings) throws IOException {
 
-		Validate.notNull(file);
-		
+		Validate.notNull(input);
+
 		Parser.log = Logger.getLogger(Parser.class.getName());
 
 		this.unparsedJSCode = "";
 
-		br = new BufferedReader(new FileReader(file));
-		String line = "";
+		if (isFile) {
 
-		while ((line = br.readLine()) != null) {
-			unparsedJSCode += line;
+			br = new BufferedReader(new FileReader(input));
+			String line = "";
+
+			while ((line = br.readLine()) != null) {
+				unparsedJSCode += line;
+			}
+
+			br.close();
+		} else {
+			unparsedJSCode = input;
 		}
-
-		br.close();
 		log.info("read JavaScript Code:" + unparsedJSCode);
 	}
 
@@ -61,8 +67,7 @@ public class Parser implements IParser {
 	 * @throws IllegalArgumentException
 	 * 
 	 */
-	public void process() throws IOException, IllegalArgumentException,
-			EncoderException {
+	public void process() throws IOException, IllegalArgumentException, EncoderException {
 
 		log.info("start parsing jscode...");
 
@@ -75,7 +80,9 @@ public class Parser implements IParser {
 		log.info("parsing jscode finished");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.hm.counterobfuscator.parser.IParser#getProgrammTree()
 	 */
 	public IProgrammTree getProgrammTree() {

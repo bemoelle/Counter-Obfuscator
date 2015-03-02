@@ -10,7 +10,7 @@ package edu.hm.counterobfuscator.helper;
  * 
  * 
  */
-public class Position {
+public class Scope {
 
 	private int	startPos;
 	private int	endPos;
@@ -19,7 +19,7 @@ public class Position {
 	 * @param startPos
 	 * @param endPos
 	 */
-	public Position(int startPos, int endPos) {
+	public Scope(int startPos, int endPos) {
 		
 		Validate.isTrue(startPos <= endPos);
 		Validate.isTrue(startPos > -1);
@@ -53,7 +53,7 @@ public class Position {
 	 * @param otherPos
 	 * @return
 	 */
-	public boolean isPosWithin(Position otherPos) {
+	public boolean isPosWithin(Scope otherPos) {
 		
 		Validate.notNull(otherPos);
 		
@@ -69,11 +69,11 @@ public class Position {
 	@Override
 	public boolean equals(Object other) {
 
-		if (!(other instanceof Position)) {
+		if (!(other instanceof Scope)) {
 			return false;
 		}
 		
-		Position otherPosition = (Position) other;
+		Scope otherPosition = (Scope) other;
 		if (this.startPos != otherPosition.startPos || this.endPos != otherPosition.endPos) {
 			return false;
 		}

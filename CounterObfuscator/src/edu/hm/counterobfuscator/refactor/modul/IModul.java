@@ -3,6 +3,8 @@
  */
 package edu.hm.counterobfuscator.refactor.modul;
 
+import javax.script.ScriptException;
+
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 
 /**
@@ -15,7 +17,8 @@ public interface IModul {
 
 	/**
 	 * @return
+	 * @throws ScriptException 
 	 */
-	IProgrammTree process();
+	IProgrammTree process() throws ScriptException;
 
 }

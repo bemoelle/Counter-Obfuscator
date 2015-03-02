@@ -1,6 +1,6 @@
 package edu.hm.counterobfuscator.types;
 
-import edu.hm.counterobfuscator.helper.Position;
+import edu.hm.counterobfuscator.helper.Scope;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -13,7 +13,7 @@ public class Ajax extends AbstractType {
 
 	private String				value;
 
-	public Ajax(Position pos, String name, String value) {
+	public Ajax(Scope pos, String name, String value) {
 		super(TYPE.AJAX, pos, name);
 
 		this.value = value;

@@ -3,7 +3,7 @@ package edu.hm.counterobfuscator.parser.tree;
 import java.util.Iterator;
 import java.util.List;
 
-import edu.hm.counterobfuscator.helper.Position;
+import edu.hm.counterobfuscator.helper.Scope;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -77,7 +77,7 @@ public interface IProgrammTree extends Iterable<Element> {
 	 * 
 	 *         find global scope of programmtree
 	 */
-	public Position findGlobalScope();
+	public Scope findGlobalScope();
 
 	/**
 	 * @param ProgrammTree
@@ -105,4 +105,9 @@ public interface IProgrammTree extends Iterable<Element> {
 	 * @return a deep copy od actual programmtree
 	 */
 	public IProgrammTree copy();
+
+	/**
+	 * @param element
+	 */
+	public void replaceElementWithTree(Element element, IProgrammTree tree);
 }

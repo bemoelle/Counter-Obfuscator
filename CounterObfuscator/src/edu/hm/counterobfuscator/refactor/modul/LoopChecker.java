@@ -2,7 +2,9 @@ package edu.hm.counterobfuscator.refactor.modul;
 
 import java.util.List;
 
-import edu.hm.counterobfuscator.IClient;
+import javax.script.ScriptException;
+
+import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
@@ -35,7 +37,7 @@ public class LoopChecker implements IModul {
 	 * 
 	 * @see edu.hm.counterobfuscator.refactor.IRefactor#process()
 	 */
-	public IProgrammTree process() {
+	public IProgrammTree process() throws ScriptException {
 
 		for (int i = 0; i < mappedElements.size(); i++) {
 

@@ -118,7 +118,7 @@ public class Element {
 	public Element getChild(int index) {
 
 		Validate.isTrue(index > -1);
-		Validate.isTrue(index < children.size()-1);
+		Validate.isTrue(index < children.size());
 		return children.get(index);
 	}
 

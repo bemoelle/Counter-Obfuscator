@@ -17,9 +17,9 @@ import org.junit.Test;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
-import edu.hm.counterobfuscator.HTMLUnitClient;
-import edu.hm.counterobfuscator.IClient;
-import edu.hm.counterobfuscator.helper.Position;
+import edu.hm.counterobfuscator.client.HTMLUnitClient;
+import edu.hm.counterobfuscator.client.IClient;
+import edu.hm.counterobfuscator.helper.Scope;
 import edu.hm.counterobfuscator.parser.IParser;
 import edu.hm.counterobfuscator.parser.ParserFactory;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
@@ -48,7 +48,7 @@ public class TestJSInterpreter {
 	public void VariableTest() throws IOException, IllegalArgumentException, EncoderException,
 			ScriptException {
 
-		IParser jsParser = ParserFactory.create("functionTest");
+		IParser jsParser = ParserFactory.create("functionTest", true);
 
 		IProgrammTree tree = RefactorFactory.create(jsParser);
 
@@ -78,7 +78,7 @@ public class TestJSInterpreter {
 		This f1t2 = (This) t1.getChild(2).getType();
 
 		assertEquals(f1v1.getName(), "var1");
-		assertEquals(f1v1.getValue(), "0.0");
+		assertEquals(f1v1.getValue(), "0");
 
 		assertEquals(f1t1.getName(), "['SayHello']");
 		// TODO
@@ -136,7 +136,7 @@ public class TestJSInterpreter {
 	public void VariableTest2() throws IOException, IllegalArgumentException, EncoderException,
 			ScriptException {
 
-		IParser jsParser = ParserFactory.create("functionTest2");
+		IParser jsParser = ParserFactory.create("functionTest2", true);
 
 		RefactorFactory.create(jsParser);
 
@@ -155,7 +155,7 @@ public class TestJSInterpreter {
 
 		assertEquals(func.getType(), TYPE.FUNCTION);
 		assertEquals(func.getName(), "");
-		assertEquals(func.getHeadString(), "()");
+		assertEquals(func.getHeadString(), "");
 
 		Variable v1 = (Variable) t0.getChild(0).getType();
 		assertEquals(v1.getType(), TYPE.VARIABLE);
@@ -181,7 +181,7 @@ public class TestJSInterpreter {
 	public void packedTest() throws IOException, IllegalArgumentException, EncoderException,
 			ScriptException {
 
-		IParser jsParser = ParserFactory.create("packedTest");
+		IParser jsParser = ParserFactory.create("packedTest", true);
 
 		IProgrammTree tree = RefactorFactory.create(jsParser);
 
@@ -206,7 +206,7 @@ public class TestJSInterpreter {
 	public void tryCatchTest() throws IOException, IllegalArgumentException, EncoderException,
 			ScriptException {
 
-		IParser jsParser = ParserFactory.create("tryTest");
+		IParser jsParser = ParserFactory.create("tryTest", true);
 
 		IProgrammTree tree = RefactorFactory.create(jsParser);
 
@@ -218,7 +218,7 @@ public class TestJSInterpreter {
 
 		assertEquals(func.getType(), TYPE.VARIABLE);
 		assertEquals(func.getName(), "var1");
-		assertEquals(func.getValue(), "3.0");
+		assertEquals(func.getValue(), "3");
 
 		Element t1 = tree.get(1);
 		Return returnStatement = (Return) t1.getType();
@@ -232,7 +232,7 @@ public class TestJSInterpreter {
 	public void ajaxTest() throws IOException, IllegalArgumentException, EncoderException,
 			ScriptException {
 
-		IParser jsParser = ParserFactory.create("JScrambler");
+		IParser jsParser = ParserFactory.create("JScrambler", true);
 
 		IProgrammTree tree = RefactorFactory.create(jsParser);
 

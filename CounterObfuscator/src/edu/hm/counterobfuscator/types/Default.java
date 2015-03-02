@@ -3,7 +3,7 @@
  */
 package edu.hm.counterobfuscator.types;
 
-import edu.hm.counterobfuscator.helper.Position;
+import edu.hm.counterobfuscator.helper.Scope;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -18,7 +18,7 @@ public class Default extends AbstractType {
 	 * @param pos
 	 * @param name
 	 */
-	public Default(Position pos, String name) {
+	public Default(Scope pos, String name) {
 		super(TYPE.DEFAULT, pos, name);
 	}
 

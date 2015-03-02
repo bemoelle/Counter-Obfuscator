@@ -3,7 +3,7 @@
  */
 package edu.hm.counterobfuscator.types;
 
-import edu.hm.counterobfuscator.helper.Position;
+import edu.hm.counterobfuscator.helper.Scope;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -17,7 +17,7 @@ public class ForWhile extends AbstractType {
 	private String headString;
 	private String bodyAsString;
 
-	public ForWhile(Position pos, String name, String headString,
+	public ForWhile(Scope pos, String name, String headString,
 			String bodyAsString) {
 
 		super(name.equals("for") ? TYPE.FOR : TYPE.WHILE, pos, name);

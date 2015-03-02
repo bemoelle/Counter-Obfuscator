@@ -3,7 +3,7 @@
  */
 package edu.hm.counterobfuscator.types;
 
-import edu.hm.counterobfuscator.helper.Position;
+import edu.hm.counterobfuscator.helper.Scope;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -18,7 +18,7 @@ public class Call extends AbstractType {
 	private String	value;
 	private String	parameter;
 
-	public Call(Position pos, String name, String parameter, String value) {
+	public Call(Scope pos, String name, String parameter, String value) {
 		super(TYPE.CALL, pos, name);
 		this.parameter = parameter;
 		

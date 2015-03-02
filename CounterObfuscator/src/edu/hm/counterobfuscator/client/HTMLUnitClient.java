@@ -1,4 +1,4 @@
-package edu.hm.counterobfuscator;
+package edu.hm.counterobfuscator.client;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -36,67 +36,77 @@ public class HTMLUnitClient implements IClient {
 	}
 
 	public HtmlPage getHtmlPage() {
+
 		return currentPage;
 	}
 
 	public WebClient getWebClient() {
+
 		return webClient;
 	}
 
 	public JavaScriptEngine getEngine() {
+
 		return engine;
 	}
 
 	public ScriptResult executeJS(String script) {
+
 		return currentPage.executeJavaScript(script);
 	}
 
 	public Object getJSResult(String script) {
-		Object result = executeJS(script).getJavaScriptResult();
+
+		Object test = executeJS(script);
+		Object result = ((ScriptResult) test).getJavaScriptResult();
 		if (result.getClass() == Window.class) {
 			return "window";
-		}
-		else if (result.getClass() == IdFunctionObject.class) {
+		} else if (result.getClass() == IdFunctionObject.class) {
 			return ((IdFunctionObject) result).getFunctionName();
-		}
-		else if (result.getClass() == String.class) {
+		} else if (result.getClass() == String.class) {
 			return "'" + result + "'";
-		}
-		else if (result.getClass() == Double.class) {
+		} else if (result.getClass() == Double.class) {
+			
+			double doubleResult = Double.parseDouble(result.toString());
+			double doubleResultDecimalPlaces = (doubleResult *100) % 100;
+			
+			if(doubleResultDecimalPlaces == 0) {
+				result = (int)doubleResult;
+			}
+			
 			return result;
-		}
-		else if (result.getClass() == Integer.class) {
+		} else if (result.getClass() == Integer.class) {
 			return result;
-		}
-		else if (result.getClass() == net.sourceforge.htmlunit.corejs.javascript.NativeArray.class) {
+		} else if (result.getClass() == net.sourceforge.htmlunit.corejs.javascript.NativeArray.class) {
 
 			net.sourceforge.htmlunit.corejs.javascript.NativeArray array = (net.sourceforge.htmlunit.corejs.javascript.NativeArray) result;
 
-			Object[] test = array.toArray();
+			Object[] arrayToProcess = array.toArray();
 
-			Object test2 = "[";
+			Object resultArray = "[";
 
-			for (int i = 0; i < test.length; i++) {
-				String o = (String) test[i];
-				test2 += "'" + o + "'";
-				if (i < test.length - 1)
-					test2 += ",";
+			for (int i = 0; i < arrayToProcess.length; i++) {
+				String o = (String) arrayToProcess[i];
+				resultArray += "'" + o + "'";
+				if (i < arrayToProcess.length - 1)
+					resultArray += ",";
 			}
 
-			test2 += "]";
+			resultArray += "]";
 
-			return test2;
-		}
-		else {
+			return resultArray;
+		} else {
 			return result;
 		}
 	}
 
 	public boolean isUndefined(String script) {
+
 		return ScriptResult.isUndefined(executeJS(script));
 	}
 
 	public boolean isFalse(String script) {
+
 		return ScriptResult.isFalse(executeJS(script));
 	}
 

@@ -14,9 +14,9 @@ public class ParserFactory {
 	 * @throws EncoderException 
 	 * @throws IllegalArgumentException 
 	 */
-	public static IParser create(String file) throws IOException, IllegalArgumentException, EncoderException {
+	public static IParser create(String file, boolean isFile) throws IOException, IllegalArgumentException, EncoderException {
 
-		Parser jsParser = new Parser(file, null);
+		Parser jsParser = new Parser(file, isFile, null);
 		jsParser.process();
 		
 		return jsParser;

@@ -2,7 +2,7 @@ package edu.hm.counterobfuscator.refactor.modul;
 
 import java.util.List;
 
-import edu.hm.counterobfuscator.IClient;
+import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
@@ -21,7 +21,7 @@ public class VariableInterpreter implements IModul {
 		interpreter = new InterpreterModul(client, true);
 
 		Mapper mapper = new Mapper(programmTree);
-		this.mappedElements = mapper.process( TYPE.VARIABLE, TYPE.THIS, TYPE.CALL);
+		this.mappedElements = mapper.process(TYPE.VARIABLE, TYPE.THIS, TYPE.CALL);
 	}
 
 	/*
@@ -37,8 +37,7 @@ public class VariableInterpreter implements IModul {
 
 			try {
 				interpreter.process(actualElement.getElement());
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 
 				e.printStackTrace();
 			}

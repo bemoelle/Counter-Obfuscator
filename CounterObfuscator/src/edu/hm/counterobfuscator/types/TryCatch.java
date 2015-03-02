@@ -3,7 +3,7 @@
  */
 package edu.hm.counterobfuscator.types;
 
-import edu.hm.counterobfuscator.helper.Position;
+import edu.hm.counterobfuscator.helper.Scope;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -13,7 +13,7 @@ import edu.hm.counterobfuscator.helper.Position;
  */
 public class TryCatch extends AbstractType {
 
-	public TryCatch(Position pos, String name, String headString) {
+	public TryCatch(Scope pos, String name, String headString) {
 		super(TYPE.TRYCATCH, pos, name);
 
 	}

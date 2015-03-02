@@ -1,6 +1,6 @@
 package edu.hm.counterobfuscator.types;
 
-import edu.hm.counterobfuscator.helper.Position;
+import edu.hm.counterobfuscator.helper.Scope;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -18,7 +18,7 @@ public class Variable extends AbstractType {
 	private String parameter;
 	private String	assign;
 
-	public Variable(Position pos, String name, String assign, String value, boolean isObject) {
+	public Variable(Scope pos, String name, String assign, String value, boolean isObject) {
 		super(TYPE.VARIABLE, pos, name);
 		this.assign = assign;
 

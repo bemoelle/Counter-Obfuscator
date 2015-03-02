@@ -12,7 +12,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.hm.counterobfuscator.helper.Position;
+import edu.hm.counterobfuscator.helper.Scope;
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.ProgrammTree;
 import edu.hm.counterobfuscator.types.AbstractType;
@@ -31,21 +31,21 @@ public class TestProgrammTree {
 	@Before
 	public void before() {
 
-		AbstractType a1 = new Default(new Position(1, 2), "1");
-		AbstractType a2 = new Default(new Position(3, 50), "2");
-		AbstractType a3 = new Default(new Position(4, 5), "3");
+		AbstractType a1 = new Default(new Scope(1, 2), "1");
+		AbstractType a2 = new Default(new Scope(3, 50), "2");
+		AbstractType a3 = new Default(new Scope(4, 5), "3");
 
-		AbstractType a4 = new Default(new Position(6, 20), "4");
-		AbstractType a5 = new Default(new Position(7, 19), "5");
-		AbstractType a6 = new Default(new Position(8, 13), "6");
-		AbstractType a7 = new Default(new Position(14, 15), "7");
+		AbstractType a4 = new Default(new Scope(6, 20), "4");
+		AbstractType a5 = new Default(new Scope(7, 19), "5");
+		AbstractType a6 = new Default(new Scope(8, 13), "6");
+		AbstractType a7 = new Default(new Scope(14, 15), "7");
 
-		AbstractType a8 = new Default(new Position(21, 49), "8");
-		AbstractType a9 = new Default(new Position(22, 48), "9");
-		AbstractType a10 = new Default(new Position(23, 47), "10");
+		AbstractType a8 = new Default(new Scope(21, 49), "8");
+		AbstractType a9 = new Default(new Scope(22, 48), "9");
+		AbstractType a10 = new Default(new Scope(23, 47), "10");
 
-		AbstractType a11 = new Default(new Position(51, 52), "11");
-		AbstractType a12 = new Default(new Position(53, 54), "12");
+		AbstractType a11 = new Default(new Scope(51, 52), "11");
+		AbstractType a12 = new Default(new Scope(53, 54), "12");
 
 		list = new ArrayList<AbstractType>();
 		list.add(a1);

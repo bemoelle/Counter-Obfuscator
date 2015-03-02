@@ -1,11 +1,19 @@
 package edu.hm.counterobfuscator;
 
 import java.io.IOException;
+
 import javax.script.ScriptException;
 
 import org.apache.commons.codec.EncoderException;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+
+import edu.hm.counterobfuscator.client.HTMLUnitClient;
+import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.helper.Setting;
+import edu.hm.counterobfuscator.parser.IParser;
+import edu.hm.counterobfuscator.parser.ParserFactory;
+import edu.hm.counterobfuscator.refactor.RefactorFactory;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -24,12 +32,12 @@ public class CounterObfuscatorMain {
 	 */
 	public static void main(String[] args) throws IOException, ScriptException, IllegalArgumentException, EncoderException {
 
-//		IJSParser jsParser = JSParserFactory.create("JScrambler");
-//				
+//		IParser jsParser = ParserFactory.create("abc");
+////				
 //		RefactorFactory.create(jsParser);
 		
-		Setting settings = new Setting();
-				
+		IClient test = new HTMLUnitClient("http://www.google.com/", BrowserVersion.FIREFOX_24);
+		System.out.println(test.getJSResult("1.0+1.1"));
 	}
 
 }

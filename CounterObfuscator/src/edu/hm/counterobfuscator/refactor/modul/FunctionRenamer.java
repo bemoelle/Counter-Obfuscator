@@ -16,7 +16,7 @@ public class FunctionRenamer implements IModul {
 	private List<MapperElement>	mappedElements;
 	private String						funcName		= "function";
 	private int							funcNumber	= 1;
-	private Mapper mapper;
+	private Mapper						mapper;
 
 	public FunctionRenamer(IProgrammTree programmTree) {
 

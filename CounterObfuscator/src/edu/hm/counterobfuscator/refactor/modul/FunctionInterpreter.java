@@ -2,8 +2,11 @@ package edu.hm.counterobfuscator.refactor.modul;
 
 import java.util.List;
 
-import edu.hm.counterobfuscator.IClient;
+import com.gargoylesoftware.htmlunit.PromptHandler;
+
+import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
+import edu.hm.counterobfuscator.parser.tree.ProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
 import edu.hm.counterobfuscator.types.TYPE;
@@ -36,7 +39,11 @@ public class FunctionInterpreter implements IModul {
 			MapperElement actualElement = mappedElements.get(i);
 
 			try {
-				interpreter.process(actualElement.getElement());
+				IProgrammTree newTree = interpreter.process(actualElement.getElement());
+				
+				if(newTree != null) {
+					programmTree.replaceElementWithTree(actualElement.getElement(), newTree);
+				}
 			}
 			catch (Exception e) {
 

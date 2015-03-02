@@ -1,6 +1,6 @@
 package edu.hm.counterobfuscator.types;
 
-import edu.hm.counterobfuscator.helper.Position;
+import edu.hm.counterobfuscator.helper.Scope;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -11,10 +11,10 @@ import edu.hm.counterobfuscator.helper.Position;
 public abstract class AbstractType {
 
 	protected String name;
-	protected Position pos;
+	protected Scope pos;
 	protected TYPE type;
 
-	public AbstractType(TYPE type, Position pos, String name) {
+	public AbstractType(TYPE type, Scope pos, String name) {
 
 		this.type = type;
 		this.pos = pos;
@@ -31,7 +31,7 @@ public abstract class AbstractType {
 	/**
 	 * @return position
 	 */
-	public Position getPos() {
+	public Scope getPos() {
 		return pos;
 	}
 

@@ -3,7 +3,7 @@ package edu.hm.counterobfuscator.types;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.hm.counterobfuscator.helper.Position;
+import edu.hm.counterobfuscator.helper.Scope;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -18,7 +18,7 @@ public class Function extends AbstractType {
 	private boolean			isPacked;
 	private String				bodyAsString;
 
-	public Function(Position pos, String name, String headString, String bodyAsString,
+	public Function(Scope pos, String name, String headString, String bodyAsString,
 			boolean isPacked) {
 		super(TYPE.FUNCTION, pos, name);
 
@@ -33,7 +33,6 @@ public class Function extends AbstractType {
 				head.add(new Variable(pos, varName, "", "", false));
 			}
 		}
-
 	}
 
 	public List<Variable> getHead() {
@@ -55,14 +54,15 @@ public class Function extends AbstractType {
 	public String getHeadString() {
 
 		String headString = "";
-		for (Variable var : head) {
-			headString += var.getName() + ",";
+		for(int i=0; i<head.size(); i++) {
+			
+			headString += head.get(i).getName();
+			if(i<head.size()-1) {
+				headString += ",";
+			}
 		}
-
-		return "(" + headString + ")";
-	}
-
-	public void setHeadString(String headString) {
+		
+		return headString;
 	}
 
 	/*

@@ -5,7 +5,7 @@ package edu.hm.counterobfuscator.refactor;
 
 import javax.script.ScriptException;
 
-import edu.hm.counterobfuscator.IClient;
+import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.refactor.modul.IModul;

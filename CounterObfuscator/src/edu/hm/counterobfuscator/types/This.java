@@ -3,7 +3,7 @@
  */
 package edu.hm.counterobfuscator.types;
 
-import edu.hm.counterobfuscator.helper.Position;
+import edu.hm.counterobfuscator.helper.Scope;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -20,7 +20,7 @@ public class This extends AbstractType {
 	 * @param pos
 	 * @param name
 	 */
-	public This(Position pos, String name, String value) {
+	public This(Scope pos, String name, String value) {
 		super(TYPE.THIS, pos, name);
 		this.value = value;
 		

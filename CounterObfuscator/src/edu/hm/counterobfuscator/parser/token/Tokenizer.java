@@ -31,7 +31,9 @@ public class Tokenizer implements ITokenizer {
 		log = Logger.getLogger(Tokenizer.class.getName());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.hm.counterobfuscator.parser.token.ITokenizer#process()
 	 */
 	public void process() {
@@ -41,8 +43,7 @@ public class Tokenizer implements ITokenizer {
 		Validate.notNull(input);
 
 		log.info("start tokinizing process...");
-		
-		
+
 		String matches = "(|)|[|]|;|=|{|}|,|.";
 
 		IMatch matcher = new TokenMatcher(matches);
@@ -56,8 +57,7 @@ public class Tokenizer implements ITokenizer {
 		for (int pos = 0, element = 0; pos < inputArray.length; pos++) {
 
 			char actualChar = inputArray[pos];
-			
-			// TODO refactor!
+
 			if (matcher.matchAll(actualChar + "") || actualChar == ' ') {
 
 				if (charBuffer.length() > 0) {
@@ -70,26 +70,28 @@ public class Tokenizer implements ITokenizer {
 							.add(new Token(element++, mapPosInInputArrayToTokentype(pos, pos), actualChar
 									+ ""));
 				}
+				
 				beginPos = pos + 1;
 				charBuffer = ""; // reset buffer
 
-			}
-			else {
+			} else {
 				charBuffer += actualChar;
 			}
 
 		}
-		
+
 		log.info("tokinizing process finished");
-		
-		int i=0;
-		for(Token t: tokens) {
-			
+
+		int i = 0;
+		for (Token t : tokens) {
+
 			System.out.println(i++ + "--" + t.getValue());
-		}	
+		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.hm.counterobfuscator.parser.token.ITokenizer#getTokens()
 	 */
 	public List<Token> getTokens() {

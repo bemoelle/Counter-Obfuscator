@@ -2,7 +2,7 @@ package edu.hm.counterobfuscator.refactor.modul;
 
 import java.util.List;
 
-import edu.hm.counterobfuscator.IClient;
+import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;

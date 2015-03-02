@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import edu.hm.counterobfuscator.helper.Position;
+import edu.hm.counterobfuscator.helper.Scope;
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.Element;
@@ -52,15 +52,15 @@ public class Mapper {
 			Element element = it.next();
 			if (isSearchedType(typeSearchFor, element.getType().getType())) {
 
-				Position scope = null;
+				Scope scope = null;
 
 				Element parent = element.getParent();
 				if (parent != null) {
-					scope = new Position(element.getType().getPos().getStartPos(), parent.getType()
+					scope = new Scope(element.getType().getPos().getStartPos(), parent.getType()
 							.getPos().getEndPos());
 				} else {
 					// -1 element has scope until EOF
-					scope = new Position(element.getType().getPos().getStartPos(), 100000);
+					scope = new Scope(element.getType().getPos().getStartPos(), 100000);
 				}
 
 				mappedElements.add(new MapperElement(scope, element));
@@ -98,7 +98,7 @@ public class Mapper {
 				MapperElement me2 = mappedElements.get(j);
 				if (me.getElement().getType().hasSameName(me2.getElement().getType())) {
 
-					me.setScope(new Position(me.getScope().getStartPos(),
+					me.setScope(new Scope(me.getScope().getStartPos(),
 							me2.getScope().getStartPos() - 1));
 				}
 			}
@@ -113,7 +113,7 @@ public class Mapper {
 	 * @return
 	 */
 	public List<MapperElement> searchForNameOfElement(Element elementToTest,
-			Position scope) {
+			Scope scope) {
 		
 		Validate.notNull(programmTree);
 		Validate.notNull(elementToTest);
