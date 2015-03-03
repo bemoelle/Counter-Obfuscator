@@ -18,7 +18,7 @@ public abstract class AbstractType {
 
 		this.type = type;
 		this.pos = pos;
-		this.name = name;
+		this.name = name.replaceAll(" ", "");
 	}
 
 	/**

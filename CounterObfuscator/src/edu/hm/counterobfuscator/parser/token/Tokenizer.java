@@ -44,7 +44,7 @@ public class Tokenizer implements ITokenizer {
 
 		log.info("start tokinizing process...");
 
-		String matches = "(|)|[|]|;|=|{|}|,|.";
+		String matches = "(|)|[|]|;|=|{|}|,|.|+|-";
 
 		IMatch matcher = new TokenMatcher(matches);
 
@@ -65,11 +65,11 @@ public class Tokenizer implements ITokenizer {
 							new Token(element++, mapPosInInputArrayToTokentype(beginPos, pos - 1),
 									charBuffer));
 				}
-				if (actualChar != ' ') { // ignore whitespaces
+				
 					getTokens()
 							.add(new Token(element++, mapPosInInputArrayToTokentype(pos, pos), actualChar
 									+ ""));
-				}
+				
 				
 				beginPos = pos + 1;
 				charBuffer = ""; // reset buffer

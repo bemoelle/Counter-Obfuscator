@@ -5,14 +5,12 @@ import javax.script.ScriptException;
 import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
-import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.refactor.modul.AjaxCaller;
 import edu.hm.counterobfuscator.refactor.modul.IModul;
 import edu.hm.counterobfuscator.refactor.modul.VariableInterpreter;
 import edu.hm.counterobfuscator.refactor.modul.VariableRemover;
 import edu.hm.counterobfuscator.refactor.modul.VariableRenamer;
 import edu.hm.counterobfuscator.refactor.modul.VariableReplacer;
-import edu.hm.counterobfuscator.types.TYPE;
 
 public class VariableRefactor implements IRefactor {
 

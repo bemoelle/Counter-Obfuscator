@@ -2,11 +2,8 @@ package edu.hm.counterobfuscator.refactor.modul;
 
 import java.util.List;
 
-import com.gargoylesoftware.htmlunit.PromptHandler;
-
 import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
-import edu.hm.counterobfuscator.parser.tree.ProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
 import edu.hm.counterobfuscator.types.TYPE;
@@ -24,7 +21,7 @@ public class FunctionInterpreter implements IModul {
 		interpreter = new InterpreterModul(client, true);
 
 		Mapper mapper = new Mapper(programmTree);
-		this.mappedElements = mapper.process(TYPE.FUNCTION);
+		this.mappedElements = mapper.process(TYPE.FUNCTION, TYPE.THIS, TYPE.VARIABLE);
 	}
 
 	/*

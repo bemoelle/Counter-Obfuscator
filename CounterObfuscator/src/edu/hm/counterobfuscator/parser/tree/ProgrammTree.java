@@ -144,7 +144,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 			Element element = it.next();
 
-			String toPrint = call(element.getType());
+			String toPrint = printElement(element.getType());
 
 			actualDepth = element.getDepth();
 
@@ -185,40 +185,40 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	 * @param abstractType
 	 * @return
 	 */
-	private String call(AbstractType abstractType) {
+	private String printElement(AbstractType abstractType) {
 
 		switch (abstractType.getType()) {
 
 		case FUNCTION:
 			Function func = (Function) abstractType;
-			return "function " + func.getName() + "(" + func.getHeadString() + ") " + "{\n";
+			return "function " + func.getName() + "(" + func.getHeadString() + ") " + "{";
 		case CALL:
 			Call fc = (Call) abstractType;
-			return fc.getName() + "." + fc.getFunction() + "(" + fc.getValue() + ");\n";
+			return fc.getName() + "." + fc.getFunction() + "(" + fc.getValue() + ";";
 		case VARIABLE:
 			Variable var = (Variable) abstractType;
-			return (var.isGlobal() ? "" : "var ") + var.getName() + "="
+			return (var.isGlobal() ? "" : "var ") + var.getName() + var.getAssign()
 					+ (var.isObject() ? "new " : "") + var.getValue()
-					+ (var.isObject() ? "(" + var.getParameter() + ")" : "") + ";\n";
+					+ (var.isObject() ? "(" + var.getParameter() + ")" : "");
 		case FOR:
 		case WHILE:
 			ForWhile loop = (ForWhile) abstractType;
-			return loop.getName() + loop.getHeadString() + "{\n";
+			return loop.getName() + loop.getHeadString() + "{";
 		case THIS:
 			This thisStatement = (This) abstractType;
 			return "this" + thisStatement.getName() + "=";
 		case RETURN:
 			Return returnStatement = (Return) abstractType;
-			return "return " + returnStatement.getName() + ";\n";
+			return "return " + returnStatement.getName();
 		case DEFAULT:
 			Default defaultStatement = (Default) abstractType;
-			return defaultStatement.getName() + ";\n";
+			return defaultStatement.getName();
 		case TRYCATCH:
 			TryCatch tryCatchStatement = (TryCatch) abstractType;
-			return tryCatchStatement.getName().equals("try") ? "try {\n" : "} catch(e) {\n";
+			return tryCatchStatement.getName().equals("try") ? "try {\n" : "} catch(e) {";
 		case AJAX:
 			Ajax ajax = (Ajax) abstractType;
-			return "$." + ajax.getName() + "(" + ajax.getValue() + ");\n";
+			return "$." + ajax.getName() + "(" + ajax.getValue() + ")";
 		default:
 			break;
 		}
@@ -453,6 +453,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 		
 		for(int i=0; i<newTree.size(); i++) {
 			Element newElement = newTree.get(i);
+			element.setParent(parent);
 			tree.add(index++, newElement);
 		}
 		
@@ -461,10 +462,15 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 		}
 		
 		//verkettung
-		beforeEle.setNext(newTree.get(0));
-		newTree.get(0).setBefore(beforeEle);
-		nextEle.setBefore(newTree.getLast());
-		newTree.getLast().setNext(nextEle);
+		if(beforeEle != null) {
+			beforeEle.setNext(newTree.get(0));
+			newTree.get(0).setBefore(beforeEle);
+		}
+		
+		if(nextEle != null) {
+			nextEle.setBefore(newTree.getLast());
+			newTree.getLast().setNext(nextEle);
+		}
 	}
 
 	/*

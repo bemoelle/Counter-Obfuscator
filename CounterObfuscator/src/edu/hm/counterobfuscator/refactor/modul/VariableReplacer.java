@@ -41,12 +41,17 @@ public class VariableReplacer implements IModul {
 			List<MapperElement> elementsWithOldName = mapper.searchForNameOfElement(
 					actualElement.getElement(), actualElement.getScope());
 
+			//TODO not same in list<MapperElements>
 			for (int j = 0; j < elementsWithOldName.size(); j++) {
 
 				Element type = elementsWithOldName.get(j).getElement();
 				String toReplace = ValueExtractor.getValue(type);
-				toReplace = toReplace.replace(name, value);
-				ValueExtractor.setValue(type, toReplace);
+				
+				//hack if not ++ or -- 
+				if(!toReplace.contains(name+"++")) {
+					toReplace = toReplace.replace(name, value);
+					ValueExtractor.setValue(type, toReplace);
+				}
 			}
 		}
 		return programmTree;

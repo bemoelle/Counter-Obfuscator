@@ -32,12 +32,12 @@ public class CounterObfuscatorMain {
 	 */
 	public static void main(String[] args) throws IOException, ScriptException, IllegalArgumentException, EncoderException {
 
-//		IParser jsParser = ParserFactory.create("abc");
-////				
-//		RefactorFactory.create(jsParser);
+		IParser jsParser = ParserFactory.create("abc", true);
+//				
+		RefactorFactory.create(jsParser);
 		
-		IClient test = new HTMLUnitClient("http://www.google.com/", BrowserVersion.FIREFOX_24);
-		System.out.println(test.getJSResult("1.0+1.1"));
+//		IClient test = new HTMLUnitClient("http://www.google.com/", BrowserVersion.FIREFOX_24);
+//		System.out.println(test.getJSResult("1.0+1.1"));
 	}
 
 }

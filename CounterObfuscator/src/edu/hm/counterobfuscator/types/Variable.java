@@ -22,6 +22,8 @@ public class Variable extends AbstractType {
 		super(TYPE.VARIABLE, pos, name);
 		this.assign = assign;
 
+		value = value.replaceAll("^\\s", "");
+		
 		if (isObject) {
 			this.value = value.substring(4, value.indexOf("("));
 			this.parameter = value.substring(value.indexOf("(") + 1,

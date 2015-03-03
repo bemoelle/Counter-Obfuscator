@@ -8,6 +8,7 @@ import javax.script.ScriptException;
 import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
+import edu.hm.counterobfuscator.refactor.modul.DotNotation;
 import edu.hm.counterobfuscator.refactor.modul.FunctionInterpreter;
 import edu.hm.counterobfuscator.refactor.modul.FunctionRenamer;
 import edu.hm.counterobfuscator.refactor.modul.FunctionVariableRenamer;
@@ -46,8 +47,11 @@ public class FunctionRefactor implements IRefactor {
 		IModul renamer = new FunctionRenamer(tree);
 		tree = renamer.process();
 
-		FunctionVariableRenamer variableRenamer = new FunctionVariableRenamer(tree);
-		return variableRenamer.process();
+		IModul variableRenamer = new FunctionVariableRenamer(tree);
+		tree = variableRenamer.process();
+		
+		IModul dotNotation = new DotNotation(tree);
+		return dotNotation.process();
 
 	}
 

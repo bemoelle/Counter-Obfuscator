@@ -31,10 +31,10 @@ import edu.hm.counterobfuscator.types.Variable;
  */
 public class TokenAnalyser implements ITokenAnalyser {
 
-	private static Logger log;
-	private List<Token> allTokensOfJSCode;
-	private Token actualToken;
-	private List<AbstractType> allTypes;
+	private static Logger		log;
+	private List<Token>			allTokensOfJSCode;
+	private Token					actualToken;
+	private List<AbstractType>	allTypes;
 
 	public TokenAnalyser(ITokenizer tokenizer) {
 
@@ -115,8 +115,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 		return true;
 	}
 
-	private void call(TOKENTYPE type) throws IllegalArgumentException,
-			EncoderException {
+	private void call(TOKENTYPE type) throws IllegalArgumentException, EncoderException {
 
 		switch (type) {
 		case VAR:
@@ -169,10 +168,8 @@ public class TokenAnalyser implements ITokenAnalyser {
 		log.info("process jquery statement...");
 
 		int startPos = getActualToken().getPos();
-		int openBracket = getPositionOfNextToken(startPos,
-				TOKENTYPE.OPEN_BRACKET);
-		int closedBracket = getPositionOfNextToken(openBracket,
-				TOKENTYPE.CLOSE_BRACKET);
+		int openBracket = getPositionOfNextToken(startPos, TOKENTYPE.OPEN_BRACKET);
+		int closedBracket = getPositionOfNextToken(openBracket, TOKENTYPE.CLOSE_BRACKET);
 		String name = getNameOfType(startPos + 2, openBracket - 2);
 		String value = getNameOfType(openBracket + 1, closedBracket - 1);
 
@@ -194,11 +191,23 @@ public class TokenAnalyser implements ITokenAnalyser {
 		log.info("process string statement...");
 
 		int startPos = getActualToken().getPos();
-		int endPos = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
+		int endPosSemikolon = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
+		int endPosCurlyBracket = getPositionOfNextToken(startPos, TOKENTYPE.CLOSE_CURLY_BRACKET);
+
+		int endPos = endPosSemikolon;
+
+		if (endPosCurlyBracket > -1 && endPosCurlyBracket < endPosSemikolon) {
+			endPos = endPosCurlyBracket - 1;
+		}
 
 		if (endPos == 0)
 			endPos = 1;
 		Token nextToken = getNextTokenOf(getActualToken());
+
+		// ignore whitespaces
+		if (nextToken.getType() == TOKENTYPE.WHITESPACE) {
+			nextToken = getNextTokenOf(nextToken);
+		}
 
 		switch (nextToken.getType()) {
 		case DOT:
@@ -206,30 +215,33 @@ public class TokenAnalyser implements ITokenAnalyser {
 			System.out.println("FunctionCall");
 			int dot = nextToken.getPos();
 
-			int openBracket = getPositionOfNextToken(startPos,
-					TOKENTYPE.OPEN_BRACKET);
+			int openBracket = getPositionOfNextToken(startPos, TOKENTYPE.OPEN_BRACKET);
 
 			String nameFC = getNameOfType(startPos, dot - 1);
 			String functionFC = getNameOfType(dot + 1, openBracket - 1);
 			// -2 because ignore last )
 			String valueFC = getNameOfType(openBracket + 1, endPos - 2);
 
-			allTypes.add(new Call(new Scope(startPos, endPos), nameFC,
-					functionFC, valueFC));
+			allTypes.add(new Call(new Scope(startPos, endPos), nameFC, functionFC, valueFC));
 
 			break;
 		case PLUS:
 		case MINUS:
 
 			int assign1 = -100;
+			int plusMinus = nextToken.getPos()-1;
 
 			if (getNextTokenOf(nextToken).getType() == TOKENTYPE.PLUS) {
-				allTypes.add(new Default(new Scope(startPos, endPos),
-						getNameOfType(startPos, endPos - 1)));
+				Variable var = new Variable(new Scope(startPos, endPos), getNameOfType(startPos,
+						plusMinus), "", "++", false);
+				var.setGlobal(true);
+				allTypes.add(var);
 				break;
 			} else if (getNextTokenOf(nextToken).getType() == TOKENTYPE.MINUS) {
-				allTypes.add(new Default(new Scope(startPos, endPos),
-						getNameOfType(startPos, endPos - 1)));
+				Variable var = new Variable(new Scope(startPos, endPos), getNameOfType(startPos,
+						plusMinus), "", "--", false);
+				var.setGlobal(true);
+				allTypes.add(var);
 				break;
 			} else {
 				assign1 = getNextTokenOf(nextToken).getPos();
@@ -240,8 +252,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 			String name1 = getNameOfType(startPos, assign1 - 2);
 			String value1 = getNameOfType(assign1 + 1, endPos - 1);
 
-			Variable var1 = new Variable(new Scope(startPos, endPos), name1,
-					"+=", value1, false);
+			Variable var1 = new Variable(new Scope(startPos, endPos), name1, "+=", value1, false);
 
 			if (!allTypes.contains(var1)) {
 				var1.setGlobal(true);
@@ -262,8 +273,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 			String name = getNameOfType(startPos, assign - 1);
 			String value = getNameOfType(assign + 1, endPos - 1);
 
-			Variable var = new Variable(new Scope(startPos, endPos), name,
-					"=", value, false);
+			Variable var = new Variable(new Scope(startPos, endPos), name, "=", value, false);
 
 			if (!allTypes.contains(var)) {
 				var.setGlobal(true);
@@ -273,8 +283,8 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 			break;
 		default:
-			allTypes.add(new Default(new Scope(startPos, endPos),
-					getNameOfType(startPos, endPos - 1)));
+			allTypes
+					.add(new Default(new Scope(startPos, endPos), getNameOfType(startPos, endPos)));
 		}
 		setNextTokenTo(endPos);
 
@@ -288,11 +298,18 @@ public class TokenAnalyser implements ITokenAnalyser {
 		log.info("process return statement...");
 
 		int startPos = getActualToken().getPos();
-		int endPos = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
+		int endPosSemikolon = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
+		int endPosCurlyBracket = getPositionOfNextToken(startPos, TOKENTYPE.CLOSE_CURLY_BRACKET);
+
+		int endPos = endPosSemikolon;
+
+		if (endPosCurlyBracket > -1 && endPosCurlyBracket < endPosSemikolon) {
+			endPos = endPosCurlyBracket;
+		}
 
 		String name = getNameOfType(startPos + 1, endPos - 1);
 
-		allTypes.add(new Return(new Scope(startPos, endPos), name));
+		allTypes.add(new Return(new Scope(startPos, endPos - 1), name));
 
 		setNextTokenTo(endPos);
 
@@ -318,17 +335,16 @@ public class TokenAnalyser implements ITokenAnalyser {
 		int endPos = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
 
 		String name = getNameOfType(startPos + 1, assign - 1);
+		name = name.replaceAll(" ", ""); // remove whitespaces in name
 		String value = null;
 		boolean isObject = false;
 
 		if (isTokenWithinStartAndEndPos(assign, endPos, TOKENTYPE.NEW)) {
 			isObject = true;
-
 		}
 
 		value = getNameOfType(assign + 1, endPos - 1);
-		allTypes.add(new Variable(new Scope(startPos, endPos), name, "=",
-				value, isObject));
+		allTypes.add(new Variable(new Scope(startPos, endPos), name, "=", value, isObject));
 
 		setNextTokenTo(endPos);
 
@@ -385,14 +401,11 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 		int startPos = getActualToken().getPos();
 
-		int nextOpenBracket = getPositionOfNextToken(startPos,
-				TOKENTYPE.OPEN_BRACKET);
-		int nextClosedBracket = getPositionOfNextToken(nextOpenBracket,
-				TOKENTYPE.CLOSE_BRACKET);
+		int nextOpenBracket = getPositionOfNextToken(startPos, TOKENTYPE.OPEN_BRACKET);
+		int nextClosedBracket = getPositionOfNextToken(nextOpenBracket, TOKENTYPE.CLOSE_BRACKET);
 		int nextCurlyOpenBracket = getPositionOfNextToken(nextClosedBracket,
 				TOKENTYPE.OPEN_CURLY_BRACKET);
-		int endPos = getPositionOfNextToken(nextCurlyOpenBracket,
-				TOKENTYPE.CLOSE_CURLY_BRACKET);
+		int endPos = getPositionOfNextToken(nextCurlyOpenBracket, TOKENTYPE.CLOSE_CURLY_BRACKET);
 
 		String name = getNameOfType(startPos + 1, nextOpenBracket - 1);
 		String head = getNameOfType(nextOpenBracket, nextClosedBracket);
@@ -400,23 +413,20 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 		boolean isPacked = false;
 		// TODO same as function.call()
-		if (startPos > 0
-				&& allTokensOfJSCode.get(startPos - 1).getType() == TOKENTYPE.OPEN_BRACKET) {
+		if (startPos > 0 && allTokensOfJSCode.get(startPos - 1).getType() == TOKENTYPE.OPEN_BRACKET) {
 			startPos--;
-			endPos = getPositionOfNextToken(endPos + 2, TOKENTYPE.CLOSE_BRACKET)+1;
+			endPos = getPositionOfNextToken(endPos + 2, TOKENTYPE.CLOSE_BRACKET) + 1;
 			name = "";
 			head = "()";
 			body = getNameOfType(startPos, endPos);
 			isPacked = true;
 		}
 
-		allTypes.add(new Function(new Scope(startPos, endPos), name, head,
-				body, isPacked));
+		allTypes.add(new Function(new Scope(startPos, endPos), name, head, body, isPacked));
 
 		if (isPacked)
 			setNextTokenTo(endPos);
-		else
-			setNextTokenTo(nextCurlyOpenBracket);
+		else setNextTokenTo(nextCurlyOpenBracket);
 
 	}
 
@@ -430,12 +440,25 @@ public class TokenAnalyser implements ITokenAnalyser {
 		int startPos = getActualToken().getPos();
 
 		int assign = getPositionOfNextToken(startPos, TOKENTYPE.ASSIGN);
-		int endPos = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
+		int endPosSemikolon = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
+		int endPosCurlyBracket = getPositionOfNextToken(startPos, TOKENTYPE.CLOSE_CURLY_BRACKET);
+
+		int endPos = endPosSemikolon;
+
+		if (endPosCurlyBracket > -1 && endPosCurlyBracket < endPosSemikolon) {
+			endPos = endPosCurlyBracket - 1;
+			
+			int endPosNextThis = getPositionOfNextToken(startPos + 1, TOKENTYPE.THIS);
+			
+			if (endPosNextThis > -1 && endPosNextThis < endPosCurlyBracket) {
+				endPos = endPosNextThis - 1;
+			}
+		}
 
 		String name = getNameOfType(startPos + 1, assign - 1);
 		String value = getNameOfType(assign + 1, endPos - 1);
 
-		allTypes.add(new This(new Scope(startPos, endPos), name, value));
+		allTypes.add(new This(new Scope(startPos, endPos), name, "", value));
 
 		setNextTokenTo(assign);
 	}
@@ -464,20 +487,16 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 		int startPos = getActualToken().getPos();
 
-		int nextOpenBracket = getPositionOfNextToken(startPos,
-				TOKENTYPE.OPEN_BRACKET);
-		int nextClosedBracket = getPositionOfNextToken(nextOpenBracket,
-				TOKENTYPE.CLOSE_BRACKET);
+		int nextOpenBracket = getPositionOfNextToken(startPos, TOKENTYPE.OPEN_BRACKET);
+		int nextClosedBracket = getPositionOfNextToken(nextOpenBracket, TOKENTYPE.CLOSE_BRACKET);
 		int nextCurlyOpenBracket = getPositionOfNextToken(nextClosedBracket,
 				TOKENTYPE.OPEN_CURLY_BRACKET);
-		int endPos = getPositionOfNextToken(nextCurlyOpenBracket,
-				TOKENTYPE.CLOSE_CURLY_BRACKET);
+		int endPos = getPositionOfNextToken(nextCurlyOpenBracket, TOKENTYPE.CLOSE_CURLY_BRACKET);
 
 		String head = getNameOfType(nextOpenBracket, nextClosedBracket);
 		String body = getNameOfType(nextCurlyOpenBracket, endPos);
 
-		allTypes.add(new ForWhile(new Scope(startPos, endPos), "for", head,
-				body));
+		allTypes.add(new ForWhile(new Scope(startPos, endPos), "for", head, body));
 
 		setNextTokenTo(nextCurlyOpenBracket);
 	}
@@ -494,11 +513,9 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 		int startPos = getActualToken().getPos();
 
-		int nextCurlyOpenBracket = getPositionOfNextToken(startPos,
-				TOKENTYPE.OPEN_CURLY_BRACKET);
+		int nextCurlyOpenBracket = getPositionOfNextToken(startPos, TOKENTYPE.OPEN_CURLY_BRACKET);
 
-		int endPos = getPositionOfNextToken(nextCurlyOpenBracket,
-				TOKENTYPE.CLOSE_CURLY_BRACKET);
+		int endPos = getPositionOfNextToken(nextCurlyOpenBracket, TOKENTYPE.CLOSE_CURLY_BRACKET);
 
 		allTypes.add(new TryCatch(new Scope(startPos, endPos), "try", null));
 
@@ -514,11 +531,9 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 		int startPos = getActualToken().getPos();
 
-		int nextCurlyOpenBracket = getPositionOfNextToken(startPos,
-				TOKENTYPE.OPEN_CURLY_BRACKET);
+		int nextCurlyOpenBracket = getPositionOfNextToken(startPos, TOKENTYPE.OPEN_CURLY_BRACKET);
 
-		int endPos = getPositionOfNextToken(nextCurlyOpenBracket,
-				TOKENTYPE.CLOSE_CURLY_BRACKET);
+		int endPos = getPositionOfNextToken(nextCurlyOpenBracket, TOKENTYPE.CLOSE_CURLY_BRACKET);
 
 		allTypes.add(new TryCatch(new Scope(startPos, endPos), "catch", null));
 
@@ -580,13 +595,12 @@ public class TokenAnalyser implements ITokenAnalyser {
 			// no: var AAAA='krkeIplIaMcMIe'.replace(/[BBBB]/g,'');
 			// yes: var AAAA,BBBB;
 			if (isIn(allTokensOfJSCode.get(i).getType(), type)
-					&& (!isTokenWithinBrackets(startPos + 1,
-							allTokensOfJSCode.get(i)))) {
+					&& (!isTokenWithinBrackets(startPos + 1, allTokensOfJSCode.get(i)))) {
 				return allTokensOfJSCode.get(i).getPos();
 			}
 		}
 
-		return 0;
+		return -1;
 	}
 
 	private boolean isIn(TOKENTYPE type, TOKENTYPE... tokentypes) {
@@ -630,8 +644,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 	 * @param type
 	 * @return true if a tokentype is in a given startPos and endPos
 	 */
-	private boolean isTokenWithinStartAndEndPos(int startPos, int endPos,
-			TOKENTYPE type) {
+	private boolean isTokenWithinStartAndEndPos(int startPos, int endPos, TOKENTYPE type) {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
 		Validate.isTrue(startPos <= endPos);
@@ -652,8 +665,8 @@ public class TokenAnalyser implements ITokenAnalyser {
 	 * @return true if Token is within two Brackets, otherwise false
 	 * 
 	 *         startPos because some token are in brackets and we like to ignore
-	 *         that, e.g. var test = (function (a,b) {return a+b;}); ignore
-	 *         first and last round bracket
+	 *         that, e.g. var test = (function (a,b) {return a+b;}); ignore first
+	 *         and last round bracket
 	 */
 	private boolean isTokenWithinBrackets(int startPos, Token tokenToTest) {
 

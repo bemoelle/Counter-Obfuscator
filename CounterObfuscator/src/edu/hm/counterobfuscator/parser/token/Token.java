@@ -29,22 +29,6 @@ public class Token {
 		this.pos = pos;
 		this.type = tokentype;
 		this.value = value;
-		this.hasWhitespace = isWhitespaceNecessary() ? true : false;
-	}
-
-	/**
-	 * @return
-	 */
-	private boolean isWhitespaceNecessary() {
-
-		switch (type) {
-		case RETURN:
-		case NEW:
-			return true;
-		default:
-			return false;
-		}
-
 	}
 
 	/**

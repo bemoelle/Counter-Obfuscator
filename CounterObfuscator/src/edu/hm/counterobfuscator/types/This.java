@@ -14,14 +14,16 @@ import edu.hm.counterobfuscator.helper.Scope;
 public class This extends AbstractType {
 
 	private String	value;
+	private String	notation;
 
 	/**
 	 * @param type
 	 * @param pos
 	 * @param name
 	 */
-	public This(Scope pos, String name, String value) {
+	public This(Scope pos, String name, String notation,  String value) {
 		super(TYPE.THIS, pos, name);
+		this.notation = notation;
 		this.value = value;
 		
 	}
@@ -50,6 +52,16 @@ public class This extends AbstractType {
 	public boolean hasNameInIt(String name) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public String getNotation() {
+
+		return notation;
+	}
+
+	public void setNotation(String notation) {
+
+		this.notation = notation;
 	}
 
 }

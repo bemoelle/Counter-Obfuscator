@@ -5,6 +5,7 @@ package edu.hm.counterobfuscator.parser.tree;
 
 import edu.hm.counterobfuscator.types.AbstractType;
 import edu.hm.counterobfuscator.types.Call;
+import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.Variable;
 
 /**
@@ -43,7 +44,7 @@ public final class ValueExtractor {
 		case CALL:
 			return ((Call) type).getValue();
 		default:
-			return "";
+			return type.getName();
 		}
 	}
 
@@ -63,6 +64,7 @@ public final class ValueExtractor {
 			((Call) type).setValue(value);
 			break;
 		default:
+			type.setName(value);
 		}
 	}
 

@@ -1,25 +1,67 @@
-/**
- * 
- */
 package edu.hm.counterobfuscator.refactor.modul;
 
+import java.util.Iterator;
+import java.util.List;
+
+import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
+import edu.hm.counterobfuscator.parser.tree.ValueExtractor;
+import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
+import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
+import edu.hm.counterobfuscator.types.TYPE;
+import edu.hm.counterobfuscator.types.Variable;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
- * @date 07.02.2015
+ * @date 22.01.2015
  * 
  * 
  */
 public class DotNotation implements IModul {
 
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.refactor.modul.IModul#process()
+	private IProgrammTree			programmTree;
+	private List<MapperElement>	mappedElements;
+
+	public DotNotation(IProgrammTree programmTree) {
+
+		this.programmTree = programmTree;
+
+		Mapper mapper = new Mapper(programmTree);
+		this.mappedElements = mapper.process(TYPE.THIS);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see edu.hm.counterobfuscator.refactor.IRefactor#process()
 	 */
-	@Override
 	public IProgrammTree process() {
-		// TODO Auto-generated method stub
-		return null;
+
+		for (int i = 0; i < mappedElements.size(); i++) {
+
+			MapperElement me = mappedElements.get(i);
+
+			Iterator<Element> it = programmTree.reverseIterator();
+
+			while (it.hasNext()) {
+
+				Element actualElement = it.next();
+
+				if (me.getElement() == actualElement) {
+					
+					String name = actualElement.getType().getName();
+					if(!name.contains(".")) {
+						name = name.replaceAll("[\\[\\]\\']", "");
+						actualElement.getType().setName(name);
+					}
+				}
+
+
+			}
+		}
+
+		return programmTree;
+
 	}
 
 }

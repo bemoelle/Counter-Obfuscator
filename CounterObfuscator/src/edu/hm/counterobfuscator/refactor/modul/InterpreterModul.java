@@ -110,34 +110,34 @@ public class InterpreterModul {
 	 * 
 	 *         execute function if function is packed and return result
 	 *         (function(a,b,c){return a+b+c;})(1,2,3) -> result is 6
-	 * @throws EncoderException 
-	 * @throws IOException 
-	 * @throws IllegalArgumentException 
+	 * @throws EncoderException
+	 * @throws IOException
+	 * @throws IllegalArgumentException
 	 * 
 	 */
-	private IProgrammTree executeFunction(Element element) throws IllegalArgumentException, IOException, EncoderException {
+	private IProgrammTree executeFunction(Element element) throws IllegalArgumentException,
+			IOException, EncoderException {
 
 		Function func = ((Function) element.getType());
 		if (func.isPacked()) {
-			
+
 			log.info("packed function found!");
 
 			String script = func.getBodyAsString();
-			//script = script.replaceAll("\"", "\\\"");
 			Object result = executeJS(script);
 			String resultAsString = result.toString();
 
 			if (resultAsString.indexOf("NO_EXECUTION") < 0) {
-				
+
 				resultAsString = resultAsString.substring(1, resultAsString.length() - 1);
 				IProgrammTree tree = ParserFactory.create(resultAsString, false).getProgrammTree();
 				element.removeAllChildren();
 				log.info("result is " + result);
-				
+
 				return tree;
 			}
 		}
-		
+
 		return null;
 
 	}
@@ -217,14 +217,19 @@ public class InterpreterModul {
 
 	}
 
-	private String executeThis(Element element) {
+	private void executeThis(Element element) {
 
 		This type = ((This) element.getType());
 
 		String name = type.getName();
-		type.setName(executeJS(name) + "");
 
-		return type.getName() + ";";
+		String result = executeJS(name).toString();
+
+		if (result.indexOf("NO_EXECUTION") < 0) {
+
+			type.setName(result);
+		}
+
 	}
 
 	private Object executeJS(String script) {
