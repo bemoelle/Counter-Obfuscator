@@ -57,6 +57,11 @@ public class VariableRenamer implements IModul {
 			MapperElement actualElement = mappedElements.get(i);
 
 			String oldName = ValueExtractor.getName(actualElement.getElement());
+			
+			// e.g. document.location don't rename such vars
+			if(oldName.contains(".")) {
+				continue;
+			}
 
 			// same variable
 			if (!mappedNames.containsKey(oldName))

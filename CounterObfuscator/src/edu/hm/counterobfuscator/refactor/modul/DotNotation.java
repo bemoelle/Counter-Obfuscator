@@ -5,11 +5,10 @@ import java.util.List;
 
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
-import edu.hm.counterobfuscator.parser.tree.ValueExtractor;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
 import edu.hm.counterobfuscator.types.TYPE;
-import edu.hm.counterobfuscator.types.Variable;
+import edu.hm.counterobfuscator.types.This;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -48,20 +47,18 @@ public class DotNotation implements IModul {
 				Element actualElement = it.next();
 
 				if (me.getElement() == actualElement) {
-					
+
 					String name = actualElement.getType().getName();
-					if(!name.contains(".")) {
+					if (!name.contains(".")) {
 						name = name.replaceAll("[\\[\\]\\']", "");
-						actualElement.getType().setName(name);
+						This thisStatement = ((This) actualElement.getType());
+						thisStatement.setName(name);
+						thisStatement.setNotation(".");
 					}
 				}
 
-
 			}
 		}
-
 		return programmTree;
-
 	}
-
 }

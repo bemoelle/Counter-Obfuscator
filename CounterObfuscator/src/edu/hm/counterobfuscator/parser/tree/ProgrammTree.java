@@ -82,7 +82,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 			} else { // is not within
 				Element element = new Element(parent, actualType, tiefe);
 
-				// verkettung wird bei der iteration durch den baum ben�tigt
+				// verkettung wird bei der iteration durch den baum benoetigt
 				element.setBefore(last);
 				last.setNext(element);
 				// -----------------------------
@@ -139,6 +139,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 		int actualDepth = 0;
 		int lastDepth = 0;
+		List<Boolean> buffer = new ArrayList<Boolean>();
 
 		while (it.hasNext()) {
 
@@ -149,10 +150,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 			actualDepth = element.getDepth();
 
 			toPrint = tabPrint(actualDepth) + toPrint;
-
-			if (actualDepth < lastDepth) {
-				toPrint = tabPrint(actualDepth) + "}\n" + toPrint;
-			}
+			
 
 			lastDepth = actualDepth;
 
@@ -206,7 +204,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 			return loop.getName() + loop.getHeadString() + "{";
 		case THIS:
 			This thisStatement = (This) abstractType;
-			return "this" + thisStatement.getName() + "=";
+			return "this" + thisStatement.getNotation() +thisStatement.getName() + "=";
 		case RETURN:
 			Return returnStatement = (Return) abstractType;
 			return "return " + returnStatement.getName();

@@ -191,24 +191,50 @@ public class TokenAnalyser implements ITokenAnalyser {
 		log.info("process string statement...");
 
 		int startPos = getActualToken().getPos();
+		int assign = getPositionOfNextToken(startPos, TOKENTYPE.ASSIGN);
 		int endPosSemikolon = getPositionOfNextToken(startPos, TOKENTYPE.SEMICOLON);
 		int endPosCurlyBracket = getPositionOfNextToken(startPos, TOKENTYPE.CLOSE_CURLY_BRACKET);
-
+	
 		int endPos = endPosSemikolon;
 
+		// if statement ends with an } instead of an ;
 		if (endPosCurlyBracket > -1 && endPosCurlyBracket < endPosSemikolon) {
 			endPos = endPosCurlyBracket - 1;
 		}
 
-		if (endPos == 0)
+		if (endPos == 0) {
 			endPos = 1;
-		Token nextToken = getNextTokenOf(getActualToken());
+		}
+		
+		// if a assign is found in statement => it is a var statement
+		
+		Token nextToken = null;
+		
+		if(getNextTokenOf(getActualToken()).getType() == TOKENTYPE.WHITESPACE) {
+			setToNextToken();
+		}
+		
+		
+		if(assign > 0 && assign < endPos) {
+
+			System.out.println(getActualToken().getValue() + "-------------------------------------");
+			nextToken = getNextTokenOf(getActualToken());
+			
+			if(!(nextToken.getType() == TOKENTYPE.PLUS) && !(nextToken.getType() == TOKENTYPE.MINUS)) {
+				setNextTokenTo(assign);
+				nextToken = getActualToken();
+				System.out.println(getActualToken().getValue() + "99999999999999999999999999999999999999999999");
+			}
+			
+		} else {
+			nextToken = getNextTokenOf(getActualToken());
+		}
 
 		// ignore whitespaces
 		if (nextToken.getType() == TOKENTYPE.WHITESPACE) {
 			nextToken = getNextTokenOf(nextToken);
 		}
-
+		
 		switch (nextToken.getType()) {
 		case DOT:
 			// Name.Func(Parameter); isObject = true;
@@ -227,7 +253,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 			break;
 		case PLUS:
 		case MINUS:
-
+			System.out.println("0000000000000000000000000000000");
 			int assign1 = -100;
 			int plusMinus = nextToken.getPos()-1;
 
@@ -262,13 +288,14 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 			break;
 		case ASSIGN:
+			System.out.println("+++++++++++++++++++++++++++");
 
 			// Variable(Position pos, String name, String value, boolean
 			// isObject)
 			// var test = new Name(Parameter); wird in processVar() behandelt
 			// TODO test2 = new Name(Parameter);
 
-			int assign = nextToken.getPos();
+			//int assign = nextToken.getPos();
 
 			String name = getNameOfType(startPos, assign - 1);
 			String value = getNameOfType(assign + 1, endPos - 1);

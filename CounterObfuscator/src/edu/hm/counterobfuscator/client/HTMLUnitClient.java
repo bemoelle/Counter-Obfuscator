@@ -12,6 +12,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.javascript.JavaScriptEngine;
 import com.gargoylesoftware.htmlunit.javascript.host.Window;
+import com.gargoylesoftware.htmlunit.javascript.host.WindowProxy;
 
 public class HTMLUnitClient implements IClient {
 
@@ -59,7 +60,7 @@ public class HTMLUnitClient implements IClient {
 
 		Object test = executeJS(script);
 		Object result = ((ScriptResult) test).getJavaScriptResult();
-		if (result.getClass() == Window.class) {
+		if (result.getClass() == Window.class || result.getClass() == WindowProxy.class) {
 			return "window";
 		} else if (result.getClass() == IdFunctionObject.class) {
 			return ((IdFunctionObject) result).getFunctionName();
