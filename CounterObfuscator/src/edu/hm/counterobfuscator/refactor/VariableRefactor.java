@@ -41,11 +41,11 @@ public class VariableRefactor implements IRefactor {
 		IModul varReplacer = new VariableReplacer(tree);
 		tree = varReplacer.process();
 
-		IModul varRemover = new VariableRemover(tree);
-		tree = varRemover.process();
-
-		IModul varRenamer = new VariableRenamer(tree);
-		tree = varRenamer.process();		
+//		IModul varRemover = new VariableRemover(tree);
+//		tree = varRemover.process();
+//
+//		IModul varRenamer = new VariableRenamer(tree);
+//		tree = varRenamer.process();		
 
 		return tree;
 	}

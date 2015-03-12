@@ -60,6 +60,9 @@ public class Scope {
 		if(startPos > otherPos.startPos) return false;
 		if(endPos < otherPos.endPos) return false;
 		
+		if(startPos == otherPos.startPos && endPos == otherPos.endPos)
+			return false;
+		
 		return true;
 	}
 

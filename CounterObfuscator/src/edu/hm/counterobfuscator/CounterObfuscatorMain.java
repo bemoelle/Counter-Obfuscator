@@ -13,6 +13,7 @@ import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.parser.IParser;
 import edu.hm.counterobfuscator.parser.ParserFactory;
+import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.refactor.RefactorFactory;
 
 /**
@@ -32,7 +33,12 @@ public class CounterObfuscatorMain {
 	 */
 	public static void main(String[] args) throws IOException, ScriptException, IllegalArgumentException, EncoderException {
 
-		IParser jsParser = ParserFactory.create("abc", true);
+		IParser jsParser = ParserFactory.create("varsTest", true);
+		
+		IProgrammTree tree = jsParser.getProgrammTree();
+		
+	//	tree.print();
+		
 //				
 		RefactorFactory.create(jsParser);
 		
