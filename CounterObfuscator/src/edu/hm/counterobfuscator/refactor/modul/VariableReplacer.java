@@ -37,6 +37,12 @@ public class VariableReplacer implements IModul {
 
 			String name = ValueExtractor.getName(actualElement.getElement());
 			String value = ValueExtractor.getValue(actualElement.getElement());
+			
+			//is AssoArray
+			if(value.matches("\\{.*\\}")) {
+				
+				System.out.println("sdsdsdsdsd");
+			}
 
 			List<MapperElement> elementsWithOldName = mapper.searchForNameOfElement(
 					actualElement.getElement(), actualElement.getScope());

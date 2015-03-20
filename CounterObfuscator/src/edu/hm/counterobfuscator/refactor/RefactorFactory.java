@@ -36,21 +36,21 @@ public class RefactorFactory {
 		IClient client = new HTMLUnitClient("http://www.google.com/", BrowserVersion.FIREFOX_24);
 		
 		IProgrammTree tree = jsParser.getProgrammTree();
-		tree.print();
+	//	tree.print();
 		
 		Setting settings = new Setting();
 		
-		IRefactor functionRefactor = new FunctionRefactor(tree, client, settings);
-		tree = functionRefactor.process();
-		
 		IRefactor variableRefactor = new VariableRefactor(tree, client, settings);
 		tree = variableRefactor.process();
-	
-		IRefactor tryCatchRefactor = new TryCatchRefactor(tree, client, settings);
-		tree = tryCatchRefactor.process();
-				
-		IRefactor loopRefactor = new LoopRefactor(tree, client, settings);
-		tree = loopRefactor.process();
+		
+//		IRefactor functionRefactor = new FunctionRefactor(tree, client, settings);
+//		tree = functionRefactor.process();
+//		
+//		IRefactor tryCatchRefactor = new TryCatchRefactor(tree, client, settings);
+//		tree = tryCatchRefactor.process();
+//				
+//		IRefactor loopRefactor = new LoopRefactor(tree, client, settings);
+//		tree = loopRefactor.process();
 						
 		tree.print();
 

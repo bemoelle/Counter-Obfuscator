@@ -33,7 +33,7 @@ public class InterpreterModul {
 	public InterpreterModul(IClient client, boolean handleError) {
 
 		this.handleError = handleError;
-		InterpreterModul.log = Logger.getLogger(InterpreterModul.class.getName());
+		log = Logger.getLogger(InterpreterModul.class.getName());
 
 		this.client = client;
 	}
@@ -177,29 +177,35 @@ public class InterpreterModul {
 
 		String value = var.getValue();
 		value = value.replace("\"", "\'");
-		String resultValue = executeJS(var.getName() + "=" + value).toString();
-		// statement is executable
-		if (resultValue.indexOf("NO_EXECUTION") < 0) {
 
-			var.setValue(resultValue);
-			jsScriptBuffer += "var " + var.getName() + "=" + resultValue + ";";
+		// is a asso Array: do nothing to avoid problems with the result of the
+		// executeJs
+		if (!value.matches("\\{.*\\}")) {
 
-		} else {
-			if (!handleError) {
-				throw new Exception("bla");
-			}
-		}
+			String resultValue = executeJS(var.getName() + "=" + value).toString();
+			// statement is executable
+			if (resultValue.indexOf("NO_EXECUTION") < 0) {
 
-		if (var.isObject()) {
-			String resultParameter = executeJS(var.getParameter()).toString();
-			if (resultParameter.indexOf("NO_EXECUTION") < 0) {
-
-				var.setParameter(resultParameter);
-				var.setExecutable(false);
+				var.setValue(resultValue);
+				jsScriptBuffer += "var " + var.getName() + "=" + resultValue + ";";
 
 			} else {
-				if (!handleError)
+				if (!handleError) {
 					throw new Exception("bla");
+				}
+			}
+
+			if (var.isObject()) {
+				String resultParameter = executeJS(var.getParameter()).toString();
+				if (resultParameter.indexOf("NO_EXECUTION") < 0) {
+
+					var.setParameter(resultParameter);
+					var.setExecutable(false);
+
+				} else {
+					if (!handleError)
+						throw new Exception("bla");
+				}
 			}
 		}
 
@@ -237,7 +243,9 @@ public class InterpreterModul {
 		Object result = null;
 		try {
 			result = client.getJSResult(jsScriptBuffer + script);
+			log.info("result of interpreter is: " + result);
 		} catch (Exception e) {
+			System.out.println(e);
 			result = "NO_EXECUTION";
 		}
 		return result;

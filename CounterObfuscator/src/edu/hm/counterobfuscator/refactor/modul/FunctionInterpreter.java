@@ -21,7 +21,7 @@ public class FunctionInterpreter implements IModul {
 		interpreter = new InterpreterModul(client, true);
 
 		Mapper mapper = new Mapper(programmTree);
-		this.mappedElements = mapper.process(TYPE.FUNCTION, TYPE.THIS, TYPE.VARIABLE);
+		this.mappedElements = mapper.process(TYPE.FUNCTION, TYPE.THIS);// TYPE.VARIABLE);
 	}
 
 	/*

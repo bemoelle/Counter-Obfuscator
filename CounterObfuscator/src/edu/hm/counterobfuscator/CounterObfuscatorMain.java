@@ -33,7 +33,7 @@ public class CounterObfuscatorMain {
 	 */
 	public static void main(String[] args) throws IOException, ScriptException, IllegalArgumentException, EncoderException {
 
-		IParser jsParser = ParserFactory.create("varsTest", true);
+		IParser jsParser = ParserFactory.create("abc", true);
 		
 		IProgrammTree tree = jsParser.getProgrammTree();
 		
