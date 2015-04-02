@@ -64,4 +64,24 @@ public class This extends AbstractType {
 		this.notation = notation;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void replaceNameWith(String name, String value) {
+
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String)
+	 */
+	@Override
+	public void replaceName(String name) {
+
+		// TODO Auto-generated method stub
+		
+	}
+
 }

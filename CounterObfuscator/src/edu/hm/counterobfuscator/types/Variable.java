@@ -118,4 +118,24 @@ public class Variable extends AbstractType {
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void replaceNameWith(String nameToReplace, String valueToReplace) {
+
+		value = value.replace(nameToReplace, valueToReplace);
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String)
+	 */
+	@Override
+	public void replaceName(String name) {
+
+		this.name = name;
+		
+	}
+
 }

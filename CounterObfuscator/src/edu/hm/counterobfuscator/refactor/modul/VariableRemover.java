@@ -5,7 +5,6 @@ import java.util.List;
 
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
-import edu.hm.counterobfuscator.parser.tree.ValueExtractor;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
 import edu.hm.counterobfuscator.types.TYPE;
@@ -62,12 +61,13 @@ public class VariableRemover implements IModul {
 					continue;
 				}
 
-				String value = ValueExtractor.getValue(actualElement);
+				String value = actualElement.getType().getValue();
 				if (value.indexOf(nameLookingFor) > -1) {
 					refCounter++;
 				}
 
-				String name = ValueExtractor.getName(actualElement);
+				String name = actualElement.getType().getName();
+				
 				if (name.indexOf(nameLookingFor) > -1) {
 
 					if (actualElement.getType().getType() == TYPE.VARIABLE) {

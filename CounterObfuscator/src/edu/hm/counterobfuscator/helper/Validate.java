@@ -4,8 +4,7 @@ package edu.hm.counterobfuscator.helper;
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 12.02.2015
  * 
- *       class is final static
- *       Validate.notNull(...);
+ *       class is final static Validate.notNull(...);
  * 
  */
 public final class Validate {
@@ -14,12 +13,14 @@ public final class Validate {
 	 * construktor is empty
 	 */
 	private Validate() {
+
 	}
 
 	/**
 	 * @param obj
 	 */
 	public static void notNull(Object obj) {
+
 		if (obj == null)
 			throw new IllegalArgumentException("Object must not be null");
 	}
@@ -29,6 +30,7 @@ public final class Validate {
 	 * @param msg
 	 */
 	public static void notNull(Object obj, String msg) {
+
 		if (obj == null)
 			throw new IllegalArgumentException(msg);
 	}
@@ -37,6 +39,7 @@ public final class Validate {
 	 * @param val
 	 */
 	public static void isTrue(boolean val) {
+
 		if (!val)
 			throw new IllegalArgumentException("Must be true");
 	}
@@ -46,6 +49,7 @@ public final class Validate {
 	 * @param msg
 	 */
 	public static void isTrue(boolean val, String msg) {
+
 		if (!val)
 			throw new IllegalArgumentException(msg);
 	}
@@ -54,6 +58,7 @@ public final class Validate {
 	 * @param val
 	 */
 	public static void isFalse(boolean val) {
+
 		if (val)
 			throw new IllegalArgumentException("Must be false");
 	}
@@ -63,6 +68,7 @@ public final class Validate {
 	 * @param msg
 	 */
 	public static void isFalse(boolean val, String msg) {
+
 		if (val)
 			throw new IllegalArgumentException(msg);
 	}
@@ -71,6 +77,7 @@ public final class Validate {
 	 * @param objects
 	 */
 	public static void noNullElements(Object[] objects) {
+
 		noNullElements(objects, "Array must not contain any null objects");
 	}
 
@@ -79,6 +86,7 @@ public final class Validate {
 	 * @param msg
 	 */
 	public static void noNullElements(Object[] objects, String msg) {
+
 		for (Object obj : objects)
 			if (obj == null)
 				throw new IllegalArgumentException(msg);
@@ -88,6 +96,7 @@ public final class Validate {
 	 * @param string
 	 */
 	public static void notEmpty(String string) {
+
 		if (string == null || string.length() == 0)
 			throw new IllegalArgumentException("String must not be empty");
 	}
@@ -97,6 +106,7 @@ public final class Validate {
 	 * @param msg
 	 */
 	public static void notEmpty(String string, String msg) {
+
 		if (string == null || string.length() == 0)
 			throw new IllegalArgumentException(msg);
 	}
@@ -105,6 +115,7 @@ public final class Validate {
 	 * @param msg
 	 */
 	public static void fail(String msg) {
+
 		throw new IllegalArgumentException(msg);
 	}
 }

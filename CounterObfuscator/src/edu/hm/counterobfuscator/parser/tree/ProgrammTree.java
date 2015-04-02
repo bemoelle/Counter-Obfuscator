@@ -16,6 +16,7 @@ import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.types.Return;
+import edu.hm.counterobfuscator.types.TYPE;
 import edu.hm.counterobfuscator.types.This;
 import edu.hm.counterobfuscator.types.TryCatch;
 import edu.hm.counterobfuscator.types.Variable;
@@ -136,30 +137,19 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	public void print() {
 
 		Iterator<Element> it = this.iterator();
-
-		int actualDepth = 0;
-		int lastDepth = 0;
-		List<Boolean> buffer = new ArrayList<Boolean>();
+		
+		String toPrint = "";
 
 		while (it.hasNext()) {
 
 			Element element = it.next();
 
-			String toPrint = printElement(element.getType());
-
-			actualDepth = element.getDepth();
-
-			toPrint = tabPrint(actualDepth) + toPrint;
-			
-
-			lastDepth = actualDepth;
-
-			System.out.println(toPrint);
+			String tmpPrint = printElement(element.getType());
+			toPrint += tabPrint(element.getDepth()) + tmpPrint;
 		}
+		
+		System.out.println(toPrint);
 
-		if (lastDepth > 0) {
-			System.out.println("}");
-		}
 	}
 
 	/**
@@ -189,28 +179,28 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 		case FUNCTION:
 			Function func = (Function) abstractType;
-			return "function " + func.getName() + "(" + func.getHeadString() + ") " + "{";
+			return "function " + func.getName() + "(" + func.getHeadString() + ") " + "{\n";
 		case CALL:
 			Call fc = (Call) abstractType;
-			return fc.getName() + "." + fc.getFunction() + "(" + fc.getValue() + ";";
+			return fc.getName() + "." + fc.getFunction() + "(" + fc.getValue() + ");\n";
 		case VARIABLE:
 			Variable var = (Variable) abstractType;
 			return (var.isGlobal() ? "" : "var ") + var.getName() + var.getAssign()
 					+ (var.isObject() ? "new " : "") + var.getValue()
-					+ (var.isObject() ? "(" + var.getParameter() + ")" : "");
+					+ (var.isObject() ? "(" + var.getParameter() + ")" : "") + ";\n";
 		case FOR:
 		case WHILE:
 			ForWhile loop = (ForWhile) abstractType;
-			return loop.getName() + loop.getHeadString() + "{";
+			return loop.getName() + loop.getHeadString() + "{\n";
 		case THIS:
 			This thisStatement = (This) abstractType;
-			return "this" + thisStatement.getNotation() +thisStatement.getName() + "=";
+			return "this" + thisStatement.getNotation() +thisStatement.getName() + "=\n";
 		case RETURN:
 			Return returnStatement = (Return) abstractType;
-			return "return " + returnStatement.getName();
+			return "return " + returnStatement.getName() + ";\n";
 		case DEFAULT:
 			Default defaultStatement = (Default) abstractType;
-			return defaultStatement.getName();
+			return defaultStatement.getName() + "\n";
 		case TRYCATCH:
 			TryCatch tryCatchStatement = (TryCatch) abstractType;
 			return tryCatchStatement.getName().equals("try") ? "try {\n" : "} catch(e) {";

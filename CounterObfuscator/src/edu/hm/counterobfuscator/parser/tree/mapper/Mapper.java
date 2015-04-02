@@ -112,14 +112,13 @@ public class Mapper {
 	 * @param scope
 	 * @return
 	 */
-	public List<MapperElement> searchForNameOfElement(Element elementToTest,
+	public List<MapperElement> searchForNameOfElement(String name,
 			Scope scope) {
 		
 		Validate.notNull(programmTree);
-		Validate.notNull(elementToTest);
+		Validate.notNull(name);
 		Validate.notNull(scope);
 
-		String name = elementToTest.getType().getName();
 		List<MapperElement> elements = new ArrayList<MapperElement>();
 
 		Iterator<Element> it = programmTree.iterator();

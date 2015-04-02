@@ -13,12 +13,11 @@ import edu.hm.counterobfuscator.helper.Scope;
  */
 public class ForWhile extends AbstractType {
 
-	private Variable head;
-	private String headString;
-	private String bodyAsString;
+	private Variable	head;
+	private String		headString;
+	private String		bodyAsString;
 
-	public ForWhile(Scope pos, String name, String headString,
-			String bodyAsString) {
+	public ForWhile(Scope pos, String name, String headString, String bodyAsString) {
 
 		super(name.equals("for") ? TYPE.FOR : TYPE.WHILE, pos, name);
 		this.headString = headString;
@@ -36,41 +35,91 @@ public class ForWhile extends AbstractType {
 	}
 
 	public Variable getHead() {
+
 		return head;
 	}
 
 	public String getHeadString() {
+
 		return headString;
 	}
 
 	public void setHeadString(String headString) {
+
 		this.headString = headString;
 	}
 
 	public String getBodyAsString() {
+
 		return bodyAsString;
 	}
 
 	public void setBodyAsString(String body) {
+
 		this.bodyAsString = body;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.types.AbstractType#hasSameName(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.types.AbstractType#hasSameName(java.lang.Object)
 	 */
 	@Override
 	public boolean hasSameName(Object other) {
+
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.types.AbstractType#hasNameInIt(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.types.AbstractType#hasNameInIt(java.lang.String)
 	 */
 	@Override
 	public boolean hasNameInIt(String name) {
-		// TODO Auto-generated method stub
-		return false;
+
+		return headString.contains(name);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String,
+	 * java.lang.String)
+	 */
+	@Override
+	public void replaceNameWith(String nameToReplace, String valueToReplace) {
+
+		headString = headString.replace(nameToReplace, valueToReplace);
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String)
+	 */
+	@Override
+	public void replaceName(String name) {
+
+		// do nothing
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see edu.hm.counterobfuscator.types.AbstractType#getValue()
+	 */
+	@Override
+	public String getValue() {
+
+		return "";
 	}
 
 }

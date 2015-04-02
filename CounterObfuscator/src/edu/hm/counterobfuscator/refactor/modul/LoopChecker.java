@@ -56,6 +56,28 @@ public class LoopChecker implements IModul {
 
 			if ((Boolean) result == false) {
 				remove(actualElement, children);
+			} else {
+								
+				int index = head.indexOf("<");
+				int index2 = head.indexOf("=");
+				String headStatement = "";
+				
+				if(index < 0) {
+					index = head.indexOf(">");
+				} 
+				
+				if(index2 > 0) {
+					headStatement = head.substring(index2+1);
+				} else {
+					headStatement = head.substring(index+1);
+				}
+				
+				//remove whitespaces in statement
+				headStatement = headStatement.replaceAll(" ", "");
+											
+				result = client.getJSResult(headStatement);
+				
+				loop.replaceNameWith(headStatement, result.toString());
 			}
 
 		}

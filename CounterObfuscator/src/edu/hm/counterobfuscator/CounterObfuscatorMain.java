@@ -6,11 +6,6 @@ import javax.script.ScriptException;
 
 import org.apache.commons.codec.EncoderException;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-
-import edu.hm.counterobfuscator.client.HTMLUnitClient;
-import edu.hm.counterobfuscator.client.IClient;
-import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.parser.IParser;
 import edu.hm.counterobfuscator.parser.ParserFactory;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;

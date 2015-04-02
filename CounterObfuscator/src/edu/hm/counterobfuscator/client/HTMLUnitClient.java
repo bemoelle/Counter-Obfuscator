@@ -2,8 +2,6 @@ package edu.hm.counterobfuscator.client;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Set;
-
 import net.sourceforge.htmlunit.corejs.javascript.IdFunctionObject;
 import net.sourceforge.htmlunit.corejs.javascript.NativeArray;
 import net.sourceforge.htmlunit.corejs.javascript.NativeObject;
@@ -26,7 +24,6 @@ public class HTMLUnitClient implements IClient {
 	public HTMLUnitClient(String url, BrowserVersion browser) throws FailingHttpStatusCodeException,
 			MalformedURLException, IOException {
 
-		// TODO refactor as SINGELTON of FACTORY
 		webClient = new WebClient(browser);
 		engine = new JavaScriptEngine(webClient);
 		webClient.setJavaScriptEngine(engine);
@@ -52,11 +49,6 @@ public class HTMLUnitClient implements IClient {
 	public JavaScriptEngine getEngine() {
 
 		return engine;
-	}
-
-	public ScriptResult executeJS(String script) {
-
-		return currentPage.executeJavaScript(script);
 	}
 
 	public Object getJSResult(String script) {
@@ -109,6 +101,11 @@ public class HTMLUnitClient implements IClient {
 		}
 	}
 	
+	private ScriptResult executeJS(String script) {
+
+		return currentPage.executeJavaScript(script);
+	}
+	
 	private String processNativeObject(NativeObject object) {
 		
 		String result = "{";
@@ -141,15 +138,4 @@ public class HTMLUnitClient implements IClient {
 		
 		return result;
 	}
-
-	public boolean isUndefined(String script) {
-
-		return ScriptResult.isUndefined(executeJS(script));
-	}
-
-	public boolean isFalse(String script) {
-
-		return ScriptResult.isFalse(executeJS(script));
-	}
-
 }

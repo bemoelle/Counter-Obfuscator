@@ -35,4 +35,37 @@ public class TryCatch extends AbstractType {
 	public boolean hasNameInIt(String name) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void replaceNameWith(String name, String value) {
+
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String)
+	 */
+	@Override
+	public void replaceName(String name) {
+
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.types.AbstractType#getValue()
+	 */
+	@Override
+	public String getValue() {
+
+		// TODO Auto-generated method stub
+		return "";
 	}}

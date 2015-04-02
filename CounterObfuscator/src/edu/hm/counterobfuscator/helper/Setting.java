@@ -16,13 +16,13 @@ import java.util.Properties;
  */
 public class Setting {
 
-	private Properties properties;
+	private Properties	properties;
 
 	public Setting() throws IOException {
 
 		properties = new Properties();
-		BufferedInputStream stream = new BufferedInputStream(
-				new FileInputStream("settings.properties"));
+		BufferedInputStream stream = new BufferedInputStream(new FileInputStream(
+				"settings.properties"));
 
 		properties.load(stream);
 

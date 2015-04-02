@@ -66,4 +66,24 @@ public class Call extends AbstractType {
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void replaceNameWith(String name, String value) {
+
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String)
+	 */
+	@Override
+	public void replaceName(String name) {
+
+		// TODO Auto-generated method stub
+		
+	}
+
 }

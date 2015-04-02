@@ -73,4 +73,21 @@ public abstract class AbstractType {
 	 * abstract type to be define in subclass
 	 */
 	public abstract boolean hasNameInIt(String name);
+
+	/**
+	 * @param name
+	 * @param value
+	 */
+	public abstract void replaceNameWith(String name, String value);
+
+	/**
+	 * @param name
+	 */
+	public abstract void replaceName(String name);
+
+	/**
+	 * @return
+	 */
+	public abstract String getValue();
+
 }

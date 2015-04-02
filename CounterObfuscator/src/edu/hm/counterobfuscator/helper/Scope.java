@@ -3,7 +3,6 @@
  */
 package edu.hm.counterobfuscator.helper;
 
-
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 05.01.2015
@@ -20,10 +19,10 @@ public class Scope {
 	 * @param endPos
 	 */
 	public Scope(int startPos, int endPos) {
-		
+
 		Validate.isTrue(startPos <= endPos);
 		Validate.isTrue(startPos > -1);
-		
+
 		this.startPos = startPos;
 		this.endPos = endPos;
 	}
@@ -32,6 +31,7 @@ public class Scope {
 	 * @return
 	 */
 	public int getStartPos() {
+
 		return startPos;
 	}
 
@@ -39,6 +39,7 @@ public class Scope {
 	 * @param endPos
 	 */
 	public void setEndPos(int endPos) {
+
 		this.endPos = endPos;
 	}
 
@@ -46,27 +47,32 @@ public class Scope {
 	 * @return
 	 */
 	public int getEndPos() {
+
 		return endPos;
 	}
-	
+
 	/**
 	 * @param otherPos
 	 * @return
 	 */
 	public boolean isPosWithin(Scope otherPos) {
-		
+
 		Validate.notNull(otherPos);
-		
-		if(startPos > otherPos.startPos) return false;
-		if(endPos < otherPos.endPos) return false;
-		
-		if(startPos == otherPos.startPos && endPos == otherPos.endPos)
+
+		if (startPos > otherPos.startPos)
 			return false;
-		
+		if (endPos < otherPos.endPos)
+			return false;
+
+		if (startPos == otherPos.startPos && endPos == otherPos.endPos)
+			return false;
+
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -75,7 +81,7 @@ public class Scope {
 		if (!(other instanceof Scope)) {
 			return false;
 		}
-		
+
 		Scope otherPosition = (Scope) other;
 		if (this.startPos != otherPosition.startPos || this.endPos != otherPosition.endPos) {
 			return false;

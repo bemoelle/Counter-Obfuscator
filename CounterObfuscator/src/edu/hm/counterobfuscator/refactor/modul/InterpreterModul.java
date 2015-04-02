@@ -180,7 +180,9 @@ public class InterpreterModul {
 
 		// is a asso Array: do nothing to avoid problems with the result of the
 		// executeJs
-		if (!value.matches("\\{.*\\}")) {
+		if (value.matches("\\{.*\\}")) {
+			jsScriptBuffer += "var " + var.getName() + "=" + value + ";";
+		} else {
 
 			String resultValue = executeJS(var.getName() + "=" + value).toString();
 			// statement is executable

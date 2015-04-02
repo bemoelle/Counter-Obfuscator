@@ -19,6 +19,7 @@ public class Default extends AbstractType {
 	 * @param name
 	 */
 	public Default(Scope pos, String name) {
+
 		super(TYPE.DEFAULT, pos, name);
 	}
 
@@ -30,6 +31,7 @@ public class Default extends AbstractType {
 	 */
 	@Override
 	public boolean hasSameName(Object other) {
+
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -47,6 +49,45 @@ public class Default extends AbstractType {
 			return true;
 
 		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String,
+	 * java.lang.String)
+	 */
+	@Override
+	public void replaceNameWith(String nameToReplace, String valueToReplace) {
+
+		name = name.replaceAll(nameToReplace, valueToReplace);
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String)
+	 */
+	@Override
+	public void replaceName(String name) {
+
+		// TODO Auto-generated method stub
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see edu.hm.counterobfuscator.types.AbstractType#getValue()
+	 */
+	@Override
+	public String getValue() {
+
+		// TODO Auto-generated method stub
+		return name;
 	}
 
 }

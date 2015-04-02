@@ -6,13 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import edu.hm.counterobfuscator.helper.Scope;
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
-import edu.hm.counterobfuscator.parser.tree.ValueExtractor;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
+import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.TYPE;
 
 /**
@@ -56,10 +55,10 @@ public class VariableRenamer implements IModul {
 
 			MapperElement actualElement = mappedElements.get(i);
 
-			String oldName = ValueExtractor.getName(actualElement.getElement());
-			
+			String oldName = actualElement.getElement().getType().getName();
+
 			// e.g. document.location don't rename such vars
-			if(oldName.contains(".")) {
+			if (oldName.contains(".")) {
 				continue;
 			}
 
@@ -87,12 +86,24 @@ public class VariableRenamer implements IModul {
 
 	private void call(Element element, Entry<String, String> entry) {
 
-		String name = ValueExtractor.getName(element);
+		if (element.getType().getType() == TYPE.FOR) {
+
+			ForWhile loop = (ForWhile) element.getType();
+
+			if (loop.getHeadString().contains(entry.getKey())) {
+
+				System.out.println("sdsdsdsdsds: " + loop.getHeadString());
+				loop.setHeadString(loop.getHeadString().replaceAll(entry.getKey(), entry.getValue()));
+			}
+
+		}
+
+		String name = element.getType().getName();
 		if (name.contains(entry.getKey())) {
 
-			name = name.replace(name, entry.getValue());
+			name = name.replace(entry.getKey(), entry.getValue());
 
-			ValueExtractor.setName(element, name);
+			element.getType().setName(name);
 		}
 
 	}

@@ -4,7 +4,6 @@ import java.util.List;
 
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
-import edu.hm.counterobfuscator.parser.tree.ValueExtractor;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
 import edu.hm.counterobfuscator.types.Function;
@@ -52,17 +51,18 @@ public class FunctionRenamer implements IModul {
 			}
 
 			List<MapperElement> elementsWithOldName = mapper.searchForNameOfElement(
-					actualElement.getElement(), actualElement.getScope());
-
+					function.getName(), actualElement.getScope());
+			
+			String oldName = function.getName();
 			String newName = funcName + funcNumber++;
 			function.setName(newName);
 
 			for (int k = 0; k < elementsWithOldName.size(); k++) {
 
 				Element type = elementsWithOldName.get(k).getElement();
-
-				ValueExtractor.setValue(type, newName);
-
+	
+				type.getType().replaceNameWith(oldName, newName);
+				
 			}
 
 		}

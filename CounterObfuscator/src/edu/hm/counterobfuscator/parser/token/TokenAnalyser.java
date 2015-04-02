@@ -446,7 +446,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 				String value = actualVar.substring(assign + 1);
 
 				// value has new in it
-				int newIndex = value.substring(0, 5).indexOf("new");
+				int newIndex = value.indexOf("new");
 				if (newIndex > -1) {
 					isObject = true;
 					log.info("found an object with name: " + name);

@@ -4,7 +4,6 @@ import java.util.List;
 
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
-import edu.hm.counterobfuscator.parser.tree.ValueExtractor;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
 import edu.hm.counterobfuscator.types.ForWhile;
@@ -55,15 +54,18 @@ public class LoopVariableRenamer implements IModul {
 			for (int k = 0; k < elementsWithNewName.size(); k++) {
 
 				Element type = elementsWithNewName.get(k).getElement();
+				
+				type.getType().replaceNameWith(var.getName(), newName);
 
-				ValueExtractor.setName(type,
-						ValueExtractor.getName(type).replaceAll(var.getName(), newName));
-				ValueExtractor.setValue(type,
-						ValueExtractor.getValue(type).replaceAll(var.getName(), newName));
+//				ValueExtractor.setName(type,
+//						ValueExtractor.getName(type).replaceAll(var.getName(), newName));
+//				ValueExtractor.setValue(type,
+//						ValueExtractor.getValue(type).replaceAll(var.getName(), newName));
 
 			}
 
-			loop.setHeadString(loop.getHeadString().replaceAll(var.getName(), newName));
+			loop.replaceNameWith(var.getName(), newName);
+//			loop.setHeadString(loop.getHeadString().replaceAll(var.getName(), newName));
 
 		}
 

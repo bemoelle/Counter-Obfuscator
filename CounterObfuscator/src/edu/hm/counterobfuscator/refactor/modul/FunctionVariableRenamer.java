@@ -4,7 +4,6 @@ import java.util.List;
 
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
-import edu.hm.counterobfuscator.parser.tree.ValueExtractor;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
 import edu.hm.counterobfuscator.types.Function;
@@ -53,8 +52,7 @@ public class FunctionVariableRenamer implements IModul {
 
 			for (int j = 0; j < vars.size(); j++) {
 
-				// only look in the children
-				// only look in the children
+				// only look at the children
 				Mapper childrenMapper = new Mapper(children);
 				List<MapperElement> elementsWithNewName = childrenMapper.searchForName(vars.get(j).getName());
 
@@ -64,10 +62,12 @@ public class FunctionVariableRenamer implements IModul {
 
 					Element type = elementsWithNewName.get(k).getElement();
 
-					ValueExtractor.setName(type,
-							ValueExtractor.getName(type).replaceAll(vars.get(j).getName(), newName));
-					ValueExtractor.setValue(type,
-							ValueExtractor.getValue(type).replaceAll(vars.get(j).getName(), newName));
+					type.getType().replaceNameWith(vars.get(j).getName(), newName);
+					
+//					ValueExtractor.setName(type,
+//							ValueExtractor.getName(type).replaceAll(vars.get(j).getName(), newName));
+//					ValueExtractor.setValue(type,
+//							ValueExtractor.getValue(type).replaceAll(vars.get(j).getName(), newName));
 
 				}
 

@@ -40,17 +40,17 @@ public class RefactorFactory {
 		
 		Setting settings = new Setting();
 		
+		IRefactor functionRefactor = new FunctionRefactor(tree, client, settings);
+		tree = functionRefactor.process();
+		
 		IRefactor variableRefactor = new VariableRefactor(tree, client, settings);
 		tree = variableRefactor.process();
-		
-//		IRefactor functionRefactor = new FunctionRefactor(tree, client, settings);
-//		tree = functionRefactor.process();
-//		
-//		IRefactor tryCatchRefactor = new TryCatchRefactor(tree, client, settings);
-//		tree = tryCatchRefactor.process();
-//				
-//		IRefactor loopRefactor = new LoopRefactor(tree, client, settings);
-//		tree = loopRefactor.process();
+			
+		IRefactor tryCatchRefactor = new TryCatchRefactor(tree, client, settings);
+		tree = tryCatchRefactor.process();
+				
+		IRefactor loopRefactor = new LoopRefactor(tree, client, settings);
+		tree = loopRefactor.process();
 						
 		tree.print();
 
