@@ -7,27 +7,27 @@ import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
 import edu.hm.counterobfuscator.types.Function;
-import edu.hm.counterobfuscator.types.TYPE;
+import edu.hm.counterobfuscator.types.DEFINITION;
 import edu.hm.counterobfuscator.types.Variable;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 05.02.2015
  * 
- * 
+ *       renames the variable within a function
  */
 public class FunctionVariableRenamer implements IModul {
 
-	private IProgrammTree			programmTree;
-	private List<MapperElement>	mappedElements;
-	private int							number	= 1;
+	private IProgrammTree programmTree;
+	private List<MapperElement> mappedElements;
+	private int number = 1;
 
 	public FunctionVariableRenamer(IProgrammTree programmTree) {
 
 		this.programmTree = programmTree;
 
 		Mapper mapper = new Mapper(programmTree);
-		this.mappedElements = mapper.process(TYPE.FUNCTION);
+		this.mappedElements = mapper.process(DEFINITION.FUNCTION);
 	}
 
 	/*
@@ -54,7 +54,8 @@ public class FunctionVariableRenamer implements IModul {
 
 				// only look at the children
 				Mapper childrenMapper = new Mapper(children);
-				List<MapperElement> elementsWithNewName = childrenMapper.searchForName(vars.get(j).getName());
+				List<MapperElement> elementsWithNewName = childrenMapper
+						.searchForName(vars.get(j).getName());
 
 				String newName = "functionVar" + number++;
 
@@ -62,13 +63,8 @@ public class FunctionVariableRenamer implements IModul {
 
 					Element type = elementsWithNewName.get(k).getElement();
 
-					type.getType().replaceNameWith(vars.get(j).getName(), newName);
-					
-//					ValueExtractor.setName(type,
-//							ValueExtractor.getName(type).replaceAll(vars.get(j).getName(), newName));
-//					ValueExtractor.setValue(type,
-//							ValueExtractor.getValue(type).replaceAll(vars.get(j).getName(), newName));
-
+					type.getType().replaceNameWith(vars.get(j).getName(),
+							newName);
 				}
 
 				vars.get(j).setName(newName);

@@ -8,7 +8,7 @@ import edu.hm.counterobfuscator.helper.Scope;
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.Element;
-import edu.hm.counterobfuscator.types.TYPE;
+import edu.hm.counterobfuscator.types.DEFINITION;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -23,9 +23,6 @@ public class Mapper {
 
 	private IProgrammTree programmTree;
 
-	/**
-	 * 
-	 */
 	public Mapper(IProgrammTree programmTree) {
 		
 		Validate.notNull(programmTree);
@@ -38,7 +35,7 @@ public class Mapper {
 	 * @param programmTree
 	 * @return a List of mapped Elements
 	 */
-	public List<MapperElement> process(TYPE... typeSearchFor) {
+	public List<MapperElement> process(DEFINITION... typeSearchFor) {
 		
 		Validate.notNull(programmTree);
 		Validate.notNull(typeSearchFor);
@@ -69,9 +66,9 @@ public class Mapper {
 		return testOfReAssign(mappedElements);
 	}
 
-	private boolean isSearchedType(TYPE[] typeSearchFor, TYPE typeToTest) {
+	private boolean isSearchedType(DEFINITION[] typeSearchFor, DEFINITION typeToTest) {
 		
-		for (TYPE test : typeSearchFor) {
+		for (DEFINITION test : typeSearchFor) {
 
 			if (test == typeToTest)
 				return true;

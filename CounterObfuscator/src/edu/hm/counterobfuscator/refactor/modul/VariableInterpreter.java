@@ -6,7 +6,7 @@ import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
-import edu.hm.counterobfuscator.types.TYPE;
+import edu.hm.counterobfuscator.types.DEFINITION;
 
 public class VariableInterpreter implements IModul {
 
@@ -21,7 +21,7 @@ public class VariableInterpreter implements IModul {
 		interpreter = new InterpreterModul(client, true);
 
 		Mapper mapper = new Mapper(programmTree);
-		this.mappedElements = mapper.process(TYPE.VARIABLE, TYPE.CALL, TYPE.THIS);
+		this.mappedElements = mapper.process(DEFINITION.VARIABLE, DEFINITION.CALL, DEFINITION.THIS);
 	}
 
 	/*

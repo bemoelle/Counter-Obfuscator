@@ -21,14 +21,14 @@ import edu.hm.counterobfuscator.types.Variable;
  * @author
  * @date 30.12.2014
  * 
- *       class to rename obfuscated names, replace them with the assigned value
+ *       class to interprete javascript definitions in a given programm
  */
 public class InterpreterModul {
 
-	private IClient			client;
-	private static Logger	log;
-	private String				jsScriptBuffer	= "";
-	private boolean			handleError;
+	private IClient client;
+	private static Logger log;
+	private String jsScriptBuffer = "";
+	private boolean handleError;
 
 	public InterpreterModul(IClient client, boolean handleError) {
 
@@ -38,11 +38,24 @@ public class InterpreterModul {
 		this.client = client;
 	}
 
+	/**
+	 * @param element
+	 * @return
+	 * @throws Exception
+	 */
 	public IProgrammTree process(Element element) throws Exception {
 
 		log.info("start javascript interpreter process...");
 
 		return callExecuteElement(element);
+	}
+
+	/**
+	 * @param buffer
+	 */
+	public void setJsScriptBuffer(String buffer) {
+		
+		jsScriptBuffer += buffer;
 	}
 
 	/**
@@ -85,7 +98,10 @@ public class InterpreterModul {
 		Ajax ajax = ((Ajax) element.getType());
 
 		String result = executeJS(ajax.getName() + ";").toString();
+		
 		if (result.indexOf("NO_EXECUTION") < 0) {
+			
+			result = result.replaceAll("'", "");
 			ajax.setName(result);
 		}
 
@@ -96,7 +112,8 @@ public class InterpreterModul {
 
 		}
 
-		String script = "$[" + ajax.getName() + "]" + "(" + ajax.getValue() + ")";
+		String script = "$." + ajax.getName() + "" + "(" + ajax.getValue()
+				+ ")";
 
 		result = executeJS(script).toString();
 
@@ -115,8 +132,8 @@ public class InterpreterModul {
 	 * @throws IllegalArgumentException
 	 * 
 	 */
-	private IProgrammTree executeFunction(Element element) throws IllegalArgumentException,
-			IOException, EncoderException {
+	private IProgrammTree executeFunction(Element element)
+			throws IllegalArgumentException, IOException, EncoderException {
 
 		Function func = ((Function) element.getType());
 		if (func.isPacked()) {
@@ -129,8 +146,10 @@ public class InterpreterModul {
 
 			if (resultAsString.indexOf("NO_EXECUTION") < 0) {
 
-				resultAsString = resultAsString.substring(1, resultAsString.length() - 1);
-				IProgrammTree tree = ParserFactory.create(resultAsString, false).getProgrammTree();
+				resultAsString = resultAsString.substring(1,
+						resultAsString.length() - 1);
+				IProgrammTree tree = ParserFactory
+						.create(resultAsString, false).getProgrammTree();
 				element.removeAllChildren();
 				log.info("result is " + result);
 
@@ -160,7 +179,8 @@ public class InterpreterModul {
 
 		}
 
-		String toExecute = callStatement.getName() + "." + callStatement.getFunction() + "();";
+		String toExecute = callStatement.getName() + "."
+				+ callStatement.getFunction() + "();";
 		resultValue = executeJS(toExecute).toString();
 		if (resultValue.indexOf("NO_EXECUTION") < 0) {
 
@@ -184,12 +204,14 @@ public class InterpreterModul {
 			jsScriptBuffer += "var " + var.getName() + "=" + value + ";";
 		} else {
 
-			String resultValue = executeJS(var.getName() + "=" + value).toString();
+			String resultValue = executeJS(var.getName() + "=" + value)
+					.toString();
 			// statement is executable
 			if (resultValue.indexOf("NO_EXECUTION") < 0) {
 
 				var.setValue(resultValue);
-				jsScriptBuffer += "var " + var.getName() + "=" + resultValue + ";";
+				jsScriptBuffer += "var " + var.getName() + "=" + resultValue
+						+ ";";
 
 			} else {
 				if (!handleError) {
@@ -198,7 +220,8 @@ public class InterpreterModul {
 			}
 
 			if (var.isObject()) {
-				String resultParameter = executeJS(var.getParameter()).toString();
+				String resultParameter = executeJS(var.getParameter())
+						.toString();
 				if (resultParameter.indexOf("NO_EXECUTION") < 0) {
 
 					var.setParameter(resultParameter);

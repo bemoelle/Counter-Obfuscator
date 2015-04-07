@@ -15,15 +15,16 @@ import edu.hm.counterobfuscator.refactor.modul.LoopVariableRenamer;
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 05.02.2015
  * 
- * 
+ *       calls all module which a responsible to refactor loops in the programm
  */
 public class LoopRefactor implements IRefactor {
 
-	private IProgrammTree	programmTree;
-	private Setting			setting;
-	private IClient			client;
+	private IProgrammTree programmTree;
+	private Setting setting;
+	private IClient client;
 
-	public LoopRefactor(IProgrammTree programmTree, IClient client, Setting setting) {
+	public LoopRefactor(IProgrammTree programmTree, IClient client,
+			Setting setting) {
 
 		this.programmTree = programmTree;
 		this.client = client;
@@ -38,9 +39,10 @@ public class LoopRefactor implements IRefactor {
 	@Override
 	public IProgrammTree process() throws ScriptException {
 
-		LoopVariableRenamer variableRenamer = new LoopVariableRenamer(programmTree);
+		LoopVariableRenamer variableRenamer = new LoopVariableRenamer(
+				programmTree);
 		IProgrammTree tree = variableRenamer.process();
-		
+
 		LoopChecker checker = new LoopChecker(tree, client);
 		return checker.process();
 

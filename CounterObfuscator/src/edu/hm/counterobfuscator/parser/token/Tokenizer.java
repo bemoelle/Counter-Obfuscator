@@ -18,10 +18,10 @@ import edu.hm.counterobfuscator.parser.matcher.TokenMatcher;
  */
 public class Tokenizer implements ITokenizer {
 
-	private static Logger	log;
-	private String				input;
-	private char[]				inputArray;
-	private List<Token>		tokens;
+	private static Logger log;
+	private String input;
+	private char[] inputArray;
+	private List<Token> tokens;
 
 	public Tokenizer(String input) {
 
@@ -62,15 +62,14 @@ public class Tokenizer implements ITokenizer {
 
 				if (charBuffer.length() > 0) {
 					getTokens().add(
-							new Token(element++, mapPosInInputArrayToTokentype(beginPos, pos - 1),
-									charBuffer));
+							new Token(element++, mapPosInInputArrayToTokentype(
+									beginPos, pos - 1), charBuffer));
 				}
-				
-					getTokens()
-							.add(new Token(element++, mapPosInInputArrayToTokentype(pos, pos), actualChar
-									+ ""));
-				
-				
+
+				getTokens().add(
+						new Token(element++, mapPosInInputArrayToTokentype(pos,
+								pos), actualChar + ""));
+
 				beginPos = pos + 1;
 				charBuffer = ""; // reset buffer
 
@@ -100,9 +99,10 @@ public class Tokenizer implements ITokenizer {
 	}
 
 	/**
-	 * @param posStarteines
+	 * @param posStart
 	 * @param posEnd
-	 * @return
+	 * @return create a string of a given start and end position and return
+	 *         respective TOKENTYPE
 	 */
 	private TOKENTYPE mapPosInInputArrayToTokentype(int posStart, int posEnd) {
 
@@ -118,7 +118,7 @@ public class Tokenizer implements ITokenizer {
 
 	/**
 	 * @param object
-	 * @return
+	 * @return the TOKENTYPE to a given string
 	 */
 	private TOKENTYPE mapStringToTokentype(String object) {
 

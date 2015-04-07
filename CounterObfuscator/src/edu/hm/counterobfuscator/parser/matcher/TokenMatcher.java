@@ -5,6 +5,13 @@ import java.util.logging.Logger;
 
 import edu.hm.counterobfuscator.helper.Validate;
 
+/**
+ * @author Benjamin Moellerke <bemoelle@gmail.com>
+ * @date 05.04.2015
+ * 
+ *       this class is repsonsible to determine a string is matched with a
+ *       special matchstring
+ */
 public class TokenMatcher implements IMatch {
 
 	HashSet<String> matches;
@@ -25,6 +32,12 @@ public class TokenMatcher implements IMatch {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.parser.matcher.IMatch#matchAll(java.lang.String)
+	 */
 	public boolean matchAll(String input) {
 
 		for (String match : matches) {

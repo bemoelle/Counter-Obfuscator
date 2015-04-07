@@ -20,13 +20,13 @@ import edu.hm.counterobfuscator.refactor.modul.VariableReplacer;
  *       calls all module which a responsible to refactor variables in the
  *       programm
  */
-public class VariableRefactor implements IRefactor {
+public class AjaxCallerRefactor implements IRefactor {
 
 	private IProgrammTree programmTree;
 	private Setting setting;
 	private IClient client;
 
-	public VariableRefactor(IProgrammTree programmTree, IClient client,
+	public AjaxCallerRefactor(IProgrammTree programmTree, IClient client,
 			Setting setting) {
 
 		this.programmTree = programmTree;
@@ -43,20 +43,8 @@ public class VariableRefactor implements IRefactor {
 
 		IProgrammTree tree = programmTree;
 
-		IModul varInterpreter = new VariableInterpreter(tree, client);
-		tree = varInterpreter.process();
-
-		IModul varReplacer = new VariableReplacer(tree);
-		tree = varReplacer.process();
-
-		IModul varRemover = new VariableRemover(tree);
-		tree = varRemover.process();
-
-		IModul varRenamer = new VariableRenamer(tree);
-		tree = varRenamer.process();
-
-		IModul dotNotation = new DotNotation(tree);
-		tree = dotNotation.process();
+		IModul ajaxCaller = new AjaxCaller(tree, client);
+		tree = ajaxCaller.process();
 
 		return tree;
 	}

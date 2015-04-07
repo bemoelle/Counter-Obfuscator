@@ -9,7 +9,7 @@ import edu.hm.counterobfuscator.helper.Scope;
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 15.01.2015
  * 
- * 
+ *       represent JavaScript RETURN statement assign to DEFINITION.RETURN
  */
 public class Return extends AbstractType {
 
@@ -19,11 +19,14 @@ public class Return extends AbstractType {
 	 * @param name
 	 */
 	public Return(Scope pos, String name) {
-		super(TYPE.RETURN, pos, name);
+		super(DEFINITION.RETURN, pos, name);
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.types.AbstractType#hasSameName(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.types.AbstractType#hasSameName(java.lang.Object)
 	 */
 	@Override
 	public boolean hasSameName(Object other) {
@@ -31,8 +34,11 @@ public class Return extends AbstractType {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.types.AbstractType#hasNameInIt(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.types.AbstractType#hasNameInIt(java.lang.String)
 	 */
 	@Override
 	public boolean hasNameInIt(String name) {
@@ -40,27 +46,35 @@ public class Return extends AbstractType {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
-	public void replaceNameWith(String name, String value) {
+	public void replaceNameWith(String nameToReplace, String valueToReplace) {
 
-		// TODO Auto-generated method stub
-		
+		name = name.replace(nameToReplace, valueToReplace);
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String)
 	 */
 	@Override
 	public void replaceName(String name) {
 
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.hm.counterobfuscator.types.AbstractType#getValue()
 	 */
 	@Override

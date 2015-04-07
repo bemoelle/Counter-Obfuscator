@@ -24,7 +24,7 @@ import edu.hm.counterobfuscator.types.Variable;
  * @date 25.12.2014
  * 
  *       after tokenising it is necessary analyze each token, to find JavaScript
- *       keywords like VAR, FUNCTION, etc.
+ *       definitions like VAR, FUNCTION, etc.
  * 
  *       class is public
  * 

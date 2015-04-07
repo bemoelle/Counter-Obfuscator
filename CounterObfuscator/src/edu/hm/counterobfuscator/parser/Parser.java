@@ -19,16 +19,16 @@ import edu.hm.counterobfuscator.types.Function;
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 30.12.2014
  * 
- *       JSParser to tokenise and analyse an input file (JSCode)
+ *       Parser to tokenise and analyse an input file (JSCode)
  * 
  */
 public class Parser implements IParser {
 
-	private BufferedReader	br;
-	private String				unparsedJSCode;
-	private static Logger	log;
-	private ITokenAnalyser	tokenanalyser;
-	private IProgrammTree	programmTree;
+	private BufferedReader br;
+	private String unparsedJSCode;
+	private static Logger log;
+	private ITokenAnalyser tokenanalyser;
+	private IProgrammTree programmTree;
 
 	/**
 	 * @param client
@@ -37,7 +37,8 @@ public class Parser implements IParser {
 	 * @param settings
 	 * @throws IOException
 	 */
-	public Parser(String input, boolean isFile, Map<String, String> settings) throws IOException {
+	public Parser(String input, boolean isFile, Map<String, String> settings)
+			throws IOException {
 
 		Validate.notNull(input);
 
@@ -67,7 +68,8 @@ public class Parser implements IParser {
 	 * @throws IllegalArgumentException
 	 * 
 	 */
-	public void process() throws IOException, IllegalArgumentException, EncoderException {
+	public void process() throws IOException, IllegalArgumentException,
+			EncoderException {
 
 		log.info("start parsing jscode...");
 

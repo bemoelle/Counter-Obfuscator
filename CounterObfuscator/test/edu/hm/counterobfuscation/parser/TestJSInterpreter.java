@@ -22,7 +22,7 @@ import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.types.Call;
 import edu.hm.counterobfuscator.types.Return;
-import edu.hm.counterobfuscator.types.TYPE;
+import edu.hm.counterobfuscator.types.DEFINITION;
 import edu.hm.counterobfuscator.types.This;
 import edu.hm.counterobfuscator.types.Variable;
 
@@ -52,7 +52,7 @@ public class TestJSInterpreter {
 		// t1 ---------------------------------------------------------
 		assertEquals(t1.getChildren().size(), 3);
 		assertNull(t1.getParent());
-		assertEquals(t1.getType().getType(), TYPE.FUNCTION);
+		assertEquals(t1.getType().getType(), DEFINITION.FUNCTION);
 
 		Function f1 = (Function) t1.getType();
 
@@ -93,7 +93,7 @@ public class TestJSInterpreter {
 		// t2
 		assertEquals(t2.getChildren().size(), 0);
 		assertNull(t2.getParent());
-		assertEquals(t2.getType().getType(), TYPE.VARIABLE);
+		assertEquals(t2.getType().getType(), DEFINITION.VARIABLE);
 
 		Variable v2 = (Variable) t2.getType();
 
@@ -106,7 +106,7 @@ public class TestJSInterpreter {
 		// t3
 		assertEquals(t3.getChildren().size(), 0);
 		assertNull(t3.getParent());
-		assertEquals(t3.getType().getType(), TYPE.CALL);
+		assertEquals(t3.getType().getType(), DEFINITION.CALL);
 
 		Call fc3 = (Call) t3.getType();
 
@@ -138,27 +138,27 @@ public class TestJSInterpreter {
 
 		Function func = (Function) t0.getType();
 
-		assertEquals(func.getType(), TYPE.FUNCTION);
+		assertEquals(func.getType(), DEFINITION.FUNCTION);
 		assertEquals(func.getName(), "");
 		assertEquals(func.getHeadString(), "");
 
 		Variable v1 = (Variable) t0.getChild(0).getType();
-		assertEquals(v1.getType(), TYPE.VARIABLE);
+		assertEquals(v1.getType(), DEFINITION.VARIABLE);
 		assertEquals(v1.getName(), "var1");
 		assertEquals(v1.getValue(), "''");
 
 		ForWhile for1 = (ForWhile) t0.getChild(1).getType();
-		assertEquals(for1.getType(), TYPE.FOR);
+		assertEquals(for1.getType(), DEFINITION.FOR);
 		assertEquals(t0.getChild(1).getChildren().size(), 1);
 
 		Variable for1v1 = (Variable) t0.getChild(1).getChild(0).getType();
-		assertEquals(for1v1.getType(), TYPE.VARIABLE);
+		assertEquals(for1v1.getType(), DEFINITION.VARIABLE);
 		assertEquals(for1v1.getName(), "var1");
 		assertEquals(for1v1.getValue(),
 				"String['fromCharCode'](window['parseInt']('test'['slice'](forVar1, forVar1 + 2), 16) - 77)");
 
 		Return v3 = (Return) t0.getChild(2).getType();
-		assertEquals(v3.getType(), TYPE.RETURN);
+		assertEquals(v3.getType(), DEFINITION.RETURN);
 		assertEquals(v3.getName(), "var1");
 	}
 
@@ -180,7 +180,7 @@ public class TestJSInterpreter {
 		// t1 ---------------------------------------------------------
 		assertEquals(t1.getChildren().size(), 3);
 		assertNull(t1.getParent());
-		assertEquals(t1.getType().getType(), TYPE.FUNCTION);
+		assertEquals(t1.getType().getType(), DEFINITION.FUNCTION);
 
 		Function f1 = (Function) t1.getType();
 
@@ -221,7 +221,7 @@ public class TestJSInterpreter {
 		// t2
 		assertEquals(t2.getChildren().size(), 0);
 		assertNull(t2.getParent());
-		assertEquals(t2.getType().getType(), TYPE.VARIABLE);
+		assertEquals(t2.getType().getType(), DEFINITION.VARIABLE);
 
 		Variable v2 = (Variable) t2.getType();
 
@@ -234,7 +234,7 @@ public class TestJSInterpreter {
 		// t3
 		assertEquals(t3.getChildren().size(), 0);
 		assertNull(t3.getParent());
-		assertEquals(t3.getType().getType(), TYPE.CALL);
+		assertEquals(t3.getType().getType(), DEFINITION.CALL);
 
 		Call fc3 = (Call) t3.getType();
 
@@ -258,14 +258,14 @@ public class TestJSInterpreter {
 		Element t0 = tree.get(0);
 		Variable func = (Variable) t0.getType();
 
-		assertEquals(func.getType(), TYPE.VARIABLE);
+		assertEquals(func.getType(), DEFINITION.VARIABLE);
 		assertEquals(func.getName(), "var1");
 		assertEquals(func.getValue(), "3");
 
 		Element t1 = tree.get(1);
 		Return returnStatement = (Return) t1.getType();
 
-		assertEquals(returnStatement.getType(), TYPE.RETURN);
+		assertEquals(returnStatement.getType(), DEFINITION.RETURN);
 		assertEquals(returnStatement.getName(), "var1");
 
 	}
@@ -285,7 +285,7 @@ public class TestJSInterpreter {
 
 		Ajax def = (Ajax) t0.getType();
 
-		assertEquals(def.getType(), TYPE.AJAX);
+		assertEquals(def.getType(), DEFINITION.AJAX);
 		assertEquals(def.getName(), "'getScript'");
 		assertEquals(def.getValue(), "'demo_ajax_script.js'");
 

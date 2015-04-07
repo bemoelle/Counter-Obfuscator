@@ -15,15 +15,17 @@ import edu.hm.counterobfuscator.refactor.modul.TryCatchChecker;
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 05.02.2015
  * 
- * 
+ *       calls all module which a responsible to refactor try-catch-statements
+ *       in the programm
  */
 public class TryCatchRefactor implements IRefactor {
 
-	private IProgrammTree	programmTree;
-	private Setting			setting;
-	private IClient			client;
+	private IProgrammTree programmTree;
+	private Setting setting;
+	private IClient client;
 
-	public TryCatchRefactor(IProgrammTree programmTree, IClient client, Setting setting) {
+	public TryCatchRefactor(IProgrammTree programmTree, IClient client,
+			Setting setting) {
 
 		this.programmTree = programmTree;
 		this.client = client;

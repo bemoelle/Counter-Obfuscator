@@ -6,7 +6,7 @@ import edu.hm.counterobfuscator.helper.Scope;
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 02.01.2015
  * 
- *       represent JavaScript VAR assign to TOKENTYPE.VAR
+ *       represent JavaScript VAR assign to DEFINITION.VAR
  * 
  */
 public class Variable extends AbstractType {
@@ -19,7 +19,7 @@ public class Variable extends AbstractType {
 	private String	assign;
 
 	public Variable(Scope pos, String name, String assign, String value, boolean isObject) {
-		super(TYPE.VARIABLE, pos, name);
+		super(DEFINITION.VARIABLE, pos, name);
 		this.assign = assign;
 
 		value = value.replaceAll("^\\s", "");
@@ -124,6 +124,7 @@ public class Variable extends AbstractType {
 	@Override
 	public void replaceNameWith(String nameToReplace, String valueToReplace) {
 
+		//name = name.replace(nameToReplace, valueToReplace);
 		value = value.replace(nameToReplace, valueToReplace);
 		
 	}

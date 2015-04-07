@@ -7,14 +7,14 @@ import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
 import edu.hm.counterobfuscator.types.ForWhile;
-import edu.hm.counterobfuscator.types.TYPE;
+import edu.hm.counterobfuscator.types.DEFINITION;
 import edu.hm.counterobfuscator.types.Variable;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 05.02.2015
  * 
- * 
+ * renames variable in loop body which a defined in loop head
  */
 public class LoopVariableRenamer implements IModul {
 
@@ -27,7 +27,7 @@ public class LoopVariableRenamer implements IModul {
 		this.programmTree = programmTree;
 
 		Mapper mapper = new Mapper(programmTree);
-		this.mappedElements = mapper.process(TYPE.FOR);
+		this.mappedElements = mapper.process(DEFINITION.FOR);
 	}
 
 	/*

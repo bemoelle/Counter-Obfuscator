@@ -6,13 +6,18 @@ import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
-import edu.hm.counterobfuscator.types.TYPE;
+import edu.hm.counterobfuscator.types.DEFINITION;
 
+/**
+ * @author Benjamin Moellerke <bemoelle@gmail.com>
+ * @date 05.04.2015
+ * 
+ */
 public class FunctionInterpreter implements IModul {
 
-	private IProgrammTree			programmTree;
-	private List<MapperElement>	mappedElements;
-	private InterpreterModul		interpreter;
+	private IProgrammTree programmTree;
+	private List<MapperElement> mappedElements;
+	private InterpreterModul interpreter;
 
 	public FunctionInterpreter(IProgrammTree programmTree, IClient client) {
 
@@ -21,7 +26,7 @@ public class FunctionInterpreter implements IModul {
 		interpreter = new InterpreterModul(client, true);
 
 		Mapper mapper = new Mapper(programmTree);
-		this.mappedElements = mapper.process(TYPE.FUNCTION, TYPE.THIS);// TYPE.VARIABLE);
+		this.mappedElements = mapper.process(DEFINITION.FUNCTION, DEFINITION.THIS);// TYPE.VARIABLE);
 	}
 
 	/*
@@ -36,13 +41,14 @@ public class FunctionInterpreter implements IModul {
 			MapperElement actualElement = mappedElements.get(i);
 
 			try {
-				IProgrammTree newTree = interpreter.process(actualElement.getElement());
-				
-				if(newTree != null) {
-					programmTree.replaceElementWithTree(actualElement.getElement(), newTree);
+				IProgrammTree newTree = interpreter.process(actualElement
+						.getElement());
+
+				if (newTree != null) {
+					programmTree.replaceElementWithTree(
+							actualElement.getElement(), newTree);
 				}
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 
 				e.printStackTrace();
 			}

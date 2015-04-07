@@ -7,12 +7,12 @@ import edu.hm.counterobfuscator.parser.tree.Element;
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 13.01.2015
  * 
- * 
+ *       this class represent an mapped elmement, which is found by the mapper
  */
 public class MapperElement {
 
-	private Scope	scope;
-	private Element	element;
+	private Scope scope;
+	private Element element;
 
 	/**
 	 * @param scope

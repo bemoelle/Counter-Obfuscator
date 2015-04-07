@@ -7,14 +7,15 @@ import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
-import edu.hm.counterobfuscator.types.TYPE;
+import edu.hm.counterobfuscator.types.DEFINITION;
 import edu.hm.counterobfuscator.types.Variable;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 22.01.2015
  * 
- * 
+ *       removes variable definition, which are no longer neeeded in the
+ *       programm
  */
 public class VariableRemover implements IModul {
 
@@ -26,7 +27,7 @@ public class VariableRemover implements IModul {
 		this.programmTree = programmTree;
 
 		Mapper mapper = new Mapper(programmTree);
-		this.mappedElements = mapper.process(TYPE.VARIABLE);
+		this.mappedElements = mapper.process(DEFINITION.VARIABLE);
 	}
 
 	/*
@@ -70,7 +71,7 @@ public class VariableRemover implements IModul {
 				
 				if (name.indexOf(nameLookingFor) > -1) {
 
-					if (actualElement.getType().getType() == TYPE.VARIABLE) {
+					if (actualElement.getType().getType() == DEFINITION.VARIABLE) {
 
 						Variable var = (Variable) actualElement.getType();
 

@@ -8,17 +8,20 @@ public class ParserFactory {
 
 	/**
 	 * @param String
-	 *           file
+	 *            file
 	 * @return jsParser
 	 * @throws IOException
-	 * @throws EncoderException 
-	 * @throws IllegalArgumentException 
+	 * @throws EncoderException
+	 * @throws IllegalArgumentException
+	 * 
+	 *             class to create the parser
 	 */
-	public static IParser create(String file, boolean isFile) throws IOException, IllegalArgumentException, EncoderException {
+	public static IParser create(String file, boolean isFile)
+			throws IOException, IllegalArgumentException, EncoderException {
 
 		Parser jsParser = new Parser(file, isFile, null);
 		jsParser.process();
-		
+
 		return jsParser;
 	}
 

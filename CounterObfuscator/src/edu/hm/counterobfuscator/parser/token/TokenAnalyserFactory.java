@@ -23,6 +23,9 @@ public class TokenAnalyserFactory {
 	 * @throws IOException 
 	 * @throws EncoderException 
 	 * @throws IllegalArgumentException 
+	 * 
+	 * this method calls tokenizer to extract tokens from input string and delivered those to the TokenAnalyser.
+	 * The TokenAnalyer analyses all tokens and create javascript definitions
 	 */
 	public static ITokenAnalyser create(String input) throws IllegalArgumentException, EncoderException {
 

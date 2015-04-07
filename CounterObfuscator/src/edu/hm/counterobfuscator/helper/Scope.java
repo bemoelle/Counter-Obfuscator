@@ -7,12 +7,14 @@ package edu.hm.counterobfuscator.helper;
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 05.01.2015
  * 
- * 
+ *       this class represent a scope, definitions e.g. vars, functions, etc.
+ *       only valid in a given scope. th scope has an start and end position in
+ *       a given programm tree {@link ProgrammTree}
  */
 public class Scope {
 
-	private int	startPos;
-	private int	endPos;
+	private int startPos;
+	private int endPos;
 
 	/**
 	 * @param startPos
@@ -28,7 +30,7 @@ public class Scope {
 	}
 
 	/**
-	 * @return
+	 * @return the start position
 	 */
 	public int getStartPos() {
 
@@ -44,7 +46,7 @@ public class Scope {
 	}
 
 	/**
-	 * @return
+	 * @return the end position
 	 */
 	public int getEndPos() {
 
@@ -53,7 +55,7 @@ public class Scope {
 
 	/**
 	 * @param otherPos
-	 * @return
+	 * @return true if a scope is fully within this.scope, otherwise false
 	 */
 	public boolean isPosWithin(Scope otherPos) {
 
@@ -83,7 +85,8 @@ public class Scope {
 		}
 
 		Scope otherPosition = (Scope) other;
-		if (this.startPos != otherPosition.startPos || this.endPos != otherPosition.endPos) {
+		if (this.startPos != otherPosition.startPos
+				|| this.endPos != otherPosition.endPos) {
 			return false;
 		}
 

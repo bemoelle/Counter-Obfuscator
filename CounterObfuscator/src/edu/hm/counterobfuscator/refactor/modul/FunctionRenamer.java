@@ -7,23 +7,29 @@ import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
 import edu.hm.counterobfuscator.types.Function;
-import edu.hm.counterobfuscator.types.TYPE;
+import edu.hm.counterobfuscator.types.DEFINITION;
 
+/**
+ * @author Benjamin Moellerke <bemoelle@gmail.com>
+ * @date 05.04.2015
+ * 
+ *       renames functions
+ * 
+ */
 public class FunctionRenamer implements IModul {
 
-	private IProgrammTree			programmTree;
-	private List<MapperElement>	mappedElements;
-	private String						funcName		= "function";
-	private int							funcNumber	= 1;
-	private Mapper						mapper;
+	private IProgrammTree programmTree;
+	private List<MapperElement> mappedElements;
+	private String funcName = "function";
+	private int funcNumber = 1;
+	private Mapper mapper;
 
 	public FunctionRenamer(IProgrammTree programmTree) {
 
 		this.programmTree = programmTree;
 		this.mapper = new Mapper(programmTree);
 
-		this.mappedElements = mapper.process(TYPE.FUNCTION);
-
+		this.mappedElements = mapper.process(DEFINITION.FUNCTION);
 	}
 
 	/*
@@ -50,9 +56,10 @@ public class FunctionRenamer implements IModul {
 				continue;
 			}
 
-			List<MapperElement> elementsWithOldName = mapper.searchForNameOfElement(
-					function.getName(), actualElement.getScope());
-			
+			List<MapperElement> elementsWithOldName = mapper
+					.searchForNameOfElement(function.getName(),
+							actualElement.getScope());
+
 			String oldName = function.getName();
 			String newName = funcName + funcNumber++;
 			function.setName(newName);
@@ -60,9 +67,9 @@ public class FunctionRenamer implements IModul {
 			for (int k = 0; k < elementsWithOldName.size(); k++) {
 
 				Element type = elementsWithOldName.get(k).getElement();
-	
+
 				type.getType().replaceNameWith(oldName, newName);
-				
+
 			}
 
 		}

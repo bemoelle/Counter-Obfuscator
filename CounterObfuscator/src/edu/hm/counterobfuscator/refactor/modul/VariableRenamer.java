@@ -12,22 +12,22 @@ import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
 import edu.hm.counterobfuscator.types.ForWhile;
-import edu.hm.counterobfuscator.types.TYPE;
+import edu.hm.counterobfuscator.types.DEFINITION;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 22.01.2015
  * 
- * 
+ *       rename variable
  */
 public class VariableRenamer implements IModul {
 
-	private IProgrammTree			programmTree;
-	private String						varName	= "var";
-	private int							number	= 1;
-	private List<MapperElement>	mappedElements;
+	private IProgrammTree programmTree;
+	private String varName = "var";
+	private int number = 1;
+	private List<MapperElement> mappedElements;
 
-	private Map<String, String>	mappedNames;
+	private Map<String, String> mappedNames;
 
 	/**
 	 * @param programmTree
@@ -37,7 +37,7 @@ public class VariableRenamer implements IModul {
 
 		this.programmTree = programmTree;
 		Mapper mapper = new Mapper(programmTree);
-		this.mappedElements = mapper.process(TYPE.VARIABLE);
+		this.mappedElements = mapper.process(DEFINITION.VARIABLE);
 		this.mappedNames = new HashMap<String, String>();
 	}
 
@@ -86,24 +86,23 @@ public class VariableRenamer implements IModul {
 
 	private void call(Element element, Entry<String, String> entry) {
 
-		if (element.getType().getType() == TYPE.FOR) {
+		if (element.getType().getType() == DEFINITION.FOR) {
 
 			ForWhile loop = (ForWhile) element.getType();
 
 			if (loop.getHeadString().contains(entry.getKey())) {
-
-				System.out.println("sdsdsdsdsds: " + loop.getHeadString());
-				loop.setHeadString(loop.getHeadString().replaceAll(entry.getKey(), entry.getValue()));
+				loop.setHeadString(loop.getHeadString().replaceAll(
+						entry.getKey(), entry.getValue()));
 			}
 
-		}
-
-		String name = element.getType().getName();
-		if (name.contains(entry.getKey())) {
-
-			name = name.replace(entry.getKey(), entry.getValue());
-
-			element.getType().setName(name);
+		} else if (element.getType().getType() == DEFINITION.VARIABLE) {
+			String name = element.getType().getName();
+			if (name.contains(entry.getKey())) {
+				name = name.replace(entry.getKey(), entry.getValue());
+				element.getType().setName(name);
+			}
+		} else {
+			element.getType().replaceNameWith(entry.getKey(), entry.getValue());
 		}
 
 	}

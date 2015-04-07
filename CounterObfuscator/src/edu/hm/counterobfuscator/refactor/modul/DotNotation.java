@@ -7,26 +7,28 @@ import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
-import edu.hm.counterobfuscator.types.TYPE;
+import edu.hm.counterobfuscator.types.DEFINITION;
 import edu.hm.counterobfuscator.types.This;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 22.01.2015
  * 
+ *       tranform array notation to dot notation
  * 
+ *       from: this['add'] = function() {..}; to: this.add = function() {...};
  */
 public class DotNotation implements IModul {
 
-	private IProgrammTree			programmTree;
-	private List<MapperElement>	mappedElements;
+	private IProgrammTree programmTree;
+	private List<MapperElement> mappedElements;
 
 	public DotNotation(IProgrammTree programmTree) {
 
 		this.programmTree = programmTree;
 
 		Mapper mapper = new Mapper(programmTree);
-		this.mappedElements = mapper.process(TYPE.THIS);
+		this.mappedElements = mapper.process(DEFINITION.THIS);
 	}
 
 	/*

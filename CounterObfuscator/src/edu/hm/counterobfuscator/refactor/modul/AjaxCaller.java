@@ -7,7 +7,8 @@ import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
-import edu.hm.counterobfuscator.types.TYPE;
+import edu.hm.counterobfuscator.types.DEFINITION;
+import edu.hm.counterobfuscator.types.Variable;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -20,6 +21,7 @@ public class AjaxCaller implements IModul {
 	private IProgrammTree			programmTree;
 	private List<MapperElement>	mappedElements;
 	private InterpreterModul		interpreter;
+	private List<MapperElement> mappedVariableElements;
 
 	public AjaxCaller(IProgrammTree programmTree, IClient client) {
 
@@ -27,7 +29,8 @@ public class AjaxCaller implements IModul {
 
 		interpreter = new InterpreterModul(client, false);
 		Mapper mapper = new Mapper(programmTree);
-		this.mappedElements = mapper.process(TYPE.AJAX);
+		this.mappedElements = mapper.process(DEFINITION.AJAX);
+		this.mappedVariableElements = mapper.process(DEFINITION.VARIABLE);
 	}
 
 	/*
@@ -38,6 +41,15 @@ public class AjaxCaller implements IModul {
 	public IProgrammTree process() {
 
 		Validate.notNull(mappedElements);
+		
+		for(int i=0; i< mappedVariableElements.size(); i++) {
+			
+			MapperElement actualElement = mappedVariableElements.get(i);
+			Variable var = (Variable)actualElement.getElement().getType();
+			String buffer = "var " + var.getName() + "=" + var.getValue() + ";";
+			
+			interpreter.setJsScriptBuffer(buffer);
+		}
 
 		for (int i = 0; i < mappedElements.size(); i++) {
 

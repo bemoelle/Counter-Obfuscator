@@ -6,20 +6,29 @@ import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
-import edu.hm.counterobfuscator.types.TYPE;
+import edu.hm.counterobfuscator.types.DEFINITION;
 
+/**
+ * @author Benjamin Moellerke <bemoelle@gmail.com>
+ * @date 05.04.2015
+ * 
+ *       replace variable in the programm with there value.
+ * 
+ *       var var1=0; var2 = var1+var1; result is: var2 = 0+0;
+ * 
+ */
 public class VariableReplacer implements IModul {
 
-	private IProgrammTree			programmTree;
-	private List<MapperElement>	mappedElements;
-	private Mapper						mapper;
+	private IProgrammTree programmTree;
+	private List<MapperElement> mappedElements;
+	private Mapper mapper;
 
 	public VariableReplacer(IProgrammTree programmTree) {
 
 		this.programmTree = programmTree;
 
 		this.mapper = new Mapper(programmTree);
-		this.mappedElements = mapper.process(TYPE.VARIABLE);
+		this.mappedElements = mapper.process(DEFINITION.VARIABLE);
 	}
 
 	/*
@@ -36,8 +45,8 @@ public class VariableReplacer implements IModul {
 			String name = actualElement.getElement().getType().getName();
 			String value = actualElement.getElement().getType().getValue();
 
-			List<MapperElement> elementsWithName = mapper.searchForNameOfElement(name,
-					actualElement.getScope());
+			List<MapperElement> elementsWithName = mapper
+					.searchForNameOfElement(name, actualElement.getScope());
 
 			for (int j = 0; j < elementsWithName.size(); j++) {
 

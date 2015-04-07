@@ -19,7 +19,7 @@ public class Call extends AbstractType {
 	private String	parameter;
 
 	public Call(Scope pos, String name, String parameter, String value) {
-		super(TYPE.CALL, pos, name);
+		super(DEFINITION.CALL, pos, name);
 		this.parameter = parameter;
 		
 		this.value = value;
@@ -70,10 +70,9 @@ public class Call extends AbstractType {
 	 * @see edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void replaceNameWith(String name, String value) {
+	public void replaceNameWith(String nameToReplace, String valueToReplace) {
 
-		// TODO Auto-generated method stub
-		
+		name = name.replace(nameToReplace, valueToReplace);
 	}
 
 	/* (non-Javadoc)

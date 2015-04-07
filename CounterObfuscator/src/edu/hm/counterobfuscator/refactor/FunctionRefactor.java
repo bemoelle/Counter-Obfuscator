@@ -17,7 +17,8 @@ import edu.hm.counterobfuscator.refactor.modul.IModul;
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 05.02.2015
  * 
- * 
+ *       calls all module which a responsible to refactor functions in the
+ *       programm
  */
 public class FunctionRefactor implements IRefactor {
 

@@ -9,19 +9,26 @@ import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
 import edu.hm.counterobfuscator.types.ForWhile;
-import edu.hm.counterobfuscator.types.TYPE;
+import edu.hm.counterobfuscator.types.DEFINITION;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 05.02.2015
  * 
+ *       check if the loop is necessary
+ * 
+ *       for(i=0; i<0; i++) {...}; not necessary loop and body can be removed
+ *       for(i=0; i<1; i++) {...}; loop head is not necessary code can replaced
+ *       with code in body 
+ *       while(false) {...}; not necessary loop and body can
+ *       be removed
  * 
  */
 public class LoopChecker implements IModul {
 
-	private IProgrammTree			programmTree;
-	private List<MapperElement>	mappedElements;
-	private IClient					client;
+	private IProgrammTree programmTree;
+	private List<MapperElement> mappedElements;
+	private IClient client;
 
 	public LoopChecker(IProgrammTree programmTree, IClient client) {
 
@@ -29,7 +36,7 @@ public class LoopChecker implements IModul {
 		this.client = client;
 
 		Mapper mapper = new Mapper(programmTree);
-		this.mappedElements = mapper.process(TYPE.FOR);
+		this.mappedElements = mapper.process(DEFINITION.FOR);
 	}
 
 	/*
@@ -47,7 +54,7 @@ public class LoopChecker implements IModul {
 
 			String head = loop.getHeadString();
 			int indexFirstSemicolon = head.indexOf(";");
-			
+
 			String var = "var " + head.substring(1, indexFirstSemicolon) + ";";
 			head = head.substring(indexFirstSemicolon + 1);
 			head = head.substring(0, head.indexOf(";"));
@@ -57,26 +64,26 @@ public class LoopChecker implements IModul {
 			if ((Boolean) result == false) {
 				remove(actualElement, children);
 			} else {
-								
+
 				int index = head.indexOf("<");
 				int index2 = head.indexOf("=");
 				String headStatement = "";
-				
-				if(index < 0) {
+
+				if (index < 0) {
 					index = head.indexOf(">");
-				} 
-				
-				if(index2 > 0) {
-					headStatement = head.substring(index2+1);
-				} else {
-					headStatement = head.substring(index+1);
 				}
-				
-				//remove whitespaces in statement
+
+				if (index2 > 0) {
+					headStatement = head.substring(index2 + 1);
+				} else {
+					headStatement = head.substring(index + 1);
+				}
+
+				// remove whitespaces in statement
 				headStatement = headStatement.replaceAll(" ", "");
-											
+
 				result = client.getJSResult(headStatement);
-				
+
 				loop.replaceNameWith(headStatement, result.toString());
 			}
 

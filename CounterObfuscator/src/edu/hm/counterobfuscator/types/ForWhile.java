@@ -9,17 +9,18 @@ import edu.hm.counterobfuscator.helper.Scope;
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 06.01.2015
  * 
- * 
+ *       represent JavaScript LOOP assign to DEFINITION.WHILE or DEFINITION.FOR
  */
 public class ForWhile extends AbstractType {
 
-	private Variable	head;
-	private String		headString;
-	private String		bodyAsString;
+	private Variable head;
+	private String headString;
+	private String bodyAsString;
 
-	public ForWhile(Scope pos, String name, String headString, String bodyAsString) {
+	public ForWhile(Scope pos, String name, String headString,
+			String bodyAsString) {
 
-		super(name.equals("for") ? TYPE.FOR : TYPE.WHILE, pos, name);
+		super(name.equals("for") ? DEFINITION.FOR : DEFINITION.WHILE, pos, name);
 		this.headString = headString;
 		this.bodyAsString = bodyAsString;
 

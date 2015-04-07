@@ -9,7 +9,7 @@ import edu.hm.counterobfuscator.helper.Scope;
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 07.01.2015
  * 
- * 
+ *       default javascript statement like a string
  */
 public class Default extends AbstractType {
 
@@ -20,7 +20,7 @@ public class Default extends AbstractType {
 	 */
 	public Default(Scope pos, String name) {
 
-		super(TYPE.DEFAULT, pos, name);
+		super(DEFINITION.DEFAULT, pos, name);
 	}
 
 	/*

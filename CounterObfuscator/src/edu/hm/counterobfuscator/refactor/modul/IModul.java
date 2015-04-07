@@ -11,7 +11,7 @@ import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 05.02.2015
  * 
- * 
+ * interface for all modules
  */
 public interface IModul {
 

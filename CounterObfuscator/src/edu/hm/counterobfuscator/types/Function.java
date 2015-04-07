@@ -9,7 +9,7 @@ import edu.hm.counterobfuscator.helper.Scope;
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 02.01.2015
  * 
- *       represent JavaScript FUNCTION assign to TOKENTYPE.FUNCTION
+ *       represent JavaScript FUNCTION assign to DEFINITION.FUNCTION
  * 
  */
 public class Function extends AbstractType {
@@ -20,7 +20,7 @@ public class Function extends AbstractType {
 
 	public Function(Scope pos, String name, String headString, String bodyAsString,
 			boolean isPacked) {
-		super(TYPE.FUNCTION, pos, name);
+		super(DEFINITION.FUNCTION, pos, name);
 
 		this.bodyAsString = bodyAsString;
 		this.isPacked = isPacked;

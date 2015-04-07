@@ -16,7 +16,7 @@ import edu.hm.counterobfuscator.types.Default;
 import edu.hm.counterobfuscator.types.ForWhile;
 import edu.hm.counterobfuscator.types.Function;
 import edu.hm.counterobfuscator.types.Return;
-import edu.hm.counterobfuscator.types.TYPE;
+import edu.hm.counterobfuscator.types.DEFINITION;
 import edu.hm.counterobfuscator.types.This;
 import edu.hm.counterobfuscator.types.TryCatch;
 import edu.hm.counterobfuscator.types.Variable;
@@ -29,9 +29,9 @@ import edu.hm.counterobfuscator.types.Variable;
  */
 public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
-	private List<Element>	tree;
-	private AbstractType		actualType;
-	private static Logger	log;
+	private List<Element> tree;
+	private AbstractType actualType;
+	private static Logger log;
 
 	public ProgrammTree() {
 
@@ -60,10 +60,11 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	 * @param parent
 	 * @param tiefe
 	 * 
-	 *           rec method to find the correct position of actualtype in
-	 *           programmtree
+	 *            rec method to find the correct position of actualtype in
+	 *            programmtree
 	 */
-	private void findPositionInTree(IProgrammTree tree, Element parent, int tiefe) {
+	private void findPositionInTree(IProgrammTree tree, Element parent,
+			int tiefe) {
 
 		// tree is empty add element and leave
 		if (tree.size() < 1) {
@@ -75,7 +76,8 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 			Element last = tree.getLast();
 
 			// new element is within parent
-			if (last != null && last.getType().getPos().isPosWithin(actualType.getPos())) {
+			if (last != null
+					&& last.getType().getPos().isPosWithin(actualType.getPos())) {
 
 				// recursive step
 				findPositionInTree(last.getChildren(), last, ++tiefe);
@@ -111,7 +113,8 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	 */
 	public void add(Element element) {
 
-		log.info("element with name: " + element.getType().getName() + " is added to programm tree");
+		log.info("element with name: " + element.getType().getName()
+				+ " is added to programm tree");
 
 		if (size() > 0) {
 			Element last = getLast();
@@ -137,19 +140,56 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	public void print() {
 
 		Iterator<Element> it = this.iterator();
-		
+
 		String toPrint = "";
+		int index = -1;
+		List<Integer> buffer = new ArrayList<Integer>();
+		int depth = -1;
 
 		while (it.hasNext()) {
 
+			toPrint = "";
+
 			Element element = it.next();
+
+			if (element.getType().getType() == DEFINITION.FUNCTION
+					|| element.getType().getType() == DEFINITION.FOR) {
+				buffer.add(++index, element.getDepth());
+			}
+
+			if (element.getDepth() < depth) {
+
+				if (buffer.get(index) >= element.getDepth()) {
+
+					for (int i = buffer.size() - 1; i >= 0; i--) {
+						int depthInBuffer = buffer.get(i);
+
+						if (depthInBuffer < element.getDepth()) {
+							break;
+						}
+
+						System.out.println(tabPrint(depthInBuffer) + "}\n");
+						buffer.remove(index--);
+					}
+
+				}
+
+			}
 
 			String tmpPrint = printElement(element.getType());
 			toPrint += tabPrint(element.getDepth()) + tmpPrint;
-		}
-		
-		System.out.println(toPrint);
 
+			depth = element.getDepth();
+
+			System.out.println(toPrint);
+		}
+
+		if (buffer.size() > 0) {
+			for (int i = 0; i < buffer.size(); i++) {
+				System.out.println(tabPrint(buffer.get(index)) + "}\n");
+				buffer.remove(i);
+			}
+		}
 	}
 
 	/**
@@ -179,22 +219,27 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 		case FUNCTION:
 			Function func = (Function) abstractType;
-			return "function " + func.getName() + "(" + func.getHeadString() + ") " + "{\n";
+			return "function " + func.getName() + "(" + func.getHeadString()
+					+ ") " + "{\n";
 		case CALL:
 			Call fc = (Call) abstractType;
-			return fc.getName() + "." + fc.getFunction() + "(" + fc.getValue() + ");\n";
+			return fc.getName() + "." + fc.getFunction() + "(" + fc.getValue()
+					+ ");\n";
 		case VARIABLE:
 			Variable var = (Variable) abstractType;
-			return (var.isGlobal() ? "" : "var ") + var.getName() + var.getAssign()
-					+ (var.isObject() ? "new " : "") + var.getValue()
-					+ (var.isObject() ? "(" + var.getParameter() + ")" : "") + ";\n";
+			return (var.isGlobal() ? "" : "var ") + var.getName()
+					+ var.getAssign() + (var.isObject() ? "new " : "")
+					+ var.getValue()
+					+ (var.isObject() ? "(" + var.getParameter() + ")" : "")
+					+ ";\n";
 		case FOR:
 		case WHILE:
 			ForWhile loop = (ForWhile) abstractType;
 			return loop.getName() + loop.getHeadString() + "{\n";
 		case THIS:
 			This thisStatement = (This) abstractType;
-			return "this" + thisStatement.getNotation() +thisStatement.getName() + "=\n";
+			return "this" + thisStatement.getNotation()
+					+ thisStatement.getName() + "=\n";
 		case RETURN:
 			Return returnStatement = (Return) abstractType;
 			return "return " + returnStatement.getName() + ";\n";
@@ -203,7 +248,8 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 			return defaultStatement.getName() + "\n";
 		case TRYCATCH:
 			TryCatch tryCatchStatement = (TryCatch) abstractType;
-			return tryCatchStatement.getName().equals("try") ? "try {\n" : "} catch(e) {";
+			return tryCatchStatement.getName().equals("try") ? "try {\n"
+					: "} catch(e) {";
 		case AJAX:
 			Ajax ajax = (Ajax) abstractType;
 			return "$." + ajax.getName() + "(" + ajax.getValue() + ")";
@@ -280,8 +326,8 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 		Iterator<Element> it = new Iterator<Element>() {
 
-			private Element	next			= get(0);
-			private Element	lastElement	= null;
+			private Element next = get(0);
+			private Element lastElement = null;
 
 			@Override
 			public boolean hasNext() {
@@ -327,7 +373,8 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 				if (parent == null) {
 					removeElementAndAllChildren(lastElement);
 				} else {
-					parent.getChildren().removeElementAndAllChildren(lastElement);
+					parent.getChildren().removeElementAndAllChildren(
+							lastElement);
 				}
 
 			}
@@ -340,8 +387,8 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 		Iterator<Element> it = new Iterator<Element>() {
 
-			private Element	before		= getLastElement();
-			private Element	lastElement	= null;
+			private Element before = getLastElement();
+			private Element lastElement = null;
 
 			private Element getLastElement() {
 
@@ -383,7 +430,8 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 					if (before.getParent() != null) {
 						before = before.getParent();
-					} else if (before.getParent() == null && before.getBefore() == null) {
+					} else if (before.getParent() == null
+							&& before.getBefore() == null) {
 						before = null;
 					}
 				}
@@ -398,7 +446,8 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 				if (parent == null) {
 					removeElementAndAllChildren(lastElement);
 				} else {
-					parent.getChildren().removeElementAndAllChildren(lastElement);
+					parent.getChildren().removeElementAndAllChildren(
+							lastElement);
 				}
 
 			}
@@ -407,17 +456,16 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	}
 
 	public int getIndexInTree(Element element) {
-		
-		
-		for(int i=0; i<size(); i++) {
-			
+
+		for (int i = 0; i < size(); i++) {
+
 			Element actualElement = get(i);
-			
-			if(actualElement.equals(element)) {
+
+			if (actualElement.equals(element)) {
 				return i;
 			}
 		}
-		
+
 		return -1;
 	}
 
@@ -426,36 +474,36 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 		Element beforeEle = element.getBefore();
 		Element nextEle = element.getNext();
 		Element parent = element.getParent();
-		
+
 		int index = getIndexInTree(element);
-		
+
 		List<Element> oldTree = new ArrayList<Element>();
-		
-		//save old list
-		for(int i=index+1; i<size(); i++ ) {
+
+		// save old list
+		for (int i = index + 1; i < size(); i++) {
 			oldTree.add(get(i));
 			tree.remove(i);
 		}
-				
+
 		tree.remove(index);
-		
-		for(int i=0; i<newTree.size(); i++) {
+
+		for (int i = 0; i < newTree.size(); i++) {
 			Element newElement = newTree.get(i);
 			element.setParent(parent);
 			tree.add(index++, newElement);
 		}
-		
-		for(int i=0; i<oldTree.size(); i++) {
+
+		for (int i = 0; i < oldTree.size(); i++) {
 			tree.add(oldTree.get(i));
 		}
-		
-		//verkettung
-		if(beforeEle != null) {
+
+		// verkettung
+		if (beforeEle != null) {
 			beforeEle.setNext(newTree.get(0));
 			newTree.get(0).setBefore(beforeEle);
 		}
-		
-		if(nextEle != null) {
+
+		if (nextEle != null) {
 			nextEle.setBefore(newTree.getLast());
 			newTree.getLast().setNext(nextEle);
 		}

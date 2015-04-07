@@ -6,15 +6,15 @@ import edu.hm.counterobfuscator.helper.Scope;
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 02.01.2015
  * 
- * 
+ *       abstract class for all javascript definitions
  */
 public abstract class AbstractType {
 
 	protected String name;
 	protected Scope pos;
-	protected TYPE type;
+	protected DEFINITION type;
 
-	public AbstractType(TYPE type, Scope pos, String name) {
+	public AbstractType(DEFINITION type, Scope pos, String name) {
 
 		this.type = type;
 		this.pos = pos;
@@ -24,7 +24,7 @@ public abstract class AbstractType {
 	/**
 	 * @return type
 	 */
-	public TYPE getType() {
+	public DEFINITION getType() {
 		return type;
 	}
 
@@ -43,7 +43,8 @@ public abstract class AbstractType {
 	}
 
 	/**
-	 * @param name set name
+	 * @param name
+	 *            set name
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -62,7 +63,7 @@ public abstract class AbstractType {
 	 * @param other
 	 * @return true if other has same name as this
 	 * 
-	 * abstract methode to be define in subclass
+	 *         abstract methode to be define in subclass
 	 */
 	public abstract boolean hasSameName(Object other);
 
@@ -70,7 +71,7 @@ public abstract class AbstractType {
 	 * @param name
 	 * @return true if type has name in it
 	 * 
-	 * abstract type to be define in subclass
+	 *         abstract type to be define in subclass
 	 */
 	public abstract boolean hasNameInIt(String name);
 

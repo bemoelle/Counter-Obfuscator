@@ -4,7 +4,8 @@ package edu.hm.counterobfuscator.helper;
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 12.02.2015
  * 
- *       class is final static Validate.notNull(...);
+ *       class is final static Validate.notNull(...); this class represent a
+ *       validation class, to validate input and output values
  * 
  */
 public final class Validate {
