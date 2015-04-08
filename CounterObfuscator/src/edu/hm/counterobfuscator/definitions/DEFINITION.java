@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.hm.counterobfuscator.types;
+package edu.hm.counterobfuscator.definitions;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>

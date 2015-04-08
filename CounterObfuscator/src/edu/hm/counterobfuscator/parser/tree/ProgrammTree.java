@@ -8,18 +8,18 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.Validate;
 
+import edu.hm.counterobfuscator.definitions.AbstractType;
+import edu.hm.counterobfuscator.definitions.Ajax;
+import edu.hm.counterobfuscator.definitions.Call;
+import edu.hm.counterobfuscator.definitions.DEFINITION;
+import edu.hm.counterobfuscator.definitions.Default;
+import edu.hm.counterobfuscator.definitions.ForWhile;
+import edu.hm.counterobfuscator.definitions.Function;
+import edu.hm.counterobfuscator.definitions.Return;
+import edu.hm.counterobfuscator.definitions.This;
+import edu.hm.counterobfuscator.definitions.TryCatch;
+import edu.hm.counterobfuscator.definitions.Variable;
 import edu.hm.counterobfuscator.helper.Scope;
-import edu.hm.counterobfuscator.types.AbstractType;
-import edu.hm.counterobfuscator.types.Ajax;
-import edu.hm.counterobfuscator.types.Call;
-import edu.hm.counterobfuscator.types.Default;
-import edu.hm.counterobfuscator.types.ForWhile;
-import edu.hm.counterobfuscator.types.Function;
-import edu.hm.counterobfuscator.types.Return;
-import edu.hm.counterobfuscator.types.DEFINITION;
-import edu.hm.counterobfuscator.types.This;
-import edu.hm.counterobfuscator.types.TryCatch;
-import edu.hm.counterobfuscator.types.Variable;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -185,8 +185,8 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 		}
 
 		if (buffer.size() > 0) {
-			for (int i = 0; i < buffer.size(); i++) {
-				System.out.println(tabPrint(buffer.get(index)) + "}\n");
+			for (int i = buffer.size()-1; i >= 0; i--) {
+				System.out.println(tabPrint(buffer.get(i)) + "}\n");
 				buffer.remove(i);
 			}
 		}

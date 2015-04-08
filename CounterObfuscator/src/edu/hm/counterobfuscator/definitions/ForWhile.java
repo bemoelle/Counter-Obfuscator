@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.hm.counterobfuscator.types;
+package edu.hm.counterobfuscator.definitions;
 
 import edu.hm.counterobfuscator.helper.Scope;
 

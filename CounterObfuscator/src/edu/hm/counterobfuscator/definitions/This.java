@@ -1,26 +1,39 @@
 /**
  * 
  */
-package edu.hm.counterobfuscator.types;
+package edu.hm.counterobfuscator.definitions;
 
 import edu.hm.counterobfuscator.helper.Scope;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
- * @date 07.01.2015
+ * @date 15.01.2015
  * 
- *       default javascript statement like a string
+ *       represent JavaScript THIS statement assign to DEFINITION.THIS
  */
-public class Default extends AbstractType {
+public class This extends AbstractType {
+
+	private String value;
+	private String notation;
 
 	/**
 	 * @param type
 	 * @param pos
 	 * @param name
 	 */
-	public Default(Scope pos, String name) {
+	public This(Scope pos, String name, String notation, String value) {
+		super(DEFINITION.THIS, pos, name);
+		this.notation = notation;
+		this.value = value;
 
-		super(DEFINITION.DEFAULT, pos, name);
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	/*
@@ -31,7 +44,6 @@ public class Default extends AbstractType {
 	 */
 	@Override
 	public boolean hasSameName(Object other) {
-
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -43,12 +55,19 @@ public class Default extends AbstractType {
 	 * edu.hm.counterobfuscator.types.AbstractType#hasNameInIt(java.lang.String)
 	 */
 	@Override
-	public boolean hasNameInIt(String nameToTest) {
-
-		if (name.indexOf(nameToTest) != -1)
-			return true;
-
+	public boolean hasNameInIt(String name) {
+		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public String getNotation() {
+
+		return notation;
+	}
+
+	public void setNotation(String notation) {
+
+		this.notation = notation;
 	}
 
 	/*
@@ -59,9 +78,9 @@ public class Default extends AbstractType {
 	 * java.lang.String)
 	 */
 	@Override
-	public void replaceNameWith(String nameToReplace, String valueToReplace) {
+	public void replaceNameWith(String name, String value) {
 
-		name = name.replaceAll(nameToReplace, valueToReplace);
+		// TODO Auto-generated method stub
 
 	}
 
@@ -76,18 +95,6 @@ public class Default extends AbstractType {
 
 		// TODO Auto-generated method stub
 
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.hm.counterobfuscator.types.AbstractType#getValue()
-	 */
-	@Override
-	public String getValue() {
-
-		// TODO Auto-generated method stub
-		return name;
 	}
 
 }

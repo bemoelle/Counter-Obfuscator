@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.hm.counterobfuscator.types;
+package edu.hm.counterobfuscator.definitions;
 
 import edu.hm.counterobfuscator.helper.Scope;
 
@@ -9,31 +9,17 @@ import edu.hm.counterobfuscator.helper.Scope;
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 15.01.2015
  * 
- *       represent JavaScript THIS statement assign to DEFINITION.THIS
+ *       represent JavaScript RETURN statement assign to DEFINITION.RETURN
  */
-public class This extends AbstractType {
-
-	private String value;
-	private String notation;
+public class Return extends AbstractType {
 
 	/**
 	 * @param type
 	 * @param pos
 	 * @param name
 	 */
-	public This(Scope pos, String name, String notation, String value) {
-		super(DEFINITION.THIS, pos, name);
-		this.notation = notation;
-		this.value = value;
-
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
+	public Return(Scope pos, String name) {
+		super(DEFINITION.RETURN, pos, name);
 	}
 
 	/*
@@ -60,16 +46,6 @@ public class This extends AbstractType {
 		return false;
 	}
 
-	public String getNotation() {
-
-		return notation;
-	}
-
-	public void setNotation(String notation) {
-
-		this.notation = notation;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -78,10 +54,9 @@ public class This extends AbstractType {
 	 * java.lang.String)
 	 */
 	@Override
-	public void replaceNameWith(String name, String value) {
+	public void replaceNameWith(String nameToReplace, String valueToReplace) {
 
-		// TODO Auto-generated method stub
-
+		name = name.replace(nameToReplace, valueToReplace);
 	}
 
 	/*
@@ -95,6 +70,17 @@ public class This extends AbstractType {
 
 		// TODO Auto-generated method stub
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see edu.hm.counterobfuscator.types.AbstractType#getValue()
+	 */
+	@Override
+	public String getValue() {
+
+		return name;
 	}
 
 }

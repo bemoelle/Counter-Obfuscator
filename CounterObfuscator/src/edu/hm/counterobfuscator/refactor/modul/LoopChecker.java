@@ -5,11 +5,11 @@ import java.util.List;
 import javax.script.ScriptException;
 
 import edu.hm.counterobfuscator.client.IClient;
+import edu.hm.counterobfuscator.definitions.DEFINITION;
+import edu.hm.counterobfuscator.definitions.ForWhile;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
-import edu.hm.counterobfuscator.types.ForWhile;
-import edu.hm.counterobfuscator.types.DEFINITION;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>

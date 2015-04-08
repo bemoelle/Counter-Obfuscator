@@ -6,16 +6,16 @@ import java.util.logging.Logger;
 import org.apache.commons.codec.EncoderException;
 
 import edu.hm.counterobfuscator.client.IClient;
+import edu.hm.counterobfuscator.definitions.Ajax;
+import edu.hm.counterobfuscator.definitions.Call;
+import edu.hm.counterobfuscator.definitions.Default;
+import edu.hm.counterobfuscator.definitions.ForWhile;
+import edu.hm.counterobfuscator.definitions.Function;
+import edu.hm.counterobfuscator.definitions.This;
+import edu.hm.counterobfuscator.definitions.Variable;
 import edu.hm.counterobfuscator.parser.ParserFactory;
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
-import edu.hm.counterobfuscator.types.Ajax;
-import edu.hm.counterobfuscator.types.Default;
-import edu.hm.counterobfuscator.types.ForWhile;
-import edu.hm.counterobfuscator.types.Function;
-import edu.hm.counterobfuscator.types.Call;
-import edu.hm.counterobfuscator.types.This;
-import edu.hm.counterobfuscator.types.Variable;
 
 /**
  * @author

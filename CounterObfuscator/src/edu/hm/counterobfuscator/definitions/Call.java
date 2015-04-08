@@ -1,39 +1,55 @@
-package edu.hm.counterobfuscator.types;
+/**
+ * 
+ */
+package edu.hm.counterobfuscator.definitions;
 
 import edu.hm.counterobfuscator.helper.Scope;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
- * @date 02.01.2015
+ * @date 15.01.2015
  * 
- *       represent JavaScript FUNCTION assign to DEFINITION.FUNCTION
+ *       e.g. obj.SayHello(_0xd237[3]);
+ * 
+ *       name: obj function: SayHello value: _0xd237[3]
  * 
  */
-public class Ajax extends AbstractType {
+public class Call extends AbstractType {
+	private String	value;
+	private String	parameter;
 
-	private String				value;
-
-	public Ajax(Scope pos, String name, String value) {
-		super(DEFINITION.AJAX, pos, name);
-
-		this.value = value;
-	}
-
-	public String getValue() {
-
-		return value;
-	}
-
-	public void setValue(String value) {
+	public Call(Scope pos, String name, String parameter, String value) {
+		super(DEFINITION.CALL, pos, name);
+		this.parameter = parameter;
 		
 		this.value = value;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * edu.hm.counterobfuscator.types.AbstractType#hasSameName(java.lang.Object)
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public String getFunction() {
+		return parameter;
+	}
+
+	public void setFunction(String parameter) {
+		this.parameter = parameter;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getParameter() {
+		return parameter;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.types.AbstractType#hasSameName(java.lang.Object)
 	 */
 	@Override
 	public boolean hasSameName(Object other) {
@@ -57,8 +73,6 @@ public class Ajax extends AbstractType {
 	public void replaceNameWith(String nameToReplace, String valueToReplace) {
 
 		name = name.replace(nameToReplace, valueToReplace);
-		value = value.replace(nameToReplace, valueToReplace);
-		
 	}
 
 	/* (non-Javadoc)
@@ -67,7 +81,7 @@ public class Ajax extends AbstractType {
 	@Override
 	public void replaceName(String name) {
 
-		System.out.println("sdsds");
+		// TODO Auto-generated method stub
 		
 	}
 

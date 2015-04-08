@@ -3,10 +3,10 @@ package edu.hm.counterobfuscator.refactor.modul;
 import java.util.List;
 
 import edu.hm.counterobfuscator.client.IClient;
+import edu.hm.counterobfuscator.definitions.DEFINITION;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
-import edu.hm.counterobfuscator.types.DEFINITION;
 
 public class VariableInterpreter implements IModul {
 

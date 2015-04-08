@@ -1,22 +1,26 @@
 /**
  * 
  */
-package edu.hm.counterobfuscator.types;
+package edu.hm.counterobfuscator.definitions;
 
 import edu.hm.counterobfuscator.helper.Scope;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
- * @date 06.02.2015
+ * @date 07.01.2015
  * 
- *       represent JavaScript TRY-CATCH assign to DEFINITION.TRY or
- *       DEFINITION.CATCH
+ *       default javascript statement like a string
  */
-public class TryCatch extends AbstractType {
+public class Default extends AbstractType {
 
-	public TryCatch(Scope pos, String name, String headString) {
-		super(DEFINITION.TRYCATCH, pos, name);
+	/**
+	 * @param type
+	 * @param pos
+	 * @param name
+	 */
+	public Default(Scope pos, String name) {
 
+		super(DEFINITION.DEFAULT, pos, name);
 	}
 
 	/*
@@ -27,6 +31,7 @@ public class TryCatch extends AbstractType {
 	 */
 	@Override
 	public boolean hasSameName(Object other) {
+
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -38,8 +43,11 @@ public class TryCatch extends AbstractType {
 	 * edu.hm.counterobfuscator.types.AbstractType#hasNameInIt(java.lang.String)
 	 */
 	@Override
-	public boolean hasNameInIt(String name) {
-		// TODO Auto-generated method stub
+	public boolean hasNameInIt(String nameToTest) {
+
+		if (name.indexOf(nameToTest) != -1)
+			return true;
+
 		return false;
 	}
 
@@ -51,9 +59,9 @@ public class TryCatch extends AbstractType {
 	 * java.lang.String)
 	 */
 	@Override
-	public void replaceNameWith(String name, String value) {
+	public void replaceNameWith(String nameToReplace, String valueToReplace) {
 
-		// TODO Auto-generated method stub
+		name = name.replaceAll(nameToReplace, valueToReplace);
 
 	}
 
@@ -79,6 +87,7 @@ public class TryCatch extends AbstractType {
 	public String getValue() {
 
 		// TODO Auto-generated method stub
-		return "";
+		return name;
 	}
+
 }

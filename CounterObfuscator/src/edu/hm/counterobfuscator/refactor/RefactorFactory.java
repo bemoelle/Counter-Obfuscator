@@ -25,31 +25,25 @@ public class RefactorFactory {
 
 	/**
 	 * @param String
-	 *            input
+	 *           input
 	 * @throws IOException
 	 * @throws ScriptException
 	 */
-	public static IProgrammTree create(IParser jsParser) throws IOException,
+	public static IProgrammTree create(IParser jsParser, String url) throws IOException,
 			ScriptException {
 
-		IClient client = new HTMLUnitClient("http://www.google.com/",
-				BrowserVersion.FIREFOX_24);
+		IClient client = new HTMLUnitClient(url, BrowserVersion.FIREFOX_24);
 
 		IProgrammTree tree = jsParser.getProgrammTree();
-		// tree.print();
-
 		Setting settings = new Setting();
 
-		IRefactor functionRefactor = new FunctionRefactor(tree, client,
-				settings);
+		IRefactor functionRefactor = new FunctionRefactor(tree, client, settings);
 		tree = functionRefactor.process();
 
-		IRefactor variableRefactor = new VariableRefactor(tree, client,
-				settings);
+		IRefactor variableRefactor = new VariableRefactor(tree, client, settings);
 		tree = variableRefactor.process();
 
-		IRefactor tryCatchRefactor = new TryCatchRefactor(tree, client,
-				settings);
+		IRefactor tryCatchRefactor = new TryCatchRefactor(tree, client, settings);
 		tree = tryCatchRefactor.process();
 
 		IRefactor loopRefactor = new LoopRefactor(tree, client, settings);
@@ -57,8 +51,6 @@ public class RefactorFactory {
 
 		IRefactor ajaxCaller = new AjaxCallerRefactor(tree, client, settings);
 		tree = ajaxCaller.process();
-
-		tree.print();
 
 		return tree;
 

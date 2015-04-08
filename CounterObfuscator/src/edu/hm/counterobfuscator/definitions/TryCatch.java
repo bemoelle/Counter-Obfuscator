@@ -1,25 +1,22 @@
 /**
  * 
  */
-package edu.hm.counterobfuscator.types;
+package edu.hm.counterobfuscator.definitions;
 
 import edu.hm.counterobfuscator.helper.Scope;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
- * @date 15.01.2015
+ * @date 06.02.2015
  * 
- *       represent JavaScript RETURN statement assign to DEFINITION.RETURN
+ *       represent JavaScript TRY-CATCH assign to DEFINITION.TRY or
+ *       DEFINITION.CATCH
  */
-public class Return extends AbstractType {
+public class TryCatch extends AbstractType {
 
-	/**
-	 * @param type
-	 * @param pos
-	 * @param name
-	 */
-	public Return(Scope pos, String name) {
-		super(DEFINITION.RETURN, pos, name);
+	public TryCatch(Scope pos, String name, String headString) {
+		super(DEFINITION.TRYCATCH, pos, name);
+
 	}
 
 	/*
@@ -54,9 +51,10 @@ public class Return extends AbstractType {
 	 * java.lang.String)
 	 */
 	@Override
-	public void replaceNameWith(String nameToReplace, String valueToReplace) {
+	public void replaceNameWith(String name, String value) {
 
-		name = name.replace(nameToReplace, valueToReplace);
+		// TODO Auto-generated method stub
+
 	}
 
 	/*
@@ -80,7 +78,7 @@ public class Return extends AbstractType {
 	@Override
 	public String getValue() {
 
-		return name;
+		// TODO Auto-generated method stub
+		return "";
 	}
-
 }

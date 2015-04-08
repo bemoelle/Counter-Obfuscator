@@ -5,7 +5,7 @@ package edu.hm.counterobfuscator.parser.tree;
 
 import org.apache.commons.lang3.Validate;
 
-import edu.hm.counterobfuscator.types.AbstractType;
+import edu.hm.counterobfuscator.definitions.AbstractType;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>

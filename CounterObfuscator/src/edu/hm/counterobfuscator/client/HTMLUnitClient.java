@@ -2,21 +2,15 @@ package edu.hm.counterobfuscator.client;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-
 import net.sourceforge.htmlunit.corejs.javascript.IdFunctionObject;
 import net.sourceforge.htmlunit.corejs.javascript.NativeArray;
 import net.sourceforge.htmlunit.corejs.javascript.NativeObject;
 
-import com.gargoylesoftware.htmlunit.AjaxController;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
-import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.ScriptResult;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.javascript.JavaScriptEngine;
 import com.gargoylesoftware.htmlunit.javascript.host.Window;
@@ -41,18 +35,18 @@ public class HTMLUnitClient implements IClient {
 		engine = new JavaScriptEngine(webClient);
 		webClient.setJavaScriptEngine(engine);
 
-		webClient.getOptions().setThrowExceptionOnScriptError(false);
+		webClient.getOptions().setThrowExceptionOnScriptError(true);
 		webClient.getOptions().setJavaScriptEnabled(true);
 		webClient.getOptions().setCssEnabled(false);
 		webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 		webClient.getCookieManager().setCookiesEnabled(true);
 		
-		AjaxController controller = webClient.getAjaxController();
-		
-		String url2 = "ajax.js";
-		WebRequest request=new WebRequest(new URL(url2),HttpMethod.GET);
-	    request.setAdditionalHeader("Accept-Encoding","gzip");
-	    webClient.getPage(request);
+//		AjaxController controller = webClient.getAjaxController();
+//		
+//		String url2 = "ajax.js";
+//		WebRequest request=new WebRequest(new URL(url2),HttpMethod.GET);
+//	    request.setAdditionalHeader("Accept-Encoding","gzip");
+//	    webClient.getPage(request);
 		
 		
 

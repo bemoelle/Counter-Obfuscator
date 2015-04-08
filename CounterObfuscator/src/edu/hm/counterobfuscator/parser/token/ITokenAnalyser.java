@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.commons.codec.EncoderException;
 
-import edu.hm.counterobfuscator.types.AbstractType;
+import edu.hm.counterobfuscator.definitions.AbstractType;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>

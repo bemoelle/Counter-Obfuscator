@@ -12,11 +12,11 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.hm.counterobfuscator.definitions.AbstractType;
+import edu.hm.counterobfuscator.definitions.Default;
 import edu.hm.counterobfuscator.helper.Scope;
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.ProgrammTree;
-import edu.hm.counterobfuscator.types.AbstractType;
-import edu.hm.counterobfuscator.types.Default;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>

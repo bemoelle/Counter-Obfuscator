@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.hm.counterobfuscator.definitions.DEFINITION;
 import edu.hm.counterobfuscator.helper.Scope;
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.Element;
-import edu.hm.counterobfuscator.types.DEFINITION;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
