@@ -88,12 +88,7 @@ public class VariableRenamer implements IModul {
 
 		if (element.getType().getType() == DEFINITION.FOR) {
 
-			ForWhile loop = (ForWhile) element.getType();
-
-			if (loop.getHeadString().contains(entry.getKey())) {
-				loop.setHeadString(loop.getHeadString().replaceAll(
-						entry.getKey(), entry.getValue()));
-			}
+			element.getType().replaceNameWith(entry.getKey(), entry.getValue());
 
 		} else if (element.getType().getType() == DEFINITION.VARIABLE) {
 			String name = element.getType().getName();

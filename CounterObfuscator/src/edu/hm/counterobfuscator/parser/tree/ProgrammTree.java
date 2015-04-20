@@ -278,7 +278,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	public Element get(int index) {
 
 		Validate.isTrue(index > -1);
-		Validate.isTrue(index < size());
+		Validate.isTrue(index <= size());
 
 		return tree.get(index);
 	}
@@ -326,7 +326,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 		Iterator<Element> it = new Iterator<Element>() {
 
-			private Element next = get(0);
+			private Element next = size()== 0 ? null : get(0);
 			private Element lastElement = null;
 
 			@Override
@@ -387,7 +387,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 		Iterator<Element> it = new Iterator<Element>() {
 
-			private Element before = getLastElement();
+			private Element before = size()==0 ? null : getLastElement();
 			private Element lastElement = null;
 
 			private Element getLastElement() {

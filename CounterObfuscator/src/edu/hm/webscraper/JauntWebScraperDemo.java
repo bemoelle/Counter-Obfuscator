@@ -2,14 +2,22 @@ package edu.hm.webscraper;
 
 import java.io.File;
 import java.io.IOException;
+
+import javax.script.ScriptException;
+
+import org.apache.commons.codec.EncoderException;
+
 import com.jaunt.*;
 import com.jaunt.util.HandlerForBinary;
 import com.jaunt.util.HandlerForText;
 
+import edu.hm.counterobfuscator.DeObfuscatorFactory;
+import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
+
 //Jaunt demo: searches for 'butterflies' at Google and prints urls of search results from first page.
 
 public class JauntWebScraperDemo {
-	public static void main(String[] args) throws JauntException, IOException {
+	public static void main(String[] args) throws JauntException, IOException, IllegalArgumentException, EncoderException, ScriptException {
 		try{
 			  //create UserAgent and content handlers.
 			  UserAgent userAgent = new UserAgent();   
@@ -24,20 +32,23 @@ public class JauntWebScraperDemo {
 			  userAgent.setHandler("image/jpeg", handlerForBinary);
 			 
 			  //retrieve CSS content as String
-			  String url ="/home/benni/test2.html"; 
-			  File file = new File(url);
-			  userAgent.open(file);
-			  //userAgent.visit(url);
-			  System.out.println(userAgent.doc.innerHTML());  
-//			  System.out.println(handlerForText.getContent());
-//			     
-//			  //retrieve JS content as String
-//			  userAgent.visit("http://jaunt-api.com/syntaxhighlighter/scripts/shCore.js");
-//			  System.out.println(handlerForText.getContent());
-//			     
-//			  //retrieve GIF content as byte[], and print its length
-//			  userAgent.visit("http://jaunt-api.com/background.gif");
-//			  System.out.println(handlerForBinary.getContent().length);  
+			  //String url ="/home/benni/test2.html"; 
+			  String url = "https://familysearch.org/search/record/results?count=20&query=%2Bgivenname%3AJacob~%20%2Bsurname%3AHof~";
+			  //File file = new File(url);
+			  //userAgent.open(file);
+			  
+			  userAgent.visit(url);
+			  
+			  String scrapedContent = userAgent.doc.innerHTML();
+			  System.out.println(scrapedContent);
+			  
+//			  DeObfuscatorFactory deObfuscatorFactory = new DeObfuscatorFactory("testJaunt", true,
+//						"http://www.google.com/", null);
+//
+//				IProgrammTree resultTree = deObfuscatorFactory.create();
+//
+//				resultTree.print();
+
 			}
 			catch(JauntException e){
 			  System.err.println(e);

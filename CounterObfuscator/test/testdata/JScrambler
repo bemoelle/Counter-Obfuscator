@@ -1,1 +1,0 @@
-var n1Q={'H':"getScript",'k':"demo_ajax_script.js"};$[n1Q.H](n1Q.k);

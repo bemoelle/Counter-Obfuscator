@@ -298,6 +298,8 @@ public class TestDeobfuscator {
 				true, url, null);
 
 		IProgrammTree resultTree = deObfuscatorFactory.create();
+		
+		resultTree.print();
 
 		assertNotNull(resultTree);
 		assertEquals(1, resultTree.size());
@@ -355,6 +357,128 @@ public class TestDeobfuscator {
 			ScriptException {
 
 		DeObfuscatorFactory deObfuscatorFactory = new DeObfuscatorFactory(path + "renameVarInNestedFunction",
+				true, url, null);
+
+		IProgrammTree resultTree = deObfuscatorFactory.create();
+
+		assertNotNull(resultTree);
+		assertEquals(1, resultTree.size());
+		
+		resultTree.print();
+		
+	}
+	
+	@Test
+	public void ifTest() throws IOException, IllegalArgumentException, EncoderException,
+			ScriptException {
+
+		DeObfuscatorFactory deObfuscatorFactory = new DeObfuscatorFactory(path + "ifTest",
+				true, url, null);
+
+		IProgrammTree resultTree = deObfuscatorFactory.create();
+
+		assertNotNull(resultTree);
+		assertEquals(1, resultTree.size());
+		
+		resultTree.print();
+		
+	}
+	
+	@Test
+	public void whileTest() throws IOException, IllegalArgumentException, EncoderException,
+			ScriptException {
+
+		DeObfuscatorFactory deObfuscatorFactory = new DeObfuscatorFactory(path + "whileTest",
+				true, url, null);
+
+		IProgrammTree resultTree = deObfuscatorFactory.create();
+
+		assertNotNull(resultTree);
+		assertEquals(1, resultTree.size());
+		
+		resultTree.print();
+		
+	}
+	
+	@Test
+	public void forTest() throws IOException, IllegalArgumentException, EncoderException,
+			ScriptException {
+
+		DeObfuscatorFactory deObfuscatorFactory = new DeObfuscatorFactory(path + "forTest",
+				true, url, null);
+
+		IProgrammTree resultTree = deObfuscatorFactory.create();
+
+		assertNotNull(resultTree);
+		assertEquals(1, resultTree.size());
+		
+		resultTree.print();
+		
+	}
+	
+	@Test
+	public void tryCatchTest() throws IOException, IllegalArgumentException, EncoderException,
+			ScriptException {
+
+		DeObfuscatorFactory deObfuscatorFactory = new DeObfuscatorFactory(path + "tryTest",
+				true, url, null);
+
+		IProgrammTree resultTree = deObfuscatorFactory.create();
+
+		assertNotNull(resultTree);
+		assertEquals(resultTree.size(), 2);
+
+		Element t0 = resultTree.get(0);
+		Variable func = (Variable) t0.getType();
+
+		assertEquals(func.getType(), DEFINITION.VARIABLE);
+		assertEquals(func.getName(), "var1");
+		assertEquals(func.getValue(), "3");
+
+		Element t1 = resultTree.get(1);
+		Return returnStatement = (Return) t1.getType();
+
+		assertEquals(returnStatement.getType(), DEFINITION.RETURN);
+		assertEquals(returnStatement.getName(), "var1");
+	}
+	
+	@Test
+	public void interpretationTest() throws IOException, IllegalArgumentException, EncoderException,
+			ScriptException {
+
+		DeObfuscatorFactory deObfuscatorFactory = new DeObfuscatorFactory(path + "interpretationTest",
+				true, url, null);
+
+		IProgrammTree resultTree = deObfuscatorFactory.create();
+
+		assertNotNull(resultTree);
+		assertEquals(1, resultTree.size());
+		
+		resultTree.print();
+		
+	}
+	
+	@Test
+	public void varRemoveTest() throws IOException, IllegalArgumentException, EncoderException,
+			ScriptException {
+
+		DeObfuscatorFactory deObfuscatorFactory = new DeObfuscatorFactory(path + "varRemoveTest",
+				true, url, null);
+
+		IProgrammTree resultTree = deObfuscatorFactory.create();
+
+		assertNotNull(resultTree);
+		assertEquals(0, resultTree.size());
+		
+		resultTree.print();
+		
+	}
+	
+	@Test
+	public void ajaxTest() throws IOException, IllegalArgumentException, EncoderException,
+			ScriptException {
+
+		DeObfuscatorFactory deObfuscatorFactory = new DeObfuscatorFactory(path + "ajaxTest",
 				true, url, null);
 
 		IProgrammTree resultTree = deObfuscatorFactory.create();

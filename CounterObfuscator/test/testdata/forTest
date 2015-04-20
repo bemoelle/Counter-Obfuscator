@@ -1,0 +1,1 @@
+function(){var a=0;for(var i=0; i<0; i++){a+=i;}var b=0;for(var i=0; i<1; i++){b+=i;}var c=0;for(var i=0; i<10; i++){c+=i;}return a+b+c;}

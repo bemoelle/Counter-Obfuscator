@@ -32,7 +32,8 @@ public class ForWhile extends AbstractType {
 			isGlobal = true;
 		}
 
-		this.head = new Variable(pos, varName, "", "", isGlobal);
+		this.head = new Variable(pos, varName, "", "", false);
+		this.head.setGlobal(isGlobal);
 	}
 
 	public Variable getHead() {
@@ -95,7 +96,7 @@ public class ForWhile extends AbstractType {
 	@Override
 	public void replaceNameWith(String nameToReplace, String valueToReplace) {
 
-		headString = headString.replace(nameToReplace, valueToReplace);
+		headString = headString.replaceAll("^[var]" + nameToReplace, valueToReplace);
 
 	}
 

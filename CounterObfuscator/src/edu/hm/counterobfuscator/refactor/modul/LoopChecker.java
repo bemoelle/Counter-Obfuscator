@@ -55,7 +55,12 @@ public class LoopChecker implements IModul {
 			String head = loop.getHeadString();
 			int indexFirstSemicolon = head.indexOf(";");
 
-			String var = "var " + head.substring(1, indexFirstSemicolon) + ";";
+			String var = head.substring(1, indexFirstSemicolon) + ";";
+			
+			if(!var.contains("var")) {
+				var = "var " + var;
+			}
+			
 			head = head.substring(indexFirstSemicolon + 1);
 			head = head.substring(0, head.indexOf(";"));
 

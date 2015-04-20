@@ -59,6 +59,13 @@ public class Parser implements IParser {
 		} else {
 			unparsedJSCode = input;
 		}
+		
+		unparsedJSCode = unparsedJSCode.replace("<script>", "");
+		unparsedJSCode = unparsedJSCode.replace("</script>", "");
+		unparsedJSCode = unparsedJSCode.replace("<!--", "");
+		unparsedJSCode = unparsedJSCode.replace("//-->", "");
+		System.out.println(unparsedJSCode);
+		
 		log.info("read JavaScript Code:" + unparsedJSCode);
 	}
 
