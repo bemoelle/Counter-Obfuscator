@@ -54,40 +54,23 @@ public class Default extends AbstractType {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String,
-	 * java.lang.String)
-	 */
-	@Override
-	public void replaceNameWith(String nameToReplace, String valueToReplace) {
-
-		name = name.replaceAll(nameToReplace, valueToReplace);
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String)
-	 */
-	@Override
-	public void replaceName(String name) {
-
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see edu.hm.counterobfuscator.types.AbstractType#getValue()
 	 */
 	@Override
 	public String getValue() {
 
-		// TODO Auto-generated method stub
 		return name;
+	}
+	
+	@Override
+	public void replaceNameWith(String nameToReplace, String value) {
+		
+		name = name.replaceAll(nameToReplace, value);
+	}
+
+	@Override
+	public void replaceValueWith(String name, String value) {
+		System.out.println("sds");
 	}
 
 }

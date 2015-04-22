@@ -1,5 +1,6 @@
 package edu.hm.counterobfuscator.refactor.modul;
 
+import java.util.Iterator;
 import java.util.List;
 
 import edu.hm.counterobfuscator.definitions.DEFINITION;
@@ -40,7 +41,7 @@ public class FunctionVariableRenamer implements IModul {
 		for (int i = 0; i < mappedElements.size(); i++) {
 
 			MapperElement actualElement = mappedElements.get(i);
-			Function function = (Function) actualElement.getElement().getType();
+			Function function = (Function) actualElement.getElement().getDefinition();
 			IProgrammTree children = actualElement.getElement().getChildren();
 
 			List<Variable> vars = function.getHead();
@@ -53,21 +54,37 @@ public class FunctionVariableRenamer implements IModul {
 			for (int j = 0; j < vars.size(); j++) {
 
 				// only look at the children
-				Mapper childrenMapper = new Mapper(children);
-				List<MapperElement> elementsWithNewName = childrenMapper
-						.searchForName(vars.get(j).getName());
-
+//				Mapper childrenMapper = new Mapper(children);
+//				List<MapperElement> elementsWithNewName = childrenMapper
+//						.searchForName(vars.get(j).getName());
+				
 				String newName = "functionVar" + number++;
+				
+				Iterator<Element> it = children.iterator();
 
-				for (int k = 0; k < elementsWithNewName.size(); k++) {
-
-					Element type = elementsWithNewName.get(k).getElement();
-
-					type.getType().replaceNameWith(vars.get(j).getName(),
+				while (it.hasNext()) {
+								
+					Element element = it.next();
+					element.getDefinition().replaceNameWith(vars.get(j).getName(),
 							newName);
+					
 				}
-
+				
 				vars.get(j).setName(newName);
+				
+				
+
+				
+
+//				for (int k = 0; k < elementsWithNewName.size(); k++) {
+//
+//					Element type = elementsWithNewName.get(k).getElement();
+//
+//					type.getDefinition().replaceNameWith(vars.get(j).getName(),
+//							newName);
+//				}
+//
+//				vars.get(j).setName(newName);
 			}
 
 		}

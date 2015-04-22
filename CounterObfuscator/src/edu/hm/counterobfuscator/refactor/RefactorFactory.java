@@ -36,21 +36,43 @@ public class RefactorFactory {
 
 		IProgrammTree tree = jsParser.getProgrammTree();
 		Setting settings = new Setting();
-
+		
+		tree.print();
+		
 		IRefactor functionRefactor = new FunctionRefactor(tree, client, settings);
 		tree = functionRefactor.process();
-
-		IRefactor variableRefactor = new VariableRefactor(tree, client, settings);
-		tree = variableRefactor.process();
-
+		
+		tree.print();
+		
+		IRefactor variableInterpreterRefactor = new VariableInterpreterRefactor(tree, client, settings);
+		tree = variableInterpreterRefactor.process();
+		
+		tree.print();
+		
+		IfRefactor ifRefactor = new IfRefactor(tree, client, settings);
+		tree = ifRefactor.process();
+		
+		tree.print();
+				
 		IRefactor tryCatchRefactor = new TryCatchRefactor(tree, client, settings);
 		tree = tryCatchRefactor.process();
+		
+		tree.print();
 
 		IRefactor loopRefactor = new LoopRefactor(tree, client, settings);
 		tree = loopRefactor.process();
-
+		
+		tree.print();
+		
 		IRefactor ajaxCaller = new AjaxCallerRefactor(tree, client, settings);
 		tree = ajaxCaller.process();
+		
+		tree.print();
+		
+		IRefactor variableRefactor = new VariableRefactor(tree, client, settings);
+		tree = variableRefactor.process();
+		
+		tree.print();
 
 		return tree;
 

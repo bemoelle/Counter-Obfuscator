@@ -24,13 +24,13 @@ import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
  *       be removed
  * 
  */
-public class LoopChecker implements IModul {
+public class ForLoopChecker implements IModul {
 
 	private IProgrammTree programmTree;
 	private List<MapperElement> mappedElements;
 	private IClient client;
 
-	public LoopChecker(IProgrammTree programmTree, IClient client) {
+	public ForLoopChecker(IProgrammTree programmTree, IClient client) {
 
 		this.programmTree = programmTree;
 		this.client = client;
@@ -49,7 +49,7 @@ public class LoopChecker implements IModul {
 		for (int i = 0; i < mappedElements.size(); i++) {
 
 			MapperElement actualElement = mappedElements.get(i);
-			ForWhile loop = (ForWhile) actualElement.getElement().getType();
+			ForWhile loop = (ForWhile) actualElement.getElement().getDefinition();
 			IProgrammTree children = actualElement.getElement().getChildren();
 
 			String head = loop.getHeadString();

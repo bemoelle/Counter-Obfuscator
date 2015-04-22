@@ -15,6 +15,7 @@ import edu.hm.counterobfuscator.definitions.DEFINITION;
 import edu.hm.counterobfuscator.definitions.Default;
 import edu.hm.counterobfuscator.definitions.ForWhile;
 import edu.hm.counterobfuscator.definitions.Function;
+import edu.hm.counterobfuscator.definitions.If;
 import edu.hm.counterobfuscator.definitions.Return;
 import edu.hm.counterobfuscator.definitions.This;
 import edu.hm.counterobfuscator.definitions.TryCatch;
@@ -77,7 +78,8 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 			// new element is within parent
 			if (last != null
-					&& last.getType().getPos().isPosWithin(actualType.getPos())) {
+					&& last.getDefinition().getPos()
+							.isPosWithin(actualType.getPos())) {
 
 				// recursive step
 				findPositionInTree(last.getChildren(), last, ++tiefe);
@@ -113,7 +115,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	 */
 	public void add(Element element) {
 
-		log.info("element with name: " + element.getType().getName()
+		log.info("element with name: " + element.getDefinition().getName()
 				+ " is added to programm tree");
 
 		if (size() > 0) {
@@ -152,14 +154,20 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 			Element element = it.next();
 
-			if (element.getType().getType() == DEFINITION.FUNCTION
-					|| element.getType().getType() == DEFINITION.FOR) {
+			if (element.getDefinition().getDefinition() == DEFINITION.FUNCTION
+					|| element.getDefinition().getDefinition() == DEFINITION.FOR
+					|| element.getDefinition().getDefinition() == DEFINITION.WHILE
+					|| element.getDefinition().getDefinition() == DEFINITION.IF
+					|| element.getDefinition().getDefinition() == DEFINITION.TRY
+					|| element.getDefinition().getDefinition() == DEFINITION.CATCH
+					|| element.getDefinition().getDefinition() == DEFINITION.TRYCATCH) {
 				buffer.add(++index, element.getDepth());
 			}
 
 			if (element.getDepth() < depth) {
 
-				if (buffer.get(index) >= element.getDepth()) {
+				if (buffer.size() > 0
+						&& buffer.get(index) >= element.getDepth()) {
 
 					for (int i = buffer.size() - 1; i >= 0; i--) {
 						int depthInBuffer = buffer.get(i);
@@ -176,7 +184,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 			}
 
-			String tmpPrint = printElement(element.getType());
+			String tmpPrint = printElement(element.getDefinition());
 			toPrint += tabPrint(element.getDepth()) + tmpPrint;
 
 			depth = element.getDepth();
@@ -185,7 +193,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 		}
 
 		if (buffer.size() > 0) {
-			for (int i = buffer.size()-1; i >= 0; i--) {
+			for (int i = buffer.size() - 1; i >= 0; i--) {
 				System.out.println(tabPrint(buffer.get(i)) + "}\n");
 				buffer.remove(i);
 			}
@@ -215,7 +223,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	 */
 	private String printElement(AbstractType abstractType) {
 
-		switch (abstractType.getType()) {
+		switch (abstractType.getDefinition()) {
 
 		case FUNCTION:
 			Function func = (Function) abstractType;
@@ -236,6 +244,9 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 		case WHILE:
 			ForWhile loop = (ForWhile) abstractType;
 			return loop.getName() + loop.getHeadString() + "{\n";
+		case IF:
+			If ifStatement = (If) abstractType;
+			return "if" + ifStatement.getHeadString() + "{\n";
 		case THIS:
 			This thisStatement = (This) abstractType;
 			return "this" + thisStatement.getNotation()
@@ -326,7 +337,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 		Iterator<Element> it = new Iterator<Element>() {
 
-			private Element next = size()== 0 ? null : get(0);
+			private Element next = size() == 0 ? null : get(0);
 			private Element lastElement = null;
 
 			@Override
@@ -387,7 +398,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 		Iterator<Element> it = new Iterator<Element>() {
 
-			private Element before = size()==0 ? null : getLastElement();
+			private Element before = size() == 0 ? null : getLastElement();
 			private Element lastElement = null;
 
 			private Element getLastElement() {
@@ -582,7 +593,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 		Scope globalScope = new Scope(0, 0);
 
 		for (int i = 0; i < tree.size(); i++) {
-			AbstractType element = tree.get(i).getType();
+			AbstractType element = tree.get(i).getDefinition();
 
 			if (element.getPos().getEndPos() > globalScope.getEndPos()) {
 				globalScope.setEndPos(element.getPos().getEndPos());

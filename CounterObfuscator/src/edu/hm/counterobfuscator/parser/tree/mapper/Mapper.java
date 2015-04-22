@@ -47,17 +47,17 @@ public class Mapper {
 		while (it.hasNext()) {
 
 			Element element = it.next();
-			if (isSearchedType(typeSearchFor, element.getType().getType())) {
+			if (isSearchedType(typeSearchFor, element.getDefinition().getDefinition())) {
 
 				Scope scope = null;
 
 				Element parent = element.getParent();
 				if (parent != null) {
-					scope = new Scope(element.getType().getPos().getStartPos(), parent.getType()
+					scope = new Scope(element.getDefinition().getPos().getStartPos(), parent.getDefinition()
 							.getPos().getEndPos());
 				} else {
 					// -1 element has scope until EOF
-					scope = new Scope(element.getType().getPos().getStartPos(), 100000);
+					scope = new Scope(element.getDefinition().getPos().getStartPos(), 100000);
 				}
 
 				mappedElements.add(new MapperElement(scope, element));
@@ -93,7 +93,7 @@ public class Mapper {
 			for (int j = i + 1; j < mappedElements.size(); j++) {
 
 				MapperElement me2 = mappedElements.get(j);
-				if (me.getElement().getType().hasSameName(me2.getElement().getType())) {
+				if (me.getElement().getDefinition().hasSameName(me2.getElement().getDefinition())) {
 
 					me.setScope(new Scope(me.getScope().getStartPos(),
 							me2.getScope().getStartPos() - 1));
@@ -112,6 +112,7 @@ public class Mapper {
 	public List<MapperElement> searchForNameOfElement(String name,
 			Scope scope) {
 		
+
 		Validate.notNull(programmTree);
 		Validate.notNull(name);
 		Validate.notNull(scope);
@@ -124,12 +125,13 @@ public class Mapper {
 
 			Element actualElement = it.next();
 
-			if (scope.isPosWithin(actualElement.getType().getPos())) {
+			if (scope.isPosWithin(actualElement.getDefinition().getPos())) {
 
-				if (actualElement.getType().hasNameInIt(name))
+				if (actualElement.getDefinition().hasNameInIt(name))
 					elements.add(new MapperElement(null, actualElement));
 			}
 		}
+		
 		return elements;
 	}
 
@@ -150,7 +152,7 @@ public class Mapper {
 
 			Element actualElement = it.next();
 
-			if (actualElement.getType().hasNameInIt(oldName))
+			if (actualElement.getDefinition().hasNameInIt(oldName))
 				elements.add(new MapperElement(null, actualElement));
 		}
 		return elements;

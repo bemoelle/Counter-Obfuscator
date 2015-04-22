@@ -31,7 +31,7 @@
 //
 //		assertEquals(jsParser.getTokens().size(), 41);
 //
-//		List<Variable> vars = jsParser.getTypesOfToken(TOKENTYPE.VAR);
+//		List<Variable> vars = jsParser.getDefinitionsOfToken(TOKENTYPE.VAR);
 //
 //		assertEquals(vars.size(), 2);
 //
@@ -58,7 +58,7 @@
 //
 //		assertEquals(jsParser.getTokens().size(), 63);
 //
-//		List<Variable> vars = jsParser.getTypesOfToken(TOKENTYPE.VAR);
+//		List<Variable> vars = jsParser.getDefinitionsOfToken(TOKENTYPE.VAR);
 //
 //		assertEquals(vars.size(), 10);
 //
@@ -143,7 +143,7 @@
 //
 //		assertEquals(jsParser.getTokens().size(), 103);
 //
-//		List<Function> function = jsParser.getTypesOfToken(TOKENTYPE.FUNCTION);
+//		List<Function> function = jsParser.getDefinitionsOfToken(TOKENTYPE.FUNCTION);
 //
 //		assertEquals(function.size(), 3);
 //
@@ -182,7 +182,7 @@
 //
 //		assertEquals(jsParser.getTokens().size(), 143);
 //
-//		List<Function> function = jsParser.getTypesOfToken(TOKENTYPE.FUNCTION);
+//		List<Function> function = jsParser.getDefinitionsOfToken(TOKENTYPE.FUNCTION);
 //
 //		assertEquals(function.size(), 1);
 //
@@ -203,7 +203,7 @@
 //
 //		assertEquals(jsParser.getTokens().size(), 332);
 //
-//		List<Function> function = jsParser.getTypesOfToken(TOKENTYPE.FUNCTION);
+//		List<Function> function = jsParser.getDefinitionsOfToken(TOKENTYPE.FUNCTION);
 //
 //		assertEquals(function.size(), 4);
 //

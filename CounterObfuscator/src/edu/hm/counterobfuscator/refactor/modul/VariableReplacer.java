@@ -3,6 +3,7 @@ package edu.hm.counterobfuscator.refactor.modul;
 import java.util.List;
 
 import edu.hm.counterobfuscator.definitions.DEFINITION;
+import edu.hm.counterobfuscator.definitions.Variable;
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
@@ -41,26 +42,32 @@ public class VariableReplacer implements IModul {
 		for (int i = 0; i < mappedElements.size(); i++) {
 
 			MapperElement actualElement = mappedElements.get(i);
+			
+			// replace not if variable is an object e.g. var test = new Object();
+			if(((Variable)actualElement.getElement().getDefinition()).isObject())
+				continue;
 
-			String name = actualElement.getElement().getType().getName();
-			String value = actualElement.getElement().getType().getValue();
+			String name = actualElement.getElement().getDefinition().getName();
+			String value = actualElement.getElement().getDefinition()
+					.getValue();
 
 			List<MapperElement> elementsWithName = mapper
 					.searchForNameOfElement(name, actualElement.getScope());
+
+			//int refCounter = 0;
 
 			for (int j = 0; j < elementsWithName.size(); j++) {
 
 				Element type = elementsWithName.get(j).getElement();
 
-				type.getType().replaceNameWith(name, value);
-
-				// String toReplace = ValueExtractor.getValue(type);
-				//
-				// // hack if not ++ or --
-				// if (!toReplace.contains(name + "++")) {
-				// toReplace = toReplace.replace(name, value);
-				// ValueExtractor.setValue(type, toReplace);
-				// }
+				if (type.getDefinition().getDefinition() == DEFINITION.VARIABLE || type.getDefinition().getDefinition() == DEFINITION.FOR) {
+					type.getDefinition().replaceValueWith(name, value);
+					//refCounter++;
+				}
+				
+//				if(refCounter < 2) {
+//					type.getDefinition().replaceNameWith(name, value);
+//				}
 			}
 
 			// //is AssoArray

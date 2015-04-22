@@ -55,7 +55,7 @@ public class VariableRenamer implements IModul {
 
 			MapperElement actualElement = mappedElements.get(i);
 
-			String oldName = actualElement.getElement().getType().getName();
+			String oldName = actualElement.getElement().getDefinition().getName();
 
 			// e.g. document.location don't rename such vars
 			if (oldName.contains(".")) {
@@ -75,7 +75,8 @@ public class VariableRenamer implements IModul {
 
 			for (Map.Entry<String, String> entry : mappedNames.entrySet()) {
 
-				call(element, entry);
+				//call(element, entry);
+				element.getDefinition().replaceNameWith(entry.getKey(), entry.getValue());
 			}
 
 		}
@@ -86,18 +87,18 @@ public class VariableRenamer implements IModul {
 
 	private void call(Element element, Entry<String, String> entry) {
 
-		if (element.getType().getType() == DEFINITION.FOR) {
+		if (element.getDefinition().getDefinition() == DEFINITION.FOR) {
 
-			element.getType().replaceNameWith(entry.getKey(), entry.getValue());
+			element.getDefinition().replaceValueWith(entry.getKey(), entry.getValue());
 
-		} else if (element.getType().getType() == DEFINITION.VARIABLE) {
-			String name = element.getType().getName();
+		} else if (element.getDefinition().getDefinition() == DEFINITION.VARIABLE) {
+			String name = element.getDefinition().getName();
 			if (name.contains(entry.getKey())) {
 				name = name.replace(entry.getKey(), entry.getValue());
-				element.getType().setName(name);
+				element.getDefinition().setName(name);
 			}
 		} else {
-			element.getType().replaceNameWith(entry.getKey(), entry.getValue());
+			element.getDefinition().replaceValueWith(entry.getKey(), entry.getValue());
 		}
 
 	}

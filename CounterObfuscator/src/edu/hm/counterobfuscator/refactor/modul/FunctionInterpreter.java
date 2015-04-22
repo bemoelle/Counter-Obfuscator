@@ -4,6 +4,7 @@ import java.util.List;
 
 import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.definitions.DEFINITION;
+import edu.hm.counterobfuscator.definitions.Variable;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
@@ -18,15 +19,19 @@ public class FunctionInterpreter implements IModul {
 	private IProgrammTree programmTree;
 	private List<MapperElement> mappedElements;
 	private InterpreterModul interpreter;
+	private Mapper mapper;
+	private IClient client;
 
 	public FunctionInterpreter(IProgrammTree programmTree, IClient client) {
 
 		this.programmTree = programmTree;
+		this.client = client;
 
 		interpreter = new InterpreterModul(client, true);
 
-		Mapper mapper = new Mapper(programmTree);
-		this.mappedElements = mapper.process(DEFINITION.FUNCTION, DEFINITION.THIS);// TYPE.VARIABLE);
+		mapper = new Mapper(programmTree);
+		this.mappedElements = mapper.process(DEFINITION.FUNCTION,
+				DEFINITION.THIS);// TYPE.VARIABLE);
 	}
 
 	/*
@@ -35,6 +40,15 @@ public class FunctionInterpreter implements IModul {
 	 * @see edu.hm.counterobfuscator.interpreter.IInterpreter#process()
 	 */
 	public IProgrammTree process() {
+
+//		List<MapperElement> mappedVars = mapper.process(DEFINITION.VARIABLE);
+//
+//		for (int i = 0; i < mappedVars.size(); i++) {
+//
+//			Variable var = (Variable) mappedVars.get(i).getElement()
+//					.getDefinition();
+//			client.getJSResult("var " + var.getName() + "=" + var.getValue());
+//		}
 
 		for (int i = 0; i < mappedElements.size(); i++) {
 

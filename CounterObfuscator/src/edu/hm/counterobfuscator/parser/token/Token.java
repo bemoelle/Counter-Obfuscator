@@ -34,7 +34,7 @@ public class Token {
 	/**
 	 * @return TOKENTYPE
 	 */
-	public TOKENTYPE getType() {
+	public TOKENTYPE getDefinition() {
 		return type;
 	}
 

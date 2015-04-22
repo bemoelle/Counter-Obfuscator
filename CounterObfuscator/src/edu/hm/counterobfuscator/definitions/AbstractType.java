@@ -24,7 +24,7 @@ public abstract class AbstractType {
 	/**
 	 * @return type
 	 */
-	public DEFINITION getType() {
+	public DEFINITION getDefinition() {
 		return type;
 	}
 
@@ -79,12 +79,26 @@ public abstract class AbstractType {
 	 * @param name
 	 * @param value
 	 */
-	public abstract void replaceNameWith(String name, String value);
+	public void replaceNameWith(String nameToReplace, String value) {
+		
+		name = name.replaceAll("^" + nameToReplace + "$", value);
+
+	}
+
+	/**
+	 * @param name
+	 * @param value
+	 */
+	public abstract void replaceValueWith(String name, String value);
 
 	/**
 	 * @param name
 	 */
-	public abstract void replaceName(String name);
+	public void replaceName(String name) {
+		
+		
+		
+	}
 
 	/**
 	 * @return

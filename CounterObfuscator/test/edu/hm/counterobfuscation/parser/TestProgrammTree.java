@@ -74,7 +74,7 @@ public class TestProgrammTree {
 		while (it.hasNext()) {
 
 			Element el = it.next();
-			assertEquals(el.getType().getName(), (counter++).toString());
+			assertEquals(el.getDefinition().getName(), (counter++).toString());
 
 		}
 	}
@@ -91,7 +91,7 @@ public class TestProgrammTree {
 		while (it.hasNext()) {
 
 			Element el = it.next();
-			assertEquals(el.getType().getName(), (counter--).toString());
+			assertEquals(el.getDefinition().getName(), (counter--).toString());
 
 		}
 	}
@@ -111,7 +111,7 @@ public class TestProgrammTree {
 
 			Element el = it1.next();
 			
-			if(el.getType().getName().equals("4"))
+			if(el.getDefinition().getName().equals("4"))
 				it1.remove();
 		
 		}
@@ -124,12 +124,12 @@ public class TestProgrammTree {
 		while (it2.hasNext()) {
 
 			Element el = it2.next();
-			assertEquals(el.getType().getName(), testElements[counter++]);
+			assertEquals(el.getDefinition().getName(), testElements[counter++]);
 			
-			if(el.getType().getName().equals("3"))
+			if(el.getDefinition().getName().equals("3"))
 				ele3 = el;
 			
-			if(el.getType().getName().equals("8"))
+			if(el.getDefinition().getName().equals("8"))
 				ele8 = el;
 			
 		}
@@ -137,8 +137,8 @@ public class TestProgrammTree {
 		assertNotNull(ele3);
 		assertNotNull(ele8);
 		
-		assertEquals(ele3.getNext().getType().getName(), "8");
-		assertEquals(ele8.getBefore().getType().getName(), "3");
+		assertEquals(ele3.getNext().getDefinition().getName(), "8");
+		assertEquals(ele8.getBefore().getDefinition().getName(), "3");
 		
 	}
 }

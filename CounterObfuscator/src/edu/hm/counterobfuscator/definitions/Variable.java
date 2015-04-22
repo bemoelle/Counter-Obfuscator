@@ -16,14 +16,15 @@ public class Variable extends AbstractType {
 	private boolean executable;
 	private boolean isObject;
 	private String parameter;
-	private String	assign;
+	private String assign;
 
-	public Variable(Scope pos, String name, String assign, String value, boolean isObject) {
+	public Variable(Scope pos, String name, String assign, String value,
+			boolean isObject) {
 		super(DEFINITION.VARIABLE, pos, name);
 		this.assign = assign;
 
 		value = value.replaceAll("^\\s", "");
-		
+
 		if (isObject) {
 			this.value = value.substring(4, value.indexOf("("));
 			this.parameter = value.substring(value.indexOf("(") + 1,
@@ -58,7 +59,7 @@ public class Variable extends AbstractType {
 	public boolean isObject() {
 		return isObject;
 	}
-	
+
 	public String getParameter() {
 		return parameter;
 	}
@@ -83,60 +84,87 @@ public class Variable extends AbstractType {
 		this.assign = assign;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.types.AbstractType#hasSameName(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.types.AbstractType#hasSameName(java.lang.Object)
 	 */
 	@Override
 	public boolean hasSameName(Object other) {
-		
-		if(!(other instanceof Variable)) {
+
+		if (!(other instanceof Variable)) {
 			return false;
 		}
-		
+
 		Variable var = (Variable) other;
-		
-		if(super.name.equals(var.name)) {
-			if(assign.equals(var.assign)) {
+
+		if (super.name.equals(var.name)) {
+			if (assign.equals(var.assign)) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.types.AbstractType#hasNameInIt(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.types.AbstractType#hasNameInIt(java.lang.String)
 	 */
 	@Override
 	public boolean hasNameInIt(String nameToTest) {
-		
-		String toTest = name + value;
-		
-		if(toTest.indexOf(nameToTest) != -1)
+
+		if (name.matches("^" + nameToTest + "$")) {
 			return true;
-		
+		}
+
+		if (value.indexOf(nameToTest) > -1) {
+			return true;
+		}
+
+		if (parameter.indexOf(nameToTest) > -1) {
+			return true;
+		}
+
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
 	public void replaceNameWith(String nameToReplace, String valueToReplace) {
 
-		//name = name.replace(nameToReplace, valueToReplace);
-		value = value.replace(nameToReplace, valueToReplace);
+
+			name = name.replaceAll("^" + nameToReplace + "$", valueToReplace);
 		
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String)
+	@Override
+	public void replaceValueWith(String nameToReplace, String valueToReplace) {
+
+		value = value.replaceAll(nameToReplace, valueToReplace);
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String)
 	 */
 	@Override
 	public void replaceName(String name) {
 
 		this.name = name;
-		
+
 	}
 
 }

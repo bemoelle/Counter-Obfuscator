@@ -87,7 +87,7 @@ public class Element {
 	/**
 	 * @return return type of actual element
 	 */
-	public AbstractType getType() {
+	public AbstractType getDefinition() {
 
 		return type;
 	}
@@ -130,13 +130,13 @@ public class Element {
 		// } else {
 		Element otherTypeTreeElement = (Element) other;
 
-		if (this.getType() != otherTypeTreeElement.getType())
+		if (this.getDefinition() != otherTypeTreeElement.getDefinition())
 			return false;
-		if (!this.getType().getPos()
-				.equals(otherTypeTreeElement.getType().getPos()))
+		if (!this.getDefinition().getPos()
+				.equals(otherTypeTreeElement.getDefinition().getPos()))
 			return false;
-		if (!this.getType().getName()
-				.equals(otherTypeTreeElement.getType().getName()))
+		if (!this.getDefinition().getName()
+				.equals(otherTypeTreeElement.getDefinition().getName()))
 			return false;
 
 		return true;

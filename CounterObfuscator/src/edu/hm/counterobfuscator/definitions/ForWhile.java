@@ -24,16 +24,19 @@ public class ForWhile extends AbstractType {
 		this.headString = headString;
 		this.bodyAsString = bodyAsString;
 
-		boolean isGlobal = false;
+		if (name.equals("for")) {
 
-		String varName = headString.substring(1, headString.indexOf("="));
-		if (varName.matches("var.*")) {
-			varName = varName.replace("var", "");
-			isGlobal = true;
+			boolean isGlobal = false;
+
+			String varName = headString.substring(1, headString.indexOf("="));
+			if (varName.matches("var.*")) {
+				varName = varName.replace("var", "");
+				isGlobal = true;
+			}
+
+			this.head = new Variable(pos, varName, "", "", false);
+			this.head.setGlobal(isGlobal);
 		}
-
-		this.head = new Variable(pos, varName, "", "", false);
-		this.head.setGlobal(isGlobal);
 	}
 
 	public Variable getHead() {
@@ -96,7 +99,15 @@ public class ForWhile extends AbstractType {
 	@Override
 	public void replaceNameWith(String nameToReplace, String valueToReplace) {
 
-		headString = headString.replaceAll("^[var]" + nameToReplace, valueToReplace);
+		headString = headString.replaceAll("^[var]" + nameToReplace,
+				valueToReplace);
+
+	}
+
+	@Override
+	public void replaceValueWith(String nameToReplace, String valueToReplace) {
+
+		headString = headString.replaceAll(nameToReplace, valueToReplace);
 
 	}
 

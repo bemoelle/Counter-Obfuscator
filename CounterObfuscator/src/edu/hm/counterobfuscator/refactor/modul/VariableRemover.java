@@ -45,7 +45,7 @@ public class VariableRemover implements IModul {
 		for (int i = 0; i < mappedElements.size(); i++) {
 
 			MapperElement me = mappedElements.get(i);
-			String nameLookingFor = me.getElement().getType().getName();
+			String nameLookingFor = me.getElement().getDefinition().getName();
 
 			int refCounter = 0;
 
@@ -62,18 +62,17 @@ public class VariableRemover implements IModul {
 					continue;
 				}
 
-				String value = actualElement.getType().getValue();
-				if (value.indexOf(nameLookingFor) > -1) {
-					refCounter++;
-				}
+//				if (actualElement.getDefinition().hasNameInIt(nameLookingFor)) {
+//					refCounter++;
+//				}
 
-				String name = actualElement.getType().getName();
+				//String name = actualElement.getDefinition().getName();
 				
-				if (name.indexOf(nameLookingFor) > -1) {
+				if (actualElement.getDefinition().hasNameInIt(nameLookingFor)) {
 
-					if (actualElement.getType().getType() == DEFINITION.VARIABLE) {
+					if (actualElement.getDefinition().getDefinition() == DEFINITION.VARIABLE) {
 
-						Variable var = (Variable) actualElement.getType();
+						Variable var = (Variable) actualElement.getDefinition();
 
 						if (!var.isExecutable()) {
 							refCounter++;

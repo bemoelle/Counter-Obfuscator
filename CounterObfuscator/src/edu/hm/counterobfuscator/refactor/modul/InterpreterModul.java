@@ -64,7 +64,7 @@ public class InterpreterModul {
 	 */
 	private IProgrammTree callExecuteElement(Element element) throws Exception {
 
-		switch (element.getType().getType()) {
+		switch (element.getDefinition().getDefinition()) {
 		case FUNCTION:
 			return executeFunction(element);
 		case CALL:
@@ -95,7 +95,7 @@ public class InterpreterModul {
 	 */
 	private void executeAjax(Element element) {
 
-		Ajax ajax = ((Ajax) element.getType());
+		Ajax ajax = ((Ajax) element.getDefinition());
 
 		String result = executeJS(ajax.getName() + ";").toString();
 		
@@ -135,7 +135,7 @@ public class InterpreterModul {
 	private IProgrammTree executeFunction(Element element)
 			throws IllegalArgumentException, IOException, EncoderException {
 
-		Function func = ((Function) element.getType());
+		Function func = ((Function) element.getDefinition());
 		if (func.isPacked()) {
 
 			log.info("packed function found!");
@@ -163,7 +163,7 @@ public class InterpreterModul {
 
 	private void executeFunctionCall(Element element) throws Exception {
 
-		Call callStatement = ((Call) element.getType());
+		Call callStatement = ((Call) element.getDefinition());
 
 		String resultValue = executeJS(callStatement.getValue()).toString();
 		if (resultValue.indexOf("NO_EXECUTION") < 0) {
@@ -193,7 +193,7 @@ public class InterpreterModul {
 
 	private void executeVariable(Element element) throws Exception {
 
-		Variable var = ((Variable) element.getType());
+		Variable var = ((Variable) element.getDefinition());
 
 		String value = var.getValue();
 		value = value.replace("\"", "\'");
@@ -238,19 +238,19 @@ public class InterpreterModul {
 
 	private void executeFor(Element element) {
 
-		ForWhile forWhile = ((ForWhile) element.getType());
+		ForWhile forWhile = ((ForWhile) element.getDefinition());
 
 	}
 
 	private void executeDefault(Element element) {
 
-		Default defaultType = ((Default) element.getType());
+		Default defaultType = ((Default) element.getDefinition());
 
 	}
 
 	private void executeThis(Element element) {
 
-		This type = ((This) element.getType());
+		This type = ((This) element.getDefinition());
 
 		String name = type.getName();
 

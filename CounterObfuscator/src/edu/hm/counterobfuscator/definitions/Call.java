@@ -15,13 +15,13 @@ import edu.hm.counterobfuscator.helper.Scope;
  * 
  */
 public class Call extends AbstractType {
-	private String	value;
-	private String	parameter;
+	private String value;
+	private String parameter;
 
 	public Call(Scope pos, String name, String parameter, String value) {
 		super(DEFINITION.CALL, pos, name);
 		this.parameter = parameter;
-		
+
 		this.value = value;
 	}
 
@@ -48,8 +48,11 @@ public class Call extends AbstractType {
 		return parameter;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.types.AbstractType#hasSameName(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.types.AbstractType#hasSameName(java.lang.Object)
 	 */
 	@Override
 	public boolean hasSameName(Object other) {
@@ -57,30 +60,28 @@ public class Call extends AbstractType {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.types.AbstractType#hasNameInIt(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.types.AbstractType#hasNameInIt(java.lang.String)
 	 */
 	@Override
-	public boolean hasNameInIt(String name) {
-		// TODO Auto-generated method stub
+	public boolean hasNameInIt(String nameToTest) {
+
+		if (name.matches("^" + nameToTest + "$")) {
+			return true;
+		}
+
+		if (parameter.indexOf(nameToTest) > -1) {
+			return true;
+		}
+
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String, java.lang.String)
-	 */
 	@Override
-	public void replaceNameWith(String nameToReplace, String valueToReplace) {
-
-		name = name.replace(nameToReplace, valueToReplace);
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String)
-	 */
-	@Override
-	public void replaceName(String name) {
-
+	public void replaceValueWith(String name, String value) {
 		// TODO Auto-generated method stub
 		
 	}

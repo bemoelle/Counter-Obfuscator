@@ -8,8 +8,9 @@ import javax.script.ScriptException;
 import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
-import edu.hm.counterobfuscator.refactor.modul.LoopChecker;
+import edu.hm.counterobfuscator.refactor.modul.ForLoopChecker;
 import edu.hm.counterobfuscator.refactor.modul.LoopVariableRenamer;
+import edu.hm.counterobfuscator.refactor.modul.WhileLoopChecker;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -39,13 +40,18 @@ public class LoopRefactor implements IRefactor {
 	@Override
 	public IProgrammTree process() throws ScriptException {
 
-		LoopVariableRenamer variableRenamer = new LoopVariableRenamer(
-				programmTree);
-		IProgrammTree tree = variableRenamer.process();
+		IProgrammTree tree = programmTree;
 
-		LoopChecker checker = new LoopChecker(tree, client);
-		return checker.process();
+		LoopVariableRenamer variableRenamer = new LoopVariableRenamer(tree);
+		tree = variableRenamer.process();
 
+		ForLoopChecker forChecker = new ForLoopChecker(tree, client);
+		tree = forChecker.process();
+
+		WhileLoopChecker whileChecker = new WhileLoopChecker(tree, client);
+		tree = whileChecker.process();
+
+		return tree;
 	}
 
 }

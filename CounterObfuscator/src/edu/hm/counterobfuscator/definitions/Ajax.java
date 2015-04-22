@@ -50,24 +50,9 @@ public class Ajax extends AbstractType {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String, java.lang.String)
-	 */
 	@Override
-	public void replaceNameWith(String nameToReplace, String valueToReplace) {
-
-		name = name.replace(nameToReplace, valueToReplace);
-		value = value.replace(nameToReplace, valueToReplace);
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.hm.counterobfuscator.types.AbstractType#replaceName(java.lang.String)
-	 */
-	@Override
-	public void replaceName(String name) {
-
-		System.out.println("sdsds");
+	public void replaceValueWith(String name, String value) {
+		// TODO Auto-generated method stub
 		
 	}
 

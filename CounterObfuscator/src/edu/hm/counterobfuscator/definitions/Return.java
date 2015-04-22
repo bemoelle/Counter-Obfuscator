@@ -3,6 +3,9 @@
  */
 package edu.hm.counterobfuscator.definitions;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import edu.hm.counterobfuscator.helper.Scope;
 
 /**
@@ -41,8 +44,17 @@ public class Return extends AbstractType {
 	 * edu.hm.counterobfuscator.types.AbstractType#hasNameInIt(java.lang.String)
 	 */
 	@Override
-	public boolean hasNameInIt(String name) {
-		// TODO Auto-generated method stub
+	public boolean hasNameInIt(String nameToTest) {
+
+		// if return value contains more than one variable
+		String[] names = name.split("\\+");
+
+		for (int i = 0; i < names.length; i++) {
+			if(names[i].matches(nameToTest)) {
+				return true;
+			}
+		}
+
 		return false;
 	}
 
@@ -56,7 +68,38 @@ public class Return extends AbstractType {
 	@Override
 	public void replaceNameWith(String nameToReplace, String valueToReplace) {
 
-		name = name.replace(nameToReplace, valueToReplace);
+		// if return value contains more than one variable
+		String[] names = name.split("\\+");
+
+		for (int i = 0; i < names.length; i++) {
+
+			names[i] = names[i].replaceAll("^" + nameToReplace + "$",
+					valueToReplace);
+		}
+
+		String newName = "";
+
+		if (names.length > 1) {
+			for (int i = 0; i < names.length; i++) {
+
+				newName += names[i];
+
+				if (i < (names.length - 1)) {
+					newName += "+";
+				}
+
+			}
+		} else {
+			newName = names[0];
+		}
+
+		name = newName;
+	}
+
+	@Override
+	public void replaceValueWith(String nameToReplace, String valueToReplace) {
+
+		replaceNameWith(nameToReplace, valueToReplace);
 	}
 
 	/*

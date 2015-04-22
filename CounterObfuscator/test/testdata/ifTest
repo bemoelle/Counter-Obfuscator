@@ -1,1 +1,1 @@
-function(){var a=0;if(true){a=10;}var b=0;if(false){b=10;}var c=0;if(a===10){c=10;}return a+b+c;}
+function(){var xxx=0;if(true){xxx=10;}var yyy=0;if(false){yyy=10;}var zzz=0;if(xxx===10){zzz=10;}return xxx+yyy+zzz;}

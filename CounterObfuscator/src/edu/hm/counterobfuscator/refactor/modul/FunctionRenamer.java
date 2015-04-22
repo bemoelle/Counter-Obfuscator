@@ -20,8 +20,10 @@ public class FunctionRenamer implements IModul {
 
 	private IProgrammTree programmTree;
 	private List<MapperElement> mappedElements;
-	private String funcName = "function";
+	private String functionName = "function";
+	private String objectName = "object";
 	private int funcNumber = 1;
+	private int objectNumber = 1;
 	private Mapper mapper;
 
 	public FunctionRenamer(IProgrammTree programmTree) {
@@ -49,7 +51,8 @@ public class FunctionRenamer implements IModul {
 		for (int i = 0; i < mappedElements.size(); i++) {
 
 			MapperElement actualElement = mappedElements.get(i);
-			Function function = (Function) actualElement.getElement().getType();
+			Function function = (Function) actualElement.getElement()
+					.getDefinition();
 
 			// nothing to do when function has no name
 			if ("".equals(function.getName())) {
@@ -61,14 +64,21 @@ public class FunctionRenamer implements IModul {
 							actualElement.getScope());
 
 			String oldName = function.getName();
-			String newName = funcName + funcNumber++;
+			String newName = "";
+
+			if (elementsWithOldName.size() == 0) {
+				newName = functionName + funcNumber++;
+			} else {
+				newName = objectName + objectNumber++;
+			}
+
 			function.setName(newName);
 
 			for (int k = 0; k < elementsWithOldName.size(); k++) {
 
 				Element type = elementsWithOldName.get(k).getElement();
 
-				type.getType().replaceNameWith(oldName, newName);
+				type.getDefinition().replaceValueWith(oldName, newName);
 
 			}
 

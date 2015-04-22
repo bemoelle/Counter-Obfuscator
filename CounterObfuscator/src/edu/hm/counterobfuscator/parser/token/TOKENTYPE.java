@@ -42,5 +42,7 @@ public enum TOKENTYPE {
 	CATCH,
 	CALL,
 	BACKSLASH,
-	JQUERY
+	JQUERY,
+	IF,
+	ELSE
 }

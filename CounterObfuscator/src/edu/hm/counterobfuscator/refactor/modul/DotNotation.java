@@ -50,10 +50,10 @@ public class DotNotation implements IModul {
 
 				if (me.getElement() == actualElement) {
 
-					String name = actualElement.getType().getName();
+					String name = actualElement.getDefinition().getName();
 					if (!name.contains(".")) {
 						name = name.replaceAll("[\\[\\]\\']", "");
-						This thisStatement = ((This) actualElement.getType());
+						This thisStatement = ((This) actualElement.getDefinition());
 						thisStatement.setName(name);
 						thisStatement.setNotation(".");
 					}

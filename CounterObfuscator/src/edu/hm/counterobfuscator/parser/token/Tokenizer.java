@@ -140,6 +140,10 @@ public class Tokenizer implements ITokenizer {
 			return TOKENTYPE.VAR;
 		case "for":
 			return TOKENTYPE.FOR;
+		case "if":
+			return TOKENTYPE.IF;
+		case "else":
+			return TOKENTYPE.ELSE;
 		case "while":
 			return TOKENTYPE.WHILE;
 		case "try":

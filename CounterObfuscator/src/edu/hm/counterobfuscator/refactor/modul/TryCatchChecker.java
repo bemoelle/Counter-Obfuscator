@@ -54,7 +54,7 @@ public class TryCatchChecker implements IModul {
 
 			MapperElement actualElement = mappedElements.get(i);
 
-			TryCatch tryCatch = (TryCatch) actualElement.getElement().getType();
+			TryCatch tryCatch = (TryCatch) actualElement.getElement().getDefinition();
 
 			// nothing to do with catch statement
 			if ("catch".equals(tryCatch.getName()))

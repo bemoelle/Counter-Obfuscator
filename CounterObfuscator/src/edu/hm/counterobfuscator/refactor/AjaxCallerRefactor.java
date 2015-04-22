@@ -1,5 +1,7 @@
 package edu.hm.counterobfuscator.refactor;
 
+import java.io.IOException;
+
 import javax.script.ScriptException;
 
 import edu.hm.counterobfuscator.client.IClient;
@@ -43,7 +45,12 @@ public class AjaxCallerRefactor implements IRefactor {
 
 		IProgrammTree tree = programmTree;
 
-		IModul ajaxCaller = new AjaxCaller(tree, client);
+		IModul ajaxCaller = null;
+		try {
+			ajaxCaller = new AjaxCaller(tree, client);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		tree = ajaxCaller.process();
 
 		return tree;
