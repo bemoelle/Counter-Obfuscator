@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import net.sourceforge.htmlunit.corejs.javascript.IdFunctionObject;
 import net.sourceforge.htmlunit.corejs.javascript.NativeArray;
 import net.sourceforge.htmlunit.corejs.javascript.NativeObject;
+import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
@@ -40,15 +41,6 @@ public class HTMLUnitClient implements IClient {
 		webClient.getOptions().setCssEnabled(false);
 		webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 		webClient.getCookieManager().setCookiesEnabled(true);
-		
-//		AjaxController controller = webClient.getAjaxController();
-//		
-//		String url2 = "ajax.js";
-//		WebRequest request=new WebRequest(new URL(url2),HttpMethod.GET);
-//	    request.setAdditionalHeader("Accept-Encoding","gzip");
-//	    webClient.getPage(request);
-		
-		
 
 		currentPage = webClient.getPage(url);
 	}
@@ -132,6 +124,10 @@ public class HTMLUnitClient implements IClient {
 		} else if (result.getClass() == NativeObject.class) {
 
 			return processNativeObject((NativeObject) result);
+			
+		} else if (result.getClass() == Undefined.class) {
+			
+			return "undefined";
 
 		} else {
 			return result;

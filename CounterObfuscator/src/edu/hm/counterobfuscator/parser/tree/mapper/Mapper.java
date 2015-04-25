@@ -66,11 +66,16 @@ public class Mapper {
 		return testOfReAssign(mappedElements);
 	}
 
+	/**
+	 * @param typeSearchFor
+	 * @param typeToTest
+	 * @return true if typeToTest is in typeSearchFor otherwise false
+	 */
 	private boolean isSearchedType(DEFINITION[] typeSearchFor, DEFINITION typeToTest) {
 		
-		for (DEFINITION test : typeSearchFor) {
+		for (DEFINITION definition : typeSearchFor) {
 
-			if (test == typeToTest)
+			if (definition == typeToTest)
 				return true;
 		}
 		return false;
@@ -107,7 +112,7 @@ public class Mapper {
 	/**
 	 * @param elementToTest
 	 * @param scope
-	 * @return
+	 * @return true if element if name is in scope
 	 */
 	public List<MapperElement> searchForNameOfElement(String name,
 			Scope scope) {
@@ -137,7 +142,7 @@ public class Mapper {
 
 	/**
 	 * @param oldName
-	 * @return
+	 * @return elements with oldName
 	 */
 	public List<MapperElement> searchForName(String oldName) {
 		

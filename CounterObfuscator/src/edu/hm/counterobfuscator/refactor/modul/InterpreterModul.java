@@ -146,8 +146,12 @@ public class InterpreterModul {
 
 			if (resultAsString.indexOf("NO_EXECUTION") < 0) {
 
+				if(resultAsString.length() > 1) {
 				resultAsString = resultAsString.substring(1,
 						resultAsString.length() - 1);
+				} else {
+					resultAsString += ";";
+				}
 				IProgrammTree tree = ParserFactory
 						.create(resultAsString, false).getProgrammTree();
 				element.removeAllChildren();

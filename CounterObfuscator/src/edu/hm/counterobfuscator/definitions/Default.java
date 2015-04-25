@@ -19,7 +19,7 @@ public class Default extends AbstractType {
 	 * @param name
 	 */
 	public Default(Scope pos, String name) {
-
+	
 		super(DEFINITION.DEFAULT, pos, name);
 	}
 

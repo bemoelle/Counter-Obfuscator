@@ -16,13 +16,13 @@ import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
  * 
  * renames variable in loop body which a defined in loop head
  */
-public class LoopVariableRenamer implements IModul {
+public class ForLoopVariableRenamer implements IModul {
 
 	private IProgrammTree			programmTree;
 	private List<MapperElement>	mappedElements;
 	private int							number	= 1;
 
-	public LoopVariableRenamer(IProgrammTree programmTree) {
+	public ForLoopVariableRenamer(IProgrammTree programmTree) {
 
 		this.programmTree = programmTree;
 
@@ -45,7 +45,7 @@ public class LoopVariableRenamer implements IModul {
 
 			Variable var = loop.getHead();
 
-			// only look in the children
+			// only look at the children
 			Mapper childrenMapper = new Mapper(children);
 			List<MapperElement> elementsWithNewName = childrenMapper.searchForName(var.getName());
 
@@ -56,17 +56,9 @@ public class LoopVariableRenamer implements IModul {
 				Element type = elementsWithNewName.get(k).getElement();
 				
 				type.getDefinition().replaceValueWith(var.getName(), newName);
-
-//				ValueExtractor.setName(type,
-//						ValueExtractor.getName(type).replaceAll(var.getName(), newName));
-//				ValueExtractor.setValue(type,
-//						ValueExtractor.getValue(type).replaceAll(var.getName(), newName));
-
 			}
 
 			loop.replaceValueWith(var.getName(), newName);
-//			loop.setHeadString(loop.getHeadString().replaceAll(var.getName(), newName));
-
 		}
 
 		return programmTree;

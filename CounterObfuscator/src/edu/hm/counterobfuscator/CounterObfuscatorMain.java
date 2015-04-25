@@ -26,7 +26,7 @@ public class CounterObfuscatorMain {
 	public static void main(String[] args) throws IOException, ScriptException,
 			IllegalArgumentException, EncoderException {
 
-		DeObfuscatorFactory deObfuscatorFactory = new DeObfuscatorFactory("test/testdata/functionTest", true,
+		DeObfuscatorFactory deObfuscatorFactory = new DeObfuscatorFactory("src/Test", true,
 				"http://www.google.com/", null);
 
 		IProgrammTree resultTree = deObfuscatorFactory.create();

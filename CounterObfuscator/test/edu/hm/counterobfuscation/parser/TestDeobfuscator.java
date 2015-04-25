@@ -89,7 +89,7 @@ public class TestDeobfuscator {
 
 		assertEquals(def1.getName(), "var1");
 		assertEquals(def1.getValue(), "++");
-		assertEquals(def2.getName(), "alert(functionVar1+functionVar2);");
+		assertEquals(def2.getName(), "alert(functionVar1+functionVar2)");
 
 		assertEquals(f1t2.getName(), "GetCount");
 

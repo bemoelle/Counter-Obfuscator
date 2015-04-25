@@ -66,6 +66,25 @@ public class TokenAnalyser implements ITokenAnalyser {
 			return;
 		}
 		
+		for(int i=0; i< allTokensOfJSCode.size(); i++) {
+			if(allTokensOfJSCode.get(i).getDefinition() == TOKENTYPE.WHITESPACE) {
+				allTokensOfJSCode.remove(i);
+			} else {
+				break;
+			}
+		}
+		
+		
+		for(int i=allTokensOfJSCode.size()-1; i>=0; i--) {
+			
+			if(allTokensOfJSCode.get(i).getDefinition() == TOKENTYPE.WHITESPACE) {
+				allTokensOfJSCode.remove(i);
+			} else {
+				break;
+			}
+		}
+		
+		
 		while (hasNextToken()) {
 
 			call(actualToken.getDefinition());
@@ -258,16 +277,12 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 		if (assign > 0 && assign < endPos) {
 
-			System.out.println(getActualToken().getValue()
-					+ "-------------------------------------");
 			nextToken = getNextTokenOf(getActualToken());
 
 			if (!(nextToken.getDefinition() == TOKENTYPE.PLUS)
 					&& !(nextToken.getDefinition() == TOKENTYPE.MINUS)) {
 				setNextTokenTo(assign);
 				nextToken = getActualToken();
-				System.out.println(getActualToken().getValue()
-						+ "99999999999999999999999999999999999999999999");
 			}
 
 		} else {
@@ -299,7 +314,6 @@ public class TokenAnalyser implements ITokenAnalyser {
 			break;
 		case PLUS:
 		case MINUS:
-			System.out.println("0000000000000000000000000000000");
 			int assign1 = -100;
 			int plusMinus = nextToken.getPos() - 1;
 
@@ -335,8 +349,6 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 			break;
 		case ASSIGN:
-			System.out.println("+++++++++++++++++++++++++++");
-
 			// Variable(Position pos, String name, String value, boolean
 			// isObject)
 			// var test = new Name(Parameter); wird in processVar() behandelt
@@ -441,23 +453,6 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 		}
 		
-		int i=0;
-		for(String y: xxx) {
-			System.out.println("-- " + i++ + " -- " + y);
-		}
-
-		// while (indexCommaOld > -1) {
-		// System.out.println("sdsds");
-		// int indexComma = getPositionOfNextToken(indexCommaOld+1,
-		// TOKENTYPE.COMMA);
-		// xxx.add(getNameOfType(indexCommaOld, indexComma));
-		// indexComma = indexCommaOld;
-		// }
-
-		// remove var statement to flat the array
-		// if (getAll.indexOf("var") > -1) {
-		// getAll = getAll.replaceAll("var", "");
-		// }
 		return xxx;
 
 	}

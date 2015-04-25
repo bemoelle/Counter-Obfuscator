@@ -32,22 +32,22 @@ public class JauntWebScraperDemo {
 			  userAgent.setHandler("image/jpeg", handlerForBinary);
 			 
 			  //retrieve CSS content as String
-			  //String url ="/home/benni/test2.html"; 
-			  String url = "https://familysearch.org/search/record/results?count=20&query=%2Bgivenname%3AJacob~%20%2Bsurname%3AHof~";
-			  //File file = new File(url);
-			  //userAgent.open(file);
+			  String url ="http://heidelberg.craigslist.de/"; 
+//			  String url = "https://familysearch.org/search/record/results?count=20&query=%2Bgivenname%3AJacob~%20%2Bsurname%3AHof~";
+			  File file = new File(url);
+			 // userAgent.open(file);
 			  
 			  userAgent.visit(url);
 			  
 			  String scrapedContent = userAgent.doc.innerHTML();
 			  System.out.println(scrapedContent);
 			  
-//			  DeObfuscatorFactory deObfuscatorFactory = new DeObfuscatorFactory("testJaunt", true,
-//						"http://www.google.com/", null);
-//
-//				IProgrammTree resultTree = deObfuscatorFactory.create();
-//
-//				resultTree.print();
+			  DeObfuscatorFactory deObfuscatorFactory = new DeObfuscatorFactory(scrapedContent, false,
+						url, null);
+
+				IProgrammTree resultTree = deObfuscatorFactory.create();
+
+				resultTree.print();
 
 			}
 			catch(JauntException e){

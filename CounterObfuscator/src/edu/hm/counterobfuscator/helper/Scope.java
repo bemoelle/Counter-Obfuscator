@@ -71,25 +71,4 @@ public class Scope {
 
 		return true;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object other) {
-
-		if (!(other instanceof Scope)) {
-			return false;
-		}
-
-		Scope otherPosition = (Scope) other;
-		if (this.startPos != otherPosition.startPos
-				|| this.endPos != otherPosition.endPos) {
-			return false;
-		}
-
-		return true;
-	}
 }

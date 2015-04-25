@@ -8,9 +8,9 @@ import javax.script.ScriptException;
 import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
+import edu.hm.counterobfuscator.refactor.modul.IfChecker;
 import edu.hm.counterobfuscator.refactor.modul.ForLoopChecker;
 import edu.hm.counterobfuscator.refactor.modul.ForLoopVariableRenamer;
-import edu.hm.counterobfuscator.refactor.modul.WhileLoopChecker;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -18,13 +18,13 @@ import edu.hm.counterobfuscator.refactor.modul.WhileLoopChecker;
  * 
  *       calls all module which a responsible to refactor loops in the programm
  */
-public class LoopRefactor implements IRefactor {
+public class IfRefactor implements IRefactor {
 
 	private IProgrammTree programmTree;
 	private Setting setting;
 	private IClient client;
 
-	public LoopRefactor(IProgrammTree programmTree, IClient client,
+	public IfRefactor(IProgrammTree programmTree, IClient client,
 			Setting setting) {
 
 		this.programmTree = programmTree;
@@ -40,18 +40,9 @@ public class LoopRefactor implements IRefactor {
 	@Override
 	public IProgrammTree process() throws ScriptException {
 
-		IProgrammTree tree = programmTree;
+		IfChecker checker = new IfChecker(programmTree, client);
+		return checker.process();
 
-		ForLoopVariableRenamer variableRenamer = new ForLoopVariableRenamer(tree);
-		tree = variableRenamer.process();
-
-		ForLoopChecker forChecker = new ForLoopChecker(tree, client);
-		tree = forChecker.process();
-
-		WhileLoopChecker whileChecker = new WhileLoopChecker(tree, client);
-		tree = whileChecker.process();
-
-		return tree;
 	}
 
 }
