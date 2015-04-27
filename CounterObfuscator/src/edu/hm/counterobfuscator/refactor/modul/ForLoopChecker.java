@@ -67,7 +67,13 @@ public class ForLoopChecker implements IModul {
 			Object result = client.getJSResult(var + head);
 
 			if ((Boolean) result == false) {
-				remove(actualElement, children);
+				
+				if(actualElement.getElement().getParent() == null) {
+					remove(actualElement, children);
+				} else {
+					actualElement.getElement().getParent().getChildren()
+					.removeElementAndAllChildren(actualElement.getElement());
+				}	
 			} else {
 
 				int index = head.indexOf("<");

@@ -10,6 +10,7 @@ import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.refactor.modul.ForLoopChecker;
 import edu.hm.counterobfuscator.refactor.modul.ForLoopVariableRenamer;
+import edu.hm.counterobfuscator.refactor.modul.IModul;
 import edu.hm.counterobfuscator.refactor.modul.WhileLoopChecker;
 
 /**
@@ -20,12 +21,11 @@ import edu.hm.counterobfuscator.refactor.modul.WhileLoopChecker;
  */
 public class LoopRefactor implements IRefactor {
 
-	private IProgrammTree programmTree;
-	private Setting setting;
-	private IClient client;
+	private IProgrammTree	programmTree;
+	private Setting			setting;
+	private IClient			client;
 
-	public LoopRefactor(IProgrammTree programmTree, IClient client,
-			Setting setting) {
+	public LoopRefactor(IProgrammTree programmTree, IClient client, Setting setting) {
 
 		this.programmTree = programmTree;
 		this.client = client;
@@ -42,14 +42,20 @@ public class LoopRefactor implements IRefactor {
 
 		IProgrammTree tree = programmTree;
 
-		ForLoopVariableRenamer variableRenamer = new ForLoopVariableRenamer(tree);
-		tree = variableRenamer.process();
+		if (setting.isConfigured("ForLoopVariableRenamer")) {
+			IModul variableRenamer = new ForLoopVariableRenamer(tree);
+			tree = variableRenamer.process();
+		}
 
-		ForLoopChecker forChecker = new ForLoopChecker(tree, client);
-		tree = forChecker.process();
+		if (setting.isConfigured("ForLoopChecker")) {
+			IModul forChecker = new ForLoopChecker(tree, client);
+			tree = forChecker.process();
+		}
 
-		WhileLoopChecker whileChecker = new WhileLoopChecker(tree, client);
-		tree = whileChecker.process();
+		if (setting.isConfigured("WhileLoopChecker")) {
+			IModul whileChecker = new WhileLoopChecker(tree, client);
+			tree = whileChecker.process();
+		}
 
 		return tree;
 	}

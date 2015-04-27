@@ -1,5 +1,8 @@
 package edu.hm.counterobfuscator.parser.tree;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -99,7 +102,7 @@ public interface IProgrammTree extends Iterable<Element> {
 	/**
 	 * print actual programmtree to System.out.
 	 */
-	public void print();
+	public void printOnConsole();
 
 	/**
 	 * @return a deep copy od actual programmtree
@@ -110,4 +113,12 @@ public interface IProgrammTree extends Iterable<Element> {
 	 * @param element
 	 */
 	public void replaceElementWithTree(Element element, IProgrammTree tree);
+
+	/**
+	 * @param outputFile
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 * @throws UnsupportedEncodingException 
+	 */
+	public void printToFile(String outputFile) throws UnsupportedEncodingException, FileNotFoundException, IOException;
 }

@@ -8,6 +8,7 @@ import javax.script.ScriptException;
 import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
+import edu.hm.counterobfuscator.refactor.modul.IModul;
 import edu.hm.counterobfuscator.refactor.modul.IfChecker;
 import edu.hm.counterobfuscator.refactor.modul.ForLoopChecker;
 import edu.hm.counterobfuscator.refactor.modul.ForLoopVariableRenamer;
@@ -20,12 +21,11 @@ import edu.hm.counterobfuscator.refactor.modul.ForLoopVariableRenamer;
  */
 public class IfRefactor implements IRefactor {
 
-	private IProgrammTree programmTree;
-	private Setting setting;
-	private IClient client;
+	private IProgrammTree	programmTree;
+	private Setting			setting;
+	private IClient			client;
 
-	public IfRefactor(IProgrammTree programmTree, IClient client,
-			Setting setting) {
+	public IfRefactor(IProgrammTree programmTree, IClient client, Setting setting) {
 
 		this.programmTree = programmTree;
 		this.client = client;
@@ -40,8 +40,14 @@ public class IfRefactor implements IRefactor {
 	@Override
 	public IProgrammTree process() throws ScriptException {
 
-		IfChecker checker = new IfChecker(programmTree, client);
-		return checker.process();
+		IProgrammTree tree = programmTree;
+
+		if (setting.isConfigured("IfChecker")) {
+			IModul checker = new IfChecker(tree, client);
+			tree = checker.process();
+		}
+
+		return tree;
 
 	}
 

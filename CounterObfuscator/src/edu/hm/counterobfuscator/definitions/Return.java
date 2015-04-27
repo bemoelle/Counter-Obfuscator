@@ -3,9 +3,6 @@
  */
 package edu.hm.counterobfuscator.definitions;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import edu.hm.counterobfuscator.helper.Scope;
 
 /**

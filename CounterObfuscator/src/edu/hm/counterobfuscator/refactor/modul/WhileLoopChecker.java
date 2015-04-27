@@ -20,16 +20,15 @@ import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
  * 
  *       for(i=0; i<0; i++) {...}; not necessary loop and body can be removed
  *       for(i=0; i<1; i++) {...}; loop head is not necessary code can replaced
- *       with code in body 
- *       while(false) {...}; not necessary loop and body can
+ *       with code in body while(false) {...}; not necessary loop and body can
  *       be removed
  * 
  */
 public class WhileLoopChecker implements IModul {
 
-	private IProgrammTree programmTree;
-	private List<MapperElement> mappedElements;
-	private IClient client;
+	private IProgrammTree			programmTree;
+	private List<MapperElement>	mappedElements;
+	private IClient					client;
 
 	public WhileLoopChecker(IProgrammTree programmTree, IClient client) {
 
@@ -58,8 +57,14 @@ public class WhileLoopChecker implements IModul {
 			Object result = client.getJSResult(head);
 
 			if ((Boolean) result == false) {
-				remove(actualElement, children);
-			} 
+				
+				if(actualElement.getElement().getParent() == null) {
+					remove(actualElement, children);
+				} else {
+					actualElement.getElement().getParent().getChildren()
+					.removeElementAndAllChildren(actualElement.getElement());
+				}	
+			}
 		}
 
 		return programmTree;
@@ -70,6 +75,7 @@ public class WhileLoopChecker implements IModul {
 	 * @param children
 	 */
 	private void remove(MapperElement actualElement, IProgrammTree children) {
+
 		for (int j = 0; j < children.size(); j++) {
 			programmTree.removeElementAndAllChildren(children.get(j));
 		}

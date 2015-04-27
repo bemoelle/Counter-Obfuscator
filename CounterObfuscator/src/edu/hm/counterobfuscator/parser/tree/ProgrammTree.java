@@ -1,5 +1,12 @@
 package edu.hm.counterobfuscator.parser.tree;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -30,9 +37,9 @@ import edu.hm.counterobfuscator.helper.Scope;
  */
 public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
-	private List<Element> tree;
-	private AbstractType actualType;
-	private static Logger log;
+	private List<Element>	tree;
+	private AbstractType		actualType;
+	private static Logger	log;
 
 	public ProgrammTree() {
 
@@ -61,11 +68,10 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	 * @param parent
 	 * @param tiefe
 	 * 
-	 *            rec method to find the correct position of actualtype in
-	 *            programmtree
+	 *           rec method to find the correct position of actualtype in
+	 *           programmtree
 	 */
-	private void findPositionInTree(IProgrammTree tree, Element parent,
-			int tiefe) {
+	private void findPositionInTree(IProgrammTree tree, Element parent, int tiefe) {
 
 		// tree is empty add element and leave
 		if (tree.size() < 1) {
@@ -77,9 +83,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 			Element last = tree.getLast();
 
 			// new element is within parent
-			if (last != null
-					&& last.getDefinition().getPos()
-							.isPosWithin(actualType.getPos())) {
+			if (last != null && last.getDefinition().getPos().isPosWithin(actualType.getPos())) {
 
 				// recursive step
 				findPositionInTree(last.getChildren(), last, ++tiefe);
@@ -139,10 +143,35 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	 * @see
 	 * edu.hm.counterobfuscator.parser.tree.IProgrammTree#prettyPrint(boolean)
 	 */
-	public void print() {
+	public void printOnConsole() {
+		
+		System.out.println(print());
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.hm.counterobfuscator.parser.tree.IProgrammTree#printToFile(java.lang
+	 * .String)
+	 */
+	@Override
+	public void printToFile(String outputFile) throws UnsupportedEncodingException, FileNotFoundException, IOException {
+
+		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+				outputFile), "utf-8"))) {
+			writer.write(print());
+		}
+	}
+	
+	/**
+	 * @return the string of the programmtree
+	 */
+	private String print() {
 
 		Iterator<Element> it = this.iterator();
 
+		String all = "";
 		String toPrint = "";
 		int index = -1;
 		List<Integer> buffer = new ArrayList<Integer>();
@@ -166,8 +195,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 			if (element.getDepth() < depth) {
 
-				if (buffer.size() > 0
-						&& buffer.get(index) >= element.getDepth()) {
+				if (buffer.size() > 0 && buffer.get(index) >= element.getDepth()) {
 
 					for (int i = buffer.size() - 1; i >= 0; i--) {
 						int depthInBuffer = buffer.get(i);
@@ -176,7 +204,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 							break;
 						}
 
-						System.out.println(tabPrint(depthInBuffer) + "}\n");
+						all += tabPrint(depthInBuffer) + "}\n";
 						buffer.remove(index--);
 					}
 
@@ -189,15 +217,17 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 			depth = element.getDepth();
 
-			System.out.println(toPrint);
+			all += toPrint;
 		}
 
 		if (buffer.size() > 0) {
 			for (int i = buffer.size() - 1; i >= 0; i--) {
-				System.out.println(tabPrint(buffer.get(i)) + "}\n");
+				all += tabPrint(buffer.get(i)) + "}\n";
 				buffer.remove(i);
 			}
 		}
+		
+		return all;
 	}
 
 	/**
@@ -227,19 +257,15 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 		case FUNCTION:
 			Function func = (Function) abstractType;
-			return "function " + func.getName() + "(" + func.getHeadString()
-					+ ") " + "{\n";
+			return "function " + func.getName() + "(" + func.getHeadString() + ") " + "{\n";
 		case CALL:
 			Call fc = (Call) abstractType;
-			return fc.getName() + "." + fc.getFunction() + "(" + fc.getValue()
-					+ ");\n";
+			return fc.getName() + "." + fc.getFunction() + "(" + fc.getValue() + ");\n";
 		case VARIABLE:
 			Variable var = (Variable) abstractType;
-			return (var.isGlobal() ? "" : "var ") + var.getName()
-					+ var.getAssign() + (var.isObject() ? "new " : "")
-					+ var.getValue()
-					+ (var.isObject() ? "(" + var.getParameter() + ")" : "")
-					+ ";\n";
+			return (var.isGlobal() ? "" : "var ") + var.getName() + var.getAssign()
+					+ (var.isObject() ? "new " : "") + var.getValue()
+					+ (var.isObject() ? "(" + var.getParameter() + ")" : "") + ";\n";
 		case FOR:
 		case WHILE:
 			ForWhile loop = (ForWhile) abstractType;
@@ -249,8 +275,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 			return "if" + ifStatement.getHeadString() + "{\n";
 		case THIS:
 			This thisStatement = (This) abstractType;
-			return "this" + thisStatement.getNotation()
-					+ thisStatement.getName() + "=\n";
+			return "this" + thisStatement.getNotation() + thisStatement.getName() + "=\n";
 		case RETURN:
 			Return returnStatement = (Return) abstractType;
 			return "return " + returnStatement.getName() + ";\n";
@@ -259,8 +284,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 			return defaultStatement.getName() + "\n";
 		case TRYCATCH:
 			TryCatch tryCatchStatement = (TryCatch) abstractType;
-			return tryCatchStatement.getName().equals("try") ? "try {\n"
-					: "} catch(e) {";
+			return tryCatchStatement.getName().equals("try") ? "try {\n" : "} catch(e) {";
 		case AJAX:
 			Ajax ajax = (Ajax) abstractType;
 			return "$." + ajax.getName() + "(" + ajax.getValue() + ")";
@@ -337,8 +361,8 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 		Iterator<Element> it = new Iterator<Element>() {
 
-			private Element next = size() == 0 ? null : get(0);
-			private Element lastElement = null;
+			private Element	next			= size() == 0 ? null : get(0);
+			private Element	lastElement	= null;
 
 			@Override
 			public boolean hasNext() {
@@ -384,8 +408,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 				if (parent == null) {
 					removeElementAndAllChildren(lastElement);
 				} else {
-					parent.getChildren().removeElementAndAllChildren(
-							lastElement);
+					parent.getChildren().removeElementAndAllChildren(lastElement);
 				}
 
 			}
@@ -398,8 +421,8 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 		Iterator<Element> it = new Iterator<Element>() {
 
-			private Element before = size() == 0 ? null : getLastElement();
-			private Element lastElement = null;
+			private Element	before		= size() == 0 ? null : getLastElement();
+			private Element	lastElement	= null;
 
 			private Element getLastElement() {
 
@@ -441,8 +464,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 					if (before.getParent() != null) {
 						before = before.getParent();
-					} else if (before.getParent() == null
-							&& before.getBefore() == null) {
+					} else if (before.getParent() == null && before.getBefore() == null) {
 						before = null;
 					}
 				}
@@ -457,8 +479,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 				if (parent == null) {
 					removeElementAndAllChildren(lastElement);
 				} else {
-					parent.getChildren().removeElementAndAllChildren(
-							lastElement);
+					parent.getChildren().removeElementAndAllChildren(lastElement);
 				}
 
 			}
@@ -528,7 +549,7 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 	 * .counterobfuscator.parser.tree.Element)
 	 */
 	public boolean removeElementAndAllChildren(Element element) {
-
+		
 		Element beforeEle = element.getBefore();
 		Element nextEle = element.getNext();
 
@@ -616,13 +637,5 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 
 		return newTree;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#replace(edu.hm.
-	 * counterobfuscator.parser.tree.Element,
-	 * edu.hm.counterobfuscator.parser.tree.IProgrammTree)
-	 */
 
 }

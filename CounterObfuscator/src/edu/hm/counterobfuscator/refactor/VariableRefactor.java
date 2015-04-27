@@ -22,12 +22,11 @@ import edu.hm.counterobfuscator.refactor.modul.VariableReplacer;
  */
 public class VariableRefactor implements IRefactor {
 
-	private IProgrammTree programmTree;
-	private Setting setting;
-	private IClient client;
+	private IProgrammTree	programmTree;
+	private Setting			setting;
+	private IClient			client;
 
-	public VariableRefactor(IProgrammTree programmTree, IClient client,
-			Setting setting) {
+	public VariableRefactor(IProgrammTree programmTree, IClient client, Setting setting) {
 
 		this.programmTree = programmTree;
 		this.client = client;
@@ -43,17 +42,25 @@ public class VariableRefactor implements IRefactor {
 
 		IProgrammTree tree = programmTree;
 
-		IModul varReplacer = new VariableReplacer(tree);
-		tree = varReplacer.process();
-		
-		IModul varRemover = new VariableRemover(tree);
-		tree = varRemover.process();
-		
-		IModul varRenamer = new VariableRenamer(tree);
-		tree = varRenamer.process();
+		if (setting.isConfigured("VariableReplacer")) {
+			IModul varReplacer = new VariableReplacer(tree);
+			tree = varReplacer.process();
+		}
 
-		IModul dotNotation = new DotNotation(tree);
-		tree = dotNotation.process();
+		if (setting.isConfigured("VariableRemover")) {
+			IModul varRemover = new VariableRemover(tree);
+			tree = varRemover.process();
+		}
+
+		if (setting.isConfigured("VariableRenamer")) {
+			IModul varRenamer = new VariableRenamer(tree);
+			tree = varRenamer.process();
+		}
+
+		if (setting.isConfigured("DotNotation")) {
+			IModul dotNotation = new DotNotation(tree);
+			tree = dotNotation.process();
+		}
 
 		return tree;
 	}

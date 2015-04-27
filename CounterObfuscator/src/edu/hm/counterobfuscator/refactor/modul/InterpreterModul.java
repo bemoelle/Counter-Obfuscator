@@ -5,17 +5,23 @@ import java.util.logging.Logger;
 
 import org.apache.commons.codec.EncoderException;
 
+import com.sleepycat.je.tree.Tree;
+
 import edu.hm.counterobfuscator.client.IClient;
+import edu.hm.counterobfuscator.definitions.AbstractType;
 import edu.hm.counterobfuscator.definitions.Ajax;
 import edu.hm.counterobfuscator.definitions.Call;
+import edu.hm.counterobfuscator.definitions.DEFINITION;
 import edu.hm.counterobfuscator.definitions.Default;
 import edu.hm.counterobfuscator.definitions.ForWhile;
 import edu.hm.counterobfuscator.definitions.Function;
 import edu.hm.counterobfuscator.definitions.This;
 import edu.hm.counterobfuscator.definitions.Variable;
+import edu.hm.counterobfuscator.helper.Scope;
 import edu.hm.counterobfuscator.parser.ParserFactory;
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
+import edu.hm.counterobfuscator.parser.tree.ProgrammTree;
 
 /**
  * @author
@@ -136,6 +142,7 @@ public class InterpreterModul {
 			throws IllegalArgumentException, IOException, EncoderException {
 
 		Function func = ((Function) element.getDefinition());
+		IProgrammTree tree = null;
 		if (func.isPacked()) {
 
 			log.info("packed function found!");
@@ -143,6 +150,7 @@ public class InterpreterModul {
 			String script = func.getBodyAsString();
 			Object result = executeJS(script);
 			String resultAsString = result.toString();
+			
 
 			if (resultAsString.indexOf("NO_EXECUTION") < 0) {
 
@@ -152,17 +160,20 @@ public class InterpreterModul {
 				} else {
 					resultAsString += ";";
 				}
-				IProgrammTree tree = ParserFactory
+				tree = ParserFactory
 						.create(resultAsString, false).getProgrammTree();
 				element.removeAllChildren();
 				log.info("result is " + result);
 
 				return tree;
+			} else {
+				tree = new ProgrammTree();
+				AbstractType defaultStatement = new Default(new Scope(0, 100), "undefined");
+				tree.add(new Element(null, defaultStatement, 0));
 			}
 		}
 
-		return null;
-
+		return tree;
 	}
 
 	private void executeFunctionCall(Element element) throws Exception {

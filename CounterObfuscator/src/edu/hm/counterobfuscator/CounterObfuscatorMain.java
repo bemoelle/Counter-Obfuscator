@@ -27,11 +27,11 @@ public class CounterObfuscatorMain {
 			IllegalArgumentException, EncoderException {
 
 		DeObfuscatorFactory deObfuscatorFactory = new DeObfuscatorFactory("src/Test", true,
-				"http://www.google.com/", null);
+				"http://www.google.com/");
 
 		IProgrammTree resultTree = deObfuscatorFactory.create();
 
-		resultTree.print();
+		resultTree.printOnConsole();
 
 	}
 

@@ -8,12 +8,7 @@ import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.refactor.modul.AjaxCaller;
-import edu.hm.counterobfuscator.refactor.modul.DotNotation;
 import edu.hm.counterobfuscator.refactor.modul.IModul;
-import edu.hm.counterobfuscator.refactor.modul.VariableInterpreter;
-import edu.hm.counterobfuscator.refactor.modul.VariableRemover;
-import edu.hm.counterobfuscator.refactor.modul.VariableRenamer;
-import edu.hm.counterobfuscator.refactor.modul.VariableReplacer;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
@@ -24,12 +19,11 @@ import edu.hm.counterobfuscator.refactor.modul.VariableReplacer;
  */
 public class AjaxCallerRefactor implements IRefactor {
 
-	private IProgrammTree programmTree;
-	private Setting setting;
-	private IClient client;
+	private IProgrammTree	programmTree;
+	private Setting			setting;
+	private IClient			client;
 
-	public AjaxCallerRefactor(IProgrammTree programmTree, IClient client,
-			Setting setting) {
+	public AjaxCallerRefactor(IProgrammTree programmTree, IClient client, Setting setting) {
 
 		this.programmTree = programmTree;
 		this.client = client;
@@ -45,14 +39,15 @@ public class AjaxCallerRefactor implements IRefactor {
 
 		IProgrammTree tree = programmTree;
 
-		IModul ajaxCaller = null;
-		try {
-			ajaxCaller = new AjaxCaller(tree, client);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (setting.isConfigured("AjaxCaller")) {
+			IModul ajaxCaller = null;
+			try {
+				ajaxCaller = new AjaxCaller(tree, client);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			tree = ajaxCaller.process();
 		}
-		tree = ajaxCaller.process();
-
 		return tree;
 	}
 

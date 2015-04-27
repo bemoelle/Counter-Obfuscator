@@ -41,14 +41,20 @@ public class FunctionRefactor implements IRefactor {
 	@Override
 	public IProgrammTree process() throws ScriptException {
 
-		IModul functionInterpreter = new FunctionInterpreter(programmTree, client);
-		IProgrammTree tree = functionInterpreter.process();
+		IProgrammTree tree = programmTree;
+		
+		IModul functionInterpreter = new FunctionInterpreter(tree, client);
+		tree = functionInterpreter.process();
 
-		IModul renamer = new FunctionRenamer(tree);
-		tree = renamer.process();
+		if(setting.isConfigured("FunctionRenamer")) {
+			IModul renamer = new FunctionRenamer(tree);
+			tree = renamer.process();
+		}
 
-		IModul variableRenamer = new FunctionVariableRenamer(tree);
-		tree = variableRenamer.process();
+		if(setting.isConfigured("FunctionVariableRenamer")) {
+			IModul variableRenamer = new FunctionVariableRenamer(tree);
+			tree = variableRenamer.process();
+		}
 				
 		return tree;
 

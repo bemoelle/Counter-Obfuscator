@@ -21,17 +21,16 @@ import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
  * 
  *       for(i=0; i<0; i++) {...}; not necessary loop and body can be removed
  *       for(i=0; i<1; i++) {...}; loop head is not necessary code can replaced
- *       with code in body 
- *       while(false) {...}; not necessary loop and body can
+ *       with code in body while(false) {...}; not necessary loop and body can
  *       be removed
  * 
  */
 public class IfChecker implements IModul {
 
-	private IProgrammTree programmTree;
-	private List<MapperElement> mappedElements;
-	private IClient client;
-	private Mapper mapper;
+	private IProgrammTree			programmTree;
+	private List<MapperElement>	mappedElements;
+	private IClient					client;
+	private Mapper						mapper;
 
 	public IfChecker(IProgrammTree programmTree, IClient client) {
 
@@ -39,7 +38,7 @@ public class IfChecker implements IModul {
 		this.client = client;
 
 		mapper = new Mapper(programmTree);
-		this.mappedElements = mapper.process(DEFINITION.IF); 
+		this.mappedElements = mapper.process(DEFINITION.IF);
 	}
 
 	/*
@@ -49,26 +48,27 @@ public class IfChecker implements IModul {
 	 */
 	public IProgrammTree process() throws ScriptException {
 
-//		List<MapperElement> mappedVars= mapper.process(DEFINITION.VARIABLE);
-//		
-//		for (int i = 0; i < mappedVars.size(); i++) {
-//			
-//			Variable var = (Variable)mappedVars.get(i).getElement().getDefinition();
-//			String script = "var " + var.getName();
-//			
-//			if(!var.getValue().isEmpty()) {
-//						
-//				if(var.getValue().contains("++") || var.getValue().contains("--") || var.isObject()) {
-//					continue;
-//				}
-//				
-//				script += "=" + var.getValue();
-//			}
-//			
-//			client.getJSResult(script);
-//		}
-		
-		
+		// List<MapperElement> mappedVars= mapper.process(DEFINITION.VARIABLE);
+		//
+		// for (int i = 0; i < mappedVars.size(); i++) {
+		//
+		// Variable var =
+		// (Variable)mappedVars.get(i).getElement().getDefinition();
+		// String script = "var " + var.getName();
+		//
+		// if(!var.getValue().isEmpty()) {
+		//
+		// if(var.getValue().contains("++") || var.getValue().contains("--") ||
+		// var.isObject()) {
+		// continue;
+		// }
+		//
+		// script += "=" + var.getValue();
+		// }
+		//
+		// client.getJSResult(script);
+		// }
+
 		for (int i = 0; i < mappedElements.size(); i++) {
 
 			MapperElement actualElement = mappedElements.get(i);
@@ -80,8 +80,14 @@ public class IfChecker implements IModul {
 			Object result = client.getJSResult(head);
 
 			if ((Boolean) result == false) {
-				remove(actualElement, children);
-			} 
+								
+				if(actualElement.getElement().getParent() == null) {
+					remove(actualElement, children);
+				} else {
+					actualElement.getElement().getParent().getChildren()
+					.removeElementAndAllChildren(actualElement.getElement());
+				}		
+			}
 		}
 
 		return programmTree;
@@ -92,7 +98,7 @@ public class IfChecker implements IModul {
 	 * @param children
 	 */
 	private void remove(MapperElement actualElement, IProgrammTree children) {
-		
+
 		for (int j = 0; j < children.size(); j++) {
 			programmTree.removeElementAndAllChildren(children.get(j));
 		}

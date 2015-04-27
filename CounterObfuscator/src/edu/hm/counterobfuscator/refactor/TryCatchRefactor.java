@@ -20,12 +20,11 @@ import edu.hm.counterobfuscator.refactor.modul.TryCatchChecker;
  */
 public class TryCatchRefactor implements IRefactor {
 
-	private IProgrammTree programmTree;
-	private Setting setting;
-	private IClient client;
+	private IProgrammTree	programmTree;
+	private Setting			setting;
+	private IClient			client;
 
-	public TryCatchRefactor(IProgrammTree programmTree, IClient client,
-			Setting setting) {
+	public TryCatchRefactor(IProgrammTree programmTree, IClient client, Setting setting) {
 
 		this.programmTree = programmTree;
 		this.client = client;
@@ -40,8 +39,14 @@ public class TryCatchRefactor implements IRefactor {
 	@Override
 	public IProgrammTree process() throws ScriptException {
 
-		IModul checker = new TryCatchChecker(programmTree, client);
-		return checker.process();
+		IProgrammTree tree = programmTree;
+
+		if (setting.isConfigured("TryCatchChecker")) {
+			IModul checker = new TryCatchChecker(tree, client);
+			tree = checker.process();
+		}
+
+		return tree;
 	}
 
 }

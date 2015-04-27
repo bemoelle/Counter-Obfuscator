@@ -21,17 +21,15 @@ import edu.hm.counterobfuscator.refactor.RefactorFactory;
  */
 public class DeObfuscatorFactory {
 
-	private Setting	settings;
 	private Boolean	isFile;
 	private String		url;
 	private String		obfuscatedString;
 
-	public DeObfuscatorFactory(String obfuscatedString, Boolean isFile, String url, Setting settings) {
+	public DeObfuscatorFactory(String obfuscatedString, Boolean isFile, String url) {
 
 		this.obfuscatedString = obfuscatedString;
 		this.isFile = isFile;
 		this.url = url;
-		this.settings = settings;
 	}
 
 	public IProgrammTree create() throws IllegalArgumentException, IOException, EncoderException,
@@ -39,13 +37,11 @@ public class DeObfuscatorFactory {
 
 		Validate.notEmpty(obfuscatedString);
 		Validate.notNull(isFile);
-		Validate.notEmpty(url);
-		//Validate.notNull(settings);
+		Validate.notEmpty(url);	
 
 		IParser jsParser = ParserFactory.create(obfuscatedString, isFile);
 
 		return RefactorFactory.create(jsParser, url);
-
 	}
 
 }

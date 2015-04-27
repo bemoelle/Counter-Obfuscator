@@ -42,5 +42,13 @@ public class Setting {
 
 		return properties.getProperty("VariableRenamer").indexOf("true") > -1;
 	}
+	
+	/**
+	 * @return return the string of the output file
+	 */
+	public String getOutputFile() {
+
+		return properties.getProperty("output");
+	}
 
 }

@@ -47,7 +47,7 @@ public class JauntWebScraperDemo {
 
 				IProgrammTree resultTree = deObfuscatorFactory.create();
 
-				resultTree.print();
+				resultTree.printOnConsole();
 
 			}
 			catch(JauntException e){
