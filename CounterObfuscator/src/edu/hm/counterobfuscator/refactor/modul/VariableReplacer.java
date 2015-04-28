@@ -20,9 +20,9 @@ import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
  */
 public class VariableReplacer implements IModul {
 
-	private IProgrammTree programmTree;
-	private List<MapperElement> mappedElements;
-	private Mapper mapper;
+	private IProgrammTree			programmTree;
+	private List<MapperElement>	mappedElements;
+	private Mapper						mapper;
 
 	public VariableReplacer(IProgrammTree programmTree) {
 
@@ -42,56 +42,28 @@ public class VariableReplacer implements IModul {
 		for (int i = 0; i < mappedElements.size(); i++) {
 
 			MapperElement actualElement = mappedElements.get(i);
-			
+
 			// replace not if variable is an object e.g. var test = new Object();
-			if(((Variable)actualElement.getElement().getDefinition()).isObject())
+			if (((Variable) actualElement.getElement().getDefinition()).isObject())
 				continue;
 
 			String name = actualElement.getElement().getDefinition().getName();
-			String value = actualElement.getElement().getDefinition()
-					.getValue();
+			String value = actualElement.getElement().getDefinition().getValue();
 
-			List<MapperElement> elementsWithName = mapper
-					.searchForNameOfElement(name, actualElement.getScope());
-
-			//int refCounter = 0;
+			List<MapperElement> elementsWithName = mapper.searchForNameOfElement(name,
+					actualElement.getScope());
 
 			for (int j = 0; j < elementsWithName.size(); j++) {
 
 				Element type = elementsWithName.get(j).getElement();
 
-				if (type.getDefinition().getDefinition() == DEFINITION.VARIABLE || type.getDefinition().getDefinition() == DEFINITION.FOR) {
+				if (type.getDefinition().getDefinition() == DEFINITION.VARIABLE
+						|| type.getDefinition().getDefinition() == DEFINITION.FOR) {
 					type.getDefinition().replaceValueWith(name, value);
-					//refCounter++;
 				}
-				
-//				if(refCounter < 2) {
-//					type.getDefinition().replaceNameWith(name, value);
-//				}
+
 			}
 
-			// //is AssoArray
-			// if(value.matches("\\{.*\\}")) {
-			//
-			// System.out.println("sdsdsdsdsd");
-			// }
-			//
-			// List<MapperElement> elementsWithOldName =
-			// mapper.searchForNameOfElement(
-			// actualElement.getElement(), actualElement.getScope());
-			// //
-			// //TODO not same in list<MapperElements>
-			// for (int j = 0; j < elementsWithOldName.size(); j++) {
-			//
-			// Element type = elementsWithOldName.get(j).getElement();
-			// String toReplace = ValueExtractor.getValue(type);
-			//
-			// //hack if not ++ or --
-			// if(!toReplace.contains(name+"++")) {
-			// toReplace = toReplace.replace(name, value);
-			// ValueExtractor.setValue(type, toReplace);
-			// }
-			// }
 		}
 		return programmTree;
 	}

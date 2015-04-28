@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 import org.apache.commons.codec.EncoderException;
 
-import edu.hm.counterobfuscator.definitions.Function;
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.parser.token.ITokenAnalyser;
 import edu.hm.counterobfuscator.parser.token.TokenAnalyserFactory;

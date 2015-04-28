@@ -73,8 +73,11 @@ public class ForWhile extends AbstractType {
 	@Override
 	public boolean hasSameName(Object other) {
 
-		// TODO Auto-generated method stub
-		return false;
+		if (name.equals(((AbstractType) other).getName())) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/*
@@ -121,8 +124,7 @@ public class ForWhile extends AbstractType {
 	@Override
 	public void replaceName(String name) {
 
-		// do nothing
-
+		//do nothing
 	}
 
 	/*

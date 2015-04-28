@@ -4,10 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
 import edu.hm.counterobfuscator.definitions.DEFINITION;
-import edu.hm.counterobfuscator.definitions.ForWhile;
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.parser.tree.Element;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
@@ -22,12 +19,12 @@ import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
  */
 public class VariableRenamer implements IModul {
 
-	private IProgrammTree programmTree;
-	private String varName = "var";
-	private int number = 1;
-	private List<MapperElement> mappedElements;
+	private IProgrammTree			programmTree;
+	private String						varName	= "var";
+	private int							number	= 1;
+	private List<MapperElement>	mappedElements;
 
-	private Map<String, String> mappedNames;
+	private Map<String, String>	mappedNames;
 
 	/**
 	 * @param programmTree
@@ -75,31 +72,12 @@ public class VariableRenamer implements IModul {
 
 			for (Map.Entry<String, String> entry : mappedNames.entrySet()) {
 
-				//call(element, entry);
 				element.getDefinition().replaceNameWith(entry.getKey(), entry.getValue());
 			}
 
 		}
 
 		return programmTree;
-
-	}
-
-	private void call(Element element, Entry<String, String> entry) {
-
-		if (element.getDefinition().getDefinition() == DEFINITION.FOR) {
-
-			element.getDefinition().replaceValueWith(entry.getKey(), entry.getValue());
-
-		} else if (element.getDefinition().getDefinition() == DEFINITION.VARIABLE) {
-			String name = element.getDefinition().getName();
-			if (name.contains(entry.getKey())) {
-				name = name.replace(entry.getKey(), entry.getValue());
-				element.getDefinition().setName(name);
-			}
-		} else {
-			element.getDefinition().replaceValueWith(entry.getKey(), entry.getValue());
-		}
 
 	}
 

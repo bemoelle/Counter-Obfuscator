@@ -17,9 +17,7 @@ import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
  * 
  *       check if try and catch is necessary
  * 
- *       try { 	var var1=0; 
- *       		Math.lol(); <- exception is thrown 
- *       		var var2=0; }
+ *       try { var var1=0; Math.lol(); <- exception is thrown var var2=0; }
  *       catch(e) { var var3=0; }
  * 
  *       result is: var var1=0; var var3=0;
@@ -27,9 +25,9 @@ import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
  */
 public class TryCatchChecker implements IModul {
 
-	private IProgrammTree programmTree;
-	private List<MapperElement> mappedElements;
-	private InterpreterModul interpreter;
+	private IProgrammTree			programmTree;
+	private List<MapperElement>	mappedElements;
+	private InterpreterModul		interpreter;
 
 	public TryCatchChecker(IProgrammTree programmTree, IClient client) {
 
@@ -70,16 +68,12 @@ public class TryCatchChecker implements IModul {
 					interpreter.process(element);
 				} catch (Exception e) {
 
-					// for(int k=j; k<children.size(); k++) {
 					Element next = element;
 					while (next != null) {
 
 						children.removeElementAndAllChildren(next);
 						next = next.getNext();
 					}
-
-					// programmTree.add(new Element(null, new Default(null,
-					// "dfdfdfd"),2 ));
 
 					programmTree.remove(actualElement.getElement());
 					programmTree.remove(mappedElements.get(i + 1).getElement());

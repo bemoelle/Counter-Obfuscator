@@ -19,7 +19,7 @@ public class Default extends AbstractType {
 	 * @param name
 	 */
 	public Default(Scope pos, String name) {
-	
+
 		super(DEFINITION.DEFAULT, pos, name);
 	}
 
@@ -32,8 +32,12 @@ public class Default extends AbstractType {
 	@Override
 	public boolean hasSameName(Object other) {
 
-		// TODO Auto-generated method stub
-		return false;
+		if (name.equals(((AbstractType) other).getName())) {
+			return true;
+		} else {
+			return false;
+		}
+
 	}
 
 	/*
@@ -61,16 +65,17 @@ public class Default extends AbstractType {
 
 		return name;
 	}
-	
+
 	@Override
 	public void replaceNameWith(String nameToReplace, String value) {
-		
+
 		name = name.replaceAll(nameToReplace, value);
 	}
 
 	@Override
-	public void replaceValueWith(String name, String value) {
-		System.out.println("sds");
+	public void replaceValueWith(String nameToReplace, String value) {
+
+		replaceNameWith(nameToReplace, value);
 	}
 
 }

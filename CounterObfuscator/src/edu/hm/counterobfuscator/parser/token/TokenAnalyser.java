@@ -30,6 +30,12 @@ import edu.hm.counterobfuscator.helper.Validate;
  *       class is public
  * 
  */
+/**
+ * @author Benjamin Moellerke <bemoelle@gmail.com>
+ * @date 28.04.2015
+ * 
+ * 
+ */
 public class TokenAnalyser implements ITokenAnalyser {
 
 	private static Logger log;
@@ -106,16 +112,27 @@ public class TokenAnalyser implements ITokenAnalyser {
 		return allTypes;
 	}
 
+	/**
+	 * @return the actual token
+	 */
 	private Token getActualToken() {
 
 		return actualToken;
 	}
 
+	/**
+	 * @param pos
+	 * 
+	 * set next token to pos
+	 */
 	private void setNextTokenTo(int pos) {
 
 		actualToken = allTokensOfJSCode.get(pos);
 	}
 
+	/**
+	 * set token to next token
+	 */
 	private void setToNextToken() {
 
 		// end is near
@@ -126,11 +143,18 @@ public class TokenAnalyser implements ITokenAnalyser {
 		actualToken = allTokensOfJSCode.get(actualToken.getPos() + 1);
 	}
 
+	/**
+	 * @param token
+	 * @return next token of token
+	 */
 	private Token getNextTokenOf(Token token) {
 
 		return allTokensOfJSCode.get(token.getPos() + 1);
 	}
 
+	/**
+	 * @return true if token has a next token
+	 */
 	private boolean hasNextToken() {
 
 		if (actualToken.getPos() == allTokensOfJSCode.size() - 1) {
@@ -140,6 +164,13 @@ public class TokenAnalyser implements ITokenAnalyser {
 		return true;
 	}
 
+	/**
+	 * @param type
+	 * @throws IllegalArgumentException
+	 * @throws EncoderException
+	 * 
+	 * call correct methode to process the javascript statement
+	 */
 	private void call(TOKENTYPE type) throws IllegalArgumentException,
 			EncoderException {
 
@@ -177,12 +208,14 @@ public class TokenAnalyser implements ITokenAnalyser {
 		case JQUERY:
 			processJQuery();
 		default:
-			// processDefault();
 			break;
 
 		}
 	}
 
+	/**
+	 * process if statement
+	 */
 	private void processIf() {
 		
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
@@ -240,7 +273,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 	}
 
 	/**
-	 * 
+	 * process string
 	 */
 	private void processString() {
 
@@ -268,7 +301,6 @@ public class TokenAnalyser implements ITokenAnalyser {
 		}
 
 		// if a assign is found in statement => it is a var statement
-
 		Token nextToken = null;
 
 		if (getNextTokenOf(getActualToken()).getDefinition() == TOKENTYPE.WHITESPACE) {
@@ -352,8 +384,6 @@ public class TokenAnalyser implements ITokenAnalyser {
 			// Variable(Position pos, String name, String value, boolean
 			// isObject)
 			// var test = new Name(Parameter); wird in processVar() behandelt
-			// TODO test2 = new Name(Parameter);
-
 			// int assign = nextToken.getPos();
 
 			String name = getNameOfType(startPos, assign - 1);
@@ -377,6 +407,9 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 	}
 
+	/**
+	 * process return statement
+	 */
 	private void processReturn() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
@@ -404,7 +437,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 	}
 
-	/*
+	/**
 	 * this ia a super duper methode to split a var line which is separted with
 	 * commas
 	 * 
@@ -412,7 +445,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 	 */
 	private List<String> mightyCommaAndSplitMethode(int startPos, int endPos) {
 
-		List<String> xxx = new ArrayList<String>();
+		List<String> newList = new ArrayList<String>();
 
 		int indexComma = getPositionOfNextToken(startPos, TOKENTYPE.COMMA);
 
@@ -422,7 +455,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 			if (name.indexOf("var") > -1) {
 				name = name.replaceAll("var", "");
 			}
-			xxx.add(name);
+			newList.add(name);
 		} else { // found a comma
 
 			boolean endReached = false;
@@ -437,7 +470,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 				if (name.indexOf("var") > -1) {
 					name = name.replaceAll("var", "");
 				}
-				xxx.add(name);
+				newList.add(name);
 				
 				//break while loop
 				if(endReached) {
@@ -453,12 +486,12 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 		}
 		
-		return xxx;
+		return newList;
 
 	}
 
 	/**
-	 * @return
+	 * process var statement
 	 * @throws EncoderException
 	 */
 	private void processVar() throws EncoderException {
@@ -506,69 +539,15 @@ public class TokenAnalyser implements ITokenAnalyser {
 						"=", "", isObject));
 			}
 
-			// name = name.replaceAll(" ", ""); // remove whitespaces in name
-
 		}
-
-		// String name = getNameOfType(startPos + 1, assign - 1);
-		// name = name.replaceAll(" ", ""); // remove whitespaces in name
-		// String value = null;
-		// boolean isObject = false;
-		//
-		// if (isTokenWithinStartAndEndPos(assign, endPos, TOKENTYPE.NEW)) {
-		// isObject = true;
-		// }
-		//
-		// value = getNameOfType(assign + 1, endPos - 1);
-		// allTypes.add(new Variable(new Scope(startPos, endPos), name, "=",
-		// value, isObject));
 
 		setNextTokenTo(endPos);
 
-		// while (hasNextToken() && actualToken.getDefinition() !=
-		// TOKENTYPE.SEMICOLON)
-		// {
-		//
-		// getNextToken();
-		// if (actualToken.getDefinition() == TOKENTYPE.STRING) {
-		// name = actualToken.getValue();
-		// }
-		// else if (actualToken.getDefinition() == TOKENTYPE.COMMA) {
-		// declaration.add(new VariableDecTree(actualPos, name, value));
-		// name = "";
-		// value = "";
-		// }
-		// else if (actualToken.getDefinition() == TOKENTYPE.ASSIGN) {
-		// int comma = getPositionOfNextToken(actualToken.getPos(),
-		// TOKENTYPE.COMMA);
-		// int semicolon = getPositionOfNextToken(actualToken.getPos(),
-		// TOKENTYPE.SEMICOLON);
-		//
-		// if (comma > 0 && comma < semicolon) {
-		// value =
-		// getStringOfTokens(getAllTokensUntilEndPos(actualToken.getPos()
-		// + 1, comma));
-		// actualToken = allTokensOfJSCode.get(comma - 1);
-		// }
-		// else {
-		// value =
-		// getStringOfTokens(getAllTokensUntilEndPos(actualToken.getPos()
-		// + 1,
-		// semicolon));
-		// actualToken = allTokensOfJSCode.get(semicolon - 1);
-		// }
-		//
-		// }
-		// else if (actualToken.getDefinition() == TOKENTYPE.SEMICOLON) {
-		// declaration.add(new VariableDecTree(actualPos, name, value));
-		// name = "";
-		// value = "";
-		// }
-		//
-		// }
-
 	}
 
+	/**
+	 * process function statement
+	 */
 	private void processFunction() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
@@ -592,7 +571,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 		String body = getNameOfType(nextCurlyOpenBracket, endPos);
 
 		boolean isPacked = false;
-		// TODO same as function.call()
+
 		if (startPos > 0
 				&& allTokensOfJSCode.get(startPos - 1).getDefinition() == TOKENTYPE.OPEN_BRACKET) {
 			startPos--;
@@ -613,6 +592,9 @@ public class TokenAnalyser implements ITokenAnalyser {
 
 	}
 
+	/**
+	 * process this statement
+	 */
 	private void processThis() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
@@ -650,7 +632,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 	}
 
 	/**
-	 * 
+	 * process while statement
 	 */
 	private void processWhile() {
 
@@ -681,7 +663,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 	}
 
 	/**
-	 * 
+	 * process for statement
 	 */
 	private void processFor() {
 
@@ -711,7 +693,7 @@ public class TokenAnalyser implements ITokenAnalyser {
 	}
 
 	/**
-	 * 
+	 * process try statement
 	 */
 	private void processTry() {
 
@@ -733,6 +715,9 @@ public class TokenAnalyser implements ITokenAnalyser {
 		setNextTokenTo(nextCurlyOpenBracket);
 	}
 
+	/**
+	 * process catch statement
+	 */
 	private void processCatch() {
 
 		Validate.isTrue(allTokensOfJSCode.size() > 0);
@@ -817,11 +802,16 @@ public class TokenAnalyser implements ITokenAnalyser {
 		return -1;
 	}
 
+	/**
+	 * @param type
+	 * @param tokentypes
+	 * @return
+	 */
 	private boolean isIn(TOKENTYPE type, TOKENTYPE... tokentypes) {
 
-		for (TOKENTYPE xxx : tokentypes) {
+		for (TOKENTYPE token : tokentypes) {
 
-			if (xxx == type)
+			if (token == type)
 				return true;
 		}
 
@@ -850,29 +840,6 @@ public class TokenAnalyser implements ITokenAnalyser {
 		}
 
 		return valueOfTokens;
-	}
-
-	/**
-	 * @param startPos
-	 * @param endPos
-	 * @param type
-	 * @return true if a tokentype is in a given startPos and endPos
-	 */
-	private boolean isTokenWithinStartAndEndPos(int startPos, int endPos,
-			TOKENTYPE type) {
-
-		Validate.isTrue(allTokensOfJSCode.size() > 0);
-		Validate.isTrue(startPos <= endPos);
-		Validate.notNull(type);
-
-		for (int i = startPos; i < endPos; i++) {
-
-			if (allTokensOfJSCode.get(i).getDefinition() == type) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	/**

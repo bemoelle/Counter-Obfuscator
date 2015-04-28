@@ -6,7 +6,6 @@ import javax.script.ScriptException;
 
 import org.apache.commons.codec.EncoderException;
 
-import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.helper.Validate;
 import edu.hm.counterobfuscator.parser.IParser;
 import edu.hm.counterobfuscator.parser.ParserFactory;

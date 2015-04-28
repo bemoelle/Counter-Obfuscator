@@ -10,14 +10,12 @@ import edu.hm.counterobfuscator.helper.Setting;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.refactor.modul.IModul;
 import edu.hm.counterobfuscator.refactor.modul.IfChecker;
-import edu.hm.counterobfuscator.refactor.modul.ForLoopChecker;
-import edu.hm.counterobfuscator.refactor.modul.ForLoopVariableRenamer;
 
 /**
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 05.02.2015
  * 
- *       calls all module which a responsible to refactor loops in the programm
+ *       calls all module which a responsible to refactor ifs in the programm
  */
 public class IfRefactor implements IRefactor {
 

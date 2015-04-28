@@ -6,9 +6,7 @@ import javax.script.ScriptException;
 
 import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.definitions.DEFINITION;
-import edu.hm.counterobfuscator.definitions.ForWhile;
 import edu.hm.counterobfuscator.definitions.If;
-import edu.hm.counterobfuscator.definitions.Variable;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
@@ -17,12 +15,9 @@ import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
  * @author Benjamin Moellerke <bemoelle@gmail.com>
  * @date 05.02.2015
  * 
- *       check if the loop is necessary
+ *       check if the if is necessary
  * 
- *       for(i=0; i<0; i++) {...}; not necessary loop and body can be removed
- *       for(i=0; i<1; i++) {...}; loop head is not necessary code can replaced
- *       with code in body while(false) {...}; not necessary loop and body can
- *       be removed
+ *       if(false) {...}; not necessary if and body can be removed
  * 
  */
 public class IfChecker implements IModul {
@@ -48,27 +43,6 @@ public class IfChecker implements IModul {
 	 */
 	public IProgrammTree process() throws ScriptException {
 
-		// List<MapperElement> mappedVars= mapper.process(DEFINITION.VARIABLE);
-		//
-		// for (int i = 0; i < mappedVars.size(); i++) {
-		//
-		// Variable var =
-		// (Variable)mappedVars.get(i).getElement().getDefinition();
-		// String script = "var " + var.getName();
-		//
-		// if(!var.getValue().isEmpty()) {
-		//
-		// if(var.getValue().contains("++") || var.getValue().contains("--") ||
-		// var.isObject()) {
-		// continue;
-		// }
-		//
-		// script += "=" + var.getValue();
-		// }
-		//
-		// client.getJSResult(script);
-		// }
-
 		for (int i = 0; i < mappedElements.size(); i++) {
 
 			MapperElement actualElement = mappedElements.get(i);
@@ -80,13 +54,13 @@ public class IfChecker implements IModul {
 			Object result = client.getJSResult(head);
 
 			if ((Boolean) result == false) {
-								
-				if(actualElement.getElement().getParent() == null) {
+
+				if (actualElement.getElement().getParent() == null) {
 					remove(actualElement, children);
 				} else {
 					actualElement.getElement().getParent().getChildren()
-					.removeElementAndAllChildren(actualElement.getElement());
-				}		
+							.removeElementAndAllChildren(actualElement.getElement());
+				}
 			}
 		}
 

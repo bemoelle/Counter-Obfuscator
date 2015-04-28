@@ -18,13 +18,13 @@ import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
  */
 public class FunctionRenamer implements IModul {
 
-	private IProgrammTree programmTree;
-	private List<MapperElement> mappedElements;
-	private String functionName = "function";
-	private String objectName = "object";
-	private int funcNumber = 1;
-	private int objectNumber = 1;
-	private Mapper mapper;
+	private IProgrammTree			programmTree;
+	private List<MapperElement>	mappedElements;
+	private String						functionName	= "function";
+	private String						objectName		= "object";
+	private int							funcNumber		= 1;
+	private int							objectNumber	= 1;
+	private Mapper						mapper;
 
 	public FunctionRenamer(IProgrammTree programmTree) {
 
@@ -41,27 +41,18 @@ public class FunctionRenamer implements IModul {
 	 */
 	public IProgrammTree process() {
 
-		// for (int j = 0; j < func.getHead().size(); j++) {
-		// Variable var = func.getHead().get(j);
-		// String newName = funcVarName + varNumber++;
-		// mappedNames.put(var.getName(), newName);
-		// var.setName(newName);
-		// }
-
 		for (int i = 0; i < mappedElements.size(); i++) {
 
 			MapperElement actualElement = mappedElements.get(i);
-			Function function = (Function) actualElement.getElement()
-					.getDefinition();
+			Function function = (Function) actualElement.getElement().getDefinition();
 
 			// nothing to do when function has no name
 			if ("".equals(function.getName())) {
 				continue;
 			}
 
-			List<MapperElement> elementsWithOldName = mapper
-					.searchForNameOfElement(function.getName(),
-							actualElement.getScope());
+			List<MapperElement> elementsWithOldName = mapper.searchForNameOfElement(
+					function.getName(), actualElement.getScope());
 
 			String oldName = function.getName();
 			String newName = "";

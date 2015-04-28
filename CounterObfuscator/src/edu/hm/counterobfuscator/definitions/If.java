@@ -54,8 +54,11 @@ public class If extends AbstractType {
 	@Override
 	public boolean hasSameName(Object other) {
 
-		// TODO Auto-generated method stub
-		return false;
+		if (name.equals(((AbstractType) other).getName())) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/*
@@ -100,7 +103,7 @@ public class If extends AbstractType {
 	@Override
 	public void replaceName(String name) {
 
-		// do nothing
+		this.name = name;
 
 	}
 

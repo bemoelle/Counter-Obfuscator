@@ -78,8 +78,8 @@ public abstract class AbstractType {
 	public abstract boolean hasNameInIt(String name);
 
 	/**
-	 * @param name
-	 * @param value
+	 * @param name name to replace
+	 * @param value with to replace
 	 */
 	public void replaceNameWith(String nameToReplace, String value) {
 		
@@ -88,22 +88,22 @@ public abstract class AbstractType {
 	}
 
 	/**
-	 * @param name
-	 * @param value
+	 * @param name to replace
+	 * @param value with to replace
 	 */
-	public abstract void replaceValueWith(String name, String value);
+	public abstract void replaceValueWith(String nameToReplace, String value);
 
 	/**
-	 * @param name
+	 * @param name to replace
 	 */
-	public void replaceName(String name) {
+	public void replaceName(String nameToReplace) {
 		
-		
+		name = nameToReplace;
 		
 	}
 
 	/**
-	 * @return
+	 * @return the Value of the type
 	 */
 	public abstract String getValue();
 

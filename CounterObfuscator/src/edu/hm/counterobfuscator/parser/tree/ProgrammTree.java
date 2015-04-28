@@ -47,9 +47,6 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 		log = Logger.getLogger(ProgrammTree.class.getName());
 	}
 
-	/**
-	 * 
-	 */
 	public ProgrammTree(List<AbstractType> types) {
 
 		this.tree = new ArrayList<Element>();
@@ -416,6 +413,9 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 		return it;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#reverseIterator()
+	 */
 	@Override
 	public Iterator<Element> reverseIterator() {
 
@@ -487,6 +487,10 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 		return it;
 	}
 
+	/**
+	 * @param element
+	 * @return
+	 */
 	public int getIndexInTree(Element element) {
 
 		for (int i = 0; i < size(); i++) {
@@ -501,6 +505,9 @@ public class ProgrammTree implements IProgrammTree, Iterable<Element> {
 		return -1;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.hm.counterobfuscator.parser.tree.IProgrammTree#replaceElementWithTree(edu.hm.counterobfuscator.parser.tree.Element, edu.hm.counterobfuscator.parser.tree.IProgrammTree)
+	 */
 	public void replaceElementWithTree(Element element, IProgrammTree newTree) {
 
 		Element beforeEle = element.getBefore();

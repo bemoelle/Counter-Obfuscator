@@ -56,8 +56,12 @@ public class Call extends AbstractType {
 	 */
 	@Override
 	public boolean hasSameName(Object other) {
-		// TODO Auto-generated method stub
-		return false;
+		
+		if(name.equals(((AbstractType)other).getName())) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/*
@@ -81,8 +85,9 @@ public class Call extends AbstractType {
 	}
 
 	@Override
-	public void replaceValueWith(String name, String value) {
-		// TODO Auto-generated method stub
+	public void replaceValueWith(String nameToReplace, String valueToReplace) {
+		
+		value = value.replaceAll(nameToReplace, valueToReplace);
 		
 	}
 

@@ -36,9 +36,9 @@ public class VariableRemover implements IModul {
 	 * @see edu.hm.counterobfuscator.refactor.IRefactor#process()
 	 */
 	public IProgrammTree process() {
-		
-		//nothing do when programmtree has only one element
-		if(programmTree.size() == 1 && !programmTree.get(0).hasChildren()) {
+
+		// nothing do when programmtree has only one element
+		if (programmTree.size() == 1 && !programmTree.get(0).hasChildren()) {
 			return programmTree;
 		}
 
@@ -62,12 +62,6 @@ public class VariableRemover implements IModul {
 					continue;
 				}
 
-//				if (actualElement.getDefinition().hasNameInIt(nameLookingFor)) {
-//					refCounter++;
-//				}
-
-				//String name = actualElement.getDefinition().getName();
-				
 				if (actualElement.getDefinition().hasNameInIt(nameLookingFor)) {
 
 					if (actualElement.getDefinition().getDefinition() == DEFINITION.VARIABLE) {

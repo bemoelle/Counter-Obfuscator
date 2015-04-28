@@ -15,6 +15,7 @@ import edu.hm.counterobfuscator.helper.Scope;
 public class TryCatch extends AbstractType {
 
 	public TryCatch(Scope pos, String name, String headString) {
+
 		super(DEFINITION.TRYCATCH, pos, name);
 
 	}
@@ -27,8 +28,12 @@ public class TryCatch extends AbstractType {
 	 */
 	@Override
 	public boolean hasSameName(Object other) {
-		// TODO Auto-generated method stub
-		return false;
+
+		if (name.equals(((AbstractType) other).getName())) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/*
@@ -38,8 +43,11 @@ public class TryCatch extends AbstractType {
 	 * edu.hm.counterobfuscator.types.AbstractType#hasNameInIt(java.lang.String)
 	 */
 	@Override
-	public boolean hasNameInIt(String name) {
-		// TODO Auto-generated method stub
+	public boolean hasNameInIt(String nameToTest) {
+
+		if (name.indexOf(nameToTest) != -1)
+			return true;
+
 		return false;
 	}
 
@@ -51,13 +59,13 @@ public class TryCatch extends AbstractType {
 	@Override
 	public String getValue() {
 
-		// TODO Auto-generated method stub
 		return "";
 	}
 
 	@Override
 	public void replaceValueWith(String name, String value) {
-		// TODO Auto-generated method stub
-		
+
+		// nothing to do here
+
 	}
 }

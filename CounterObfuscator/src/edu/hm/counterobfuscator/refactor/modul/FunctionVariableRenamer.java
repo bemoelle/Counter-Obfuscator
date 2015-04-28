@@ -19,9 +19,9 @@ import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
  */
 public class FunctionVariableRenamer implements IModul {
 
-	private IProgrammTree programmTree;
-	private List<MapperElement> mappedElements;
-	private int number = 1;
+	private IProgrammTree			programmTree;
+	private List<MapperElement>	mappedElements;
+	private int							number	= 1;
 
 	public FunctionVariableRenamer(IProgrammTree programmTree) {
 
@@ -53,38 +53,19 @@ public class FunctionVariableRenamer implements IModul {
 
 			for (int j = 0; j < vars.size(); j++) {
 
-				// only look at the children
-//				Mapper childrenMapper = new Mapper(children);
-//				List<MapperElement> elementsWithNewName = childrenMapper
-//						.searchForName(vars.get(j).getName());
-				
 				String newName = "functionVar" + number++;
-				
+
 				Iterator<Element> it = children.iterator();
 
 				while (it.hasNext()) {
-								
+
 					Element element = it.next();
-					element.getDefinition().replaceNameWith(vars.get(j).getName(),
-							newName);
-					
+					element.getDefinition().replaceNameWith(vars.get(j).getName(), newName);
+
 				}
-				
+
 				vars.get(j).setName(newName);
-				
-				
 
-				
-
-//				for (int k = 0; k < elementsWithNewName.size(); k++) {
-//
-//					Element type = elementsWithNewName.get(k).getElement();
-//
-//					type.getDefinition().replaceNameWith(vars.get(j).getName(),
-//							newName);
-//				}
-//
-//				vars.get(j).setName(newName);
 			}
 
 		}

@@ -7,7 +7,6 @@ import javax.script.ScriptException;
 import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.definitions.DEFINITION;
 import edu.hm.counterobfuscator.definitions.ForWhile;
-import edu.hm.counterobfuscator.definitions.If;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
@@ -19,7 +18,6 @@ import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
  *       check if the loop is necessary
  * 
  *       for(i=0; i<0; i++) {...}; not necessary loop and body can be removed
- *       for(i=0; i<1; i++) {...}; loop head is not necessary code can replaced
  *       with code in body while(false) {...}; not necessary loop and body can
  *       be removed
  * 
@@ -57,13 +55,13 @@ public class WhileLoopChecker implements IModul {
 			Object result = client.getJSResult(head);
 
 			if ((Boolean) result == false) {
-				
-				if(actualElement.getElement().getParent() == null) {
+
+				if (actualElement.getElement().getParent() == null) {
 					remove(actualElement, children);
 				} else {
 					actualElement.getElement().getParent().getChildren()
-					.removeElementAndAllChildren(actualElement.getElement());
-				}	
+							.removeElementAndAllChildren(actualElement.getElement());
+				}
 			}
 		}
 

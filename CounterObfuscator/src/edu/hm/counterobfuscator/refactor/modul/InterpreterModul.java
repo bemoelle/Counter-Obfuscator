@@ -5,13 +5,10 @@ import java.util.logging.Logger;
 
 import org.apache.commons.codec.EncoderException;
 
-import com.sleepycat.je.tree.Tree;
-
 import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.definitions.AbstractType;
 import edu.hm.counterobfuscator.definitions.Ajax;
 import edu.hm.counterobfuscator.definitions.Call;
-import edu.hm.counterobfuscator.definitions.DEFINITION;
 import edu.hm.counterobfuscator.definitions.Default;
 import edu.hm.counterobfuscator.definitions.ForWhile;
 import edu.hm.counterobfuscator.definitions.Function;
@@ -31,10 +28,10 @@ import edu.hm.counterobfuscator.parser.tree.ProgrammTree;
  */
 public class InterpreterModul {
 
-	private IClient client;
-	private static Logger log;
-	private String jsScriptBuffer = "";
-	private boolean handleError;
+	private IClient			client;
+	private static Logger	log;
+	private String				jsScriptBuffer	= "";
+	private boolean			handleError;
 
 	public InterpreterModul(IClient client, boolean handleError) {
 
@@ -60,7 +57,7 @@ public class InterpreterModul {
 	 * @param buffer
 	 */
 	public void setJsScriptBuffer(String buffer) {
-		
+
 		jsScriptBuffer += buffer;
 	}
 
@@ -79,17 +76,12 @@ public class InterpreterModul {
 		case VARIABLE:
 			executeVariable(element);
 			break;
-		case FOR:
-			executeFor(element);
-			break;
 		case THIS:
 			executeThis(element);
 			break;
 		case AJAX:
 			executeAjax(element);
 			break;
-		case DEFAULT:
-			executeDefault(element);
 		default:
 
 		}
@@ -98,15 +90,17 @@ public class InterpreterModul {
 
 	/**
 	 * @param element
+	 * 
+	 *           Interprets ajax call
 	 */
 	private void executeAjax(Element element) {
 
 		Ajax ajax = ((Ajax) element.getDefinition());
 
 		String result = executeJS(ajax.getName() + ";").toString();
-		
+
 		if (result.indexOf("NO_EXECUTION") < 0) {
-			
+
 			result = result.replaceAll("'", "");
 			ajax.setName(result);
 		}
@@ -118,8 +112,7 @@ public class InterpreterModul {
 
 		}
 
-		String script = "$." + ajax.getName() + "" + "(" + ajax.getValue()
-				+ ")";
+		String script = "$." + ajax.getName() + "" + "(" + ajax.getValue() + ")";
 
 		result = executeJS(script).toString();
 
@@ -138,8 +131,8 @@ public class InterpreterModul {
 	 * @throws IllegalArgumentException
 	 * 
 	 */
-	private IProgrammTree executeFunction(Element element)
-			throws IllegalArgumentException, IOException, EncoderException {
+	private IProgrammTree executeFunction(Element element) throws IllegalArgumentException,
+			IOException, EncoderException {
 
 		Function func = ((Function) element.getDefinition());
 		IProgrammTree tree = null;
@@ -150,18 +143,15 @@ public class InterpreterModul {
 			String script = func.getBodyAsString();
 			Object result = executeJS(script);
 			String resultAsString = result.toString();
-			
 
 			if (resultAsString.indexOf("NO_EXECUTION") < 0) {
 
-				if(resultAsString.length() > 1) {
-				resultAsString = resultAsString.substring(1,
-						resultAsString.length() - 1);
+				if (resultAsString.length() > 1) {
+					resultAsString = resultAsString.substring(1, resultAsString.length() - 1);
 				} else {
 					resultAsString += ";";
 				}
-				tree = ParserFactory
-						.create(resultAsString, false).getProgrammTree();
+				tree = ParserFactory.create(resultAsString, false).getProgrammTree();
 				element.removeAllChildren();
 				log.info("result is " + result);
 
@@ -176,6 +166,12 @@ public class InterpreterModul {
 		return tree;
 	}
 
+	/**
+	 * @param element
+	 * @throws Exception
+	 * 
+	 *            Interprets function call
+	 */
 	private void executeFunctionCall(Element element) throws Exception {
 
 		Call callStatement = ((Call) element.getDefinition());
@@ -194,8 +190,7 @@ public class InterpreterModul {
 
 		}
 
-		String toExecute = callStatement.getName() + "."
-				+ callStatement.getFunction() + "();";
+		String toExecute = callStatement.getName() + "." + callStatement.getFunction() + "();";
 		resultValue = executeJS(toExecute).toString();
 		if (resultValue.indexOf("NO_EXECUTION") < 0) {
 
@@ -206,6 +201,12 @@ public class InterpreterModul {
 
 	}
 
+	/**
+	 * @param element
+	 * @throws Exception
+	 * 
+	 *            Interprets var
+	 */
 	private void executeVariable(Element element) throws Exception {
 
 		Variable var = ((Variable) element.getDefinition());
@@ -219,14 +220,12 @@ public class InterpreterModul {
 			jsScriptBuffer += "var " + var.getName() + "=" + value + ";";
 		} else {
 
-			String resultValue = executeJS(var.getName() + "=" + value)
-					.toString();
+			String resultValue = executeJS(var.getName() + "=" + value).toString();
 			// statement is executable
 			if (resultValue.indexOf("NO_EXECUTION") < 0) {
 
 				var.setValue(resultValue);
-				jsScriptBuffer += "var " + var.getName() + "=" + resultValue
-						+ ";";
+				jsScriptBuffer += "var " + var.getName() + "=" + resultValue + ";";
 
 			} else {
 				if (!handleError) {
@@ -235,8 +234,7 @@ public class InterpreterModul {
 			}
 
 			if (var.isObject()) {
-				String resultParameter = executeJS(var.getParameter())
-						.toString();
+				String resultParameter = executeJS(var.getParameter()).toString();
 				if (resultParameter.indexOf("NO_EXECUTION") < 0) {
 
 					var.setParameter(resultParameter);
@@ -251,18 +249,11 @@ public class InterpreterModul {
 
 	}
 
-	private void executeFor(Element element) {
-
-		ForWhile forWhile = ((ForWhile) element.getDefinition());
-
-	}
-
-	private void executeDefault(Element element) {
-
-		Default defaultType = ((Default) element.getDefinition());
-
-	}
-
+	/**
+	 * @param element
+	 * 
+	 *           Interprets this in function
+	 */
 	private void executeThis(Element element) {
 
 		This type = ((This) element.getDefinition());
@@ -278,6 +269,12 @@ public class InterpreterModul {
 
 	}
 
+	/**
+	 * @param script
+	 * @return
+	 * 
+	 *         execute JavaScript statements
+	 */
 	private Object executeJS(String script) {
 
 		Object result = null;
@@ -285,7 +282,7 @@ public class InterpreterModul {
 			result = client.getJSResult(jsScriptBuffer + script);
 			log.info("result of interpreter is: " + result);
 		} catch (Exception e) {
-			System.out.println(e);
+
 			result = "NO_EXECUTION";
 		}
 		return result;

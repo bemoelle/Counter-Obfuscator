@@ -37,22 +37,30 @@ public class Ajax extends AbstractType {
 	 */
 	@Override
 	public boolean hasSameName(Object other) {
-		// TODO Auto-generated method stub
-		return false;
+		
+		if(name.equals(((AbstractType)other).getName())) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see edu.hm.counterobfuscator.types.AbstractType#hasNameInIt(java.lang.String)
 	 */
 	@Override
-	public boolean hasNameInIt(String name) {
-		// TODO Auto-generated method stub
+	public boolean hasNameInIt(String nameToTest) {
+		
+		if (name.indexOf(nameToTest) != -1)
+			return true;
+
 		return false;
 	}
 
 	@Override
-	public void replaceValueWith(String name, String value) {
-		// TODO Auto-generated method stub
+	public void replaceValueWith(String nameToReplace, String valueToReplace) {
+		
+		value = value.replaceAll(nameToReplace, valueToReplace);
 		
 	}
 

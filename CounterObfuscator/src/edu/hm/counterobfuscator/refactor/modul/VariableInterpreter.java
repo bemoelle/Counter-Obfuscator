@@ -8,6 +8,14 @@ import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
 
+/**
+ * @author Benjamin Moellerke <bemoelle@gmail.com>
+ * @date 28.04.2015
+ * 
+ * 
+ *       interprete variable the name and the value
+ * 
+ */
 public class VariableInterpreter implements IModul {
 
 	private IProgrammTree			programmTree;
