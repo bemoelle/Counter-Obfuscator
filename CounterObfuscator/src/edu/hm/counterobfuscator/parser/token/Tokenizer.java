@@ -44,7 +44,7 @@ public class Tokenizer implements ITokenizer {
 
 		log.info("start tokinizing process...");
 
-		String matches = "(|)|[|]|;|=|{|}|,|.|+|-";
+		String matches = "(|)|[|]|;|=|{|}|,|.|+|-|'";
 
 		IMatch matcher = new TokenMatcher(matches);
 
@@ -191,6 +191,8 @@ public class Tokenizer implements ITokenizer {
 			return TOKENTYPE.EQUAL;
 		case " ":
 			return TOKENTYPE.WHITESPACE;
+		case "eval":
+			return TOKENTYPE.EVAL;
 		default:
 			return TOKENTYPE.STRING;
 		}

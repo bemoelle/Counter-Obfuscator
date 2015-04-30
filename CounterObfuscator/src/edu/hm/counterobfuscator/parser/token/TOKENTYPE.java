@@ -44,5 +44,6 @@ public enum TOKENTYPE {
 	BACKSLASH,
 	JQUERY,
 	IF,
-	ELSE
+	ELSE,
+	EVAL
 }

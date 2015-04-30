@@ -4,6 +4,7 @@ import java.util.List;
 
 import edu.hm.counterobfuscator.client.IClient;
 import edu.hm.counterobfuscator.definitions.DEFINITION;
+import edu.hm.counterobfuscator.definitions.Variable;
 import edu.hm.counterobfuscator.parser.tree.IProgrammTree;
 import edu.hm.counterobfuscator.parser.tree.mapper.Mapper;
 import edu.hm.counterobfuscator.parser.tree.mapper.MapperElement;
@@ -38,6 +39,14 @@ public class FunctionInterpreter implements IModul {
 	 * @see edu.hm.counterobfuscator.interpreter.IInterpreter#process()
 	 */
 	public IProgrammTree process() {
+
+		List<MapperElement> mappedVarElements = mapper.process(DEFINITION.VARIABLE);
+
+		for (int i = 0; i < mappedVarElements.size(); i++) {
+
+			Variable var = (Variable) mappedVarElements.get(i).getElement().getDefinition();
+			interpreter.setJsScriptBuffer(var.getName() +"="+ var.getValue()+";");
+		}
 
 		for (int i = 0; i < mappedElements.size(); i++) {
 

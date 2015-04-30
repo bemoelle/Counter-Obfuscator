@@ -4,7 +4,7 @@
 
 	<groupId>edu.hm.counterobfuscator</groupId>
 	<artifactId>counterobfuscator</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.1</version>
 	<packaging>jar</packaging>
 
 	<name>Maven Quick Start Archetype</name>

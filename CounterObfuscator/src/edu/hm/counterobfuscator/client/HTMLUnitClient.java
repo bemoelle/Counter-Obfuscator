@@ -37,6 +37,7 @@ public class HTMLUnitClient implements IClient {
 		webClient.setJavaScriptEngine(engine);
 
 		webClient.getOptions().setThrowExceptionOnScriptError(true);
+		webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
 		webClient.getOptions().setJavaScriptEnabled(true);
 		webClient.getOptions().setCssEnabled(false);
 		webClient.setAjaxController(new NicelyResynchronizingAjaxController());

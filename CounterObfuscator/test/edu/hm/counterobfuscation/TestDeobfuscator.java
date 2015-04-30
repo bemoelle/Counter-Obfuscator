@@ -136,6 +136,8 @@ public class TestDeobfuscator {
 
 		IProgrammTree resultTree = deObfuscatorFactory.create();
 
+		resultTree.printOnConsole();
+		
 		assertNotNull(resultTree);
 		assertEquals(3, resultTree.size());
 
@@ -386,6 +388,8 @@ public class TestDeobfuscator {
 
 		IProgrammTree resultTree = deObfuscatorFactory.create();
 
+		resultTree.printOnConsole();
+		
 		assertNotNull(resultTree);
 		assertEquals(1, resultTree.size());
 
@@ -598,7 +602,7 @@ public class TestDeobfuscator {
 			ScriptException {
 
 		DeObfuscatorFactory deObfuscatorFactory = new DeObfuscatorFactory(path + "ajaxTest", true,
-				"http://code.jquery.com");
+				"http://www.google.com");
 
 		IProgrammTree resultTree = deObfuscatorFactory.create();
 

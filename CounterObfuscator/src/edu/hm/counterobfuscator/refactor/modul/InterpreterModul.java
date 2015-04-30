@@ -141,6 +141,12 @@ public class InterpreterModul {
 			log.info("packed function found!");
 
 			String script = func.getBodyAsString();
+			
+			if(func.getName().indexOf("eval") > -1) {
+				
+				script = "eval(" + script + ");";
+			}
+			
 			Object result = executeJS(script);
 			String resultAsString = result.toString();
 
@@ -161,6 +167,13 @@ public class InterpreterModul {
 				AbstractType defaultStatement = new Default(new Scope(0, 100), "undefined");
 				tree.add(new Element(null, defaultStatement, 0));
 			}
+		} else {
+
+			String script = "function " + func.getName() + "(" +func.getHeadString() + ")"
+					+ func.getBodyAsString() + ";";
+			
+			setJsScriptBuffer(script);
+			
 		}
 
 		return tree;
